@@ -10,6 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
+import Motion1 from "@/components/demo/MotionTemplate";
 
 export default function AccountPage() {
   return (
@@ -33,7 +34,14 @@ export default function AccountPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <PlaceholderContent />
+      
+      <div className="grid grid-cols-2 gap-4 mt-4 w-full min-h-[calc(100vh-200px)]">
+       <Motion1/>
+        <PlaceholderContent />
+        <PlaceholderContent />
+        <PlaceholderContent />
+      </div>
+    
     </ContentLayout>
   );
 }
