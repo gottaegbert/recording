@@ -1,27 +1,27 @@
-"use client";
-import Link from "next/link";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
+'use client';
+import Link from 'next/link';
+import { ContentLayout } from '@/components/admin-panel/content-layout';
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
-} from "@/components/ui/breadcrumb";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger
-} from "@/components/ui/tooltip";
-import { useSidebar } from "@/hooks/use-sidebar";
-import { useStore } from "@/hooks/use-store";
-import PlaceholderContent from "@/components/demo/placeholder-content";
-import Motion1 from "@/components/demo/MotionTemplate";
-import MotionStagger from "@/components/demo/MotionStagger";
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { useSidebar } from '@/hooks/use-sidebar';
+import { useStore } from '@/hooks/use-store';
+import MotionStagger from '@/components/demo/MotionStagger';
+import MotionList from '@/components/demo/MotionList';
+import MotionTemplate from '@/components/demo/MotionTemplate';
 
 export default function DashboardPage() {
   const sidebar = useStore(useSidebar, (x) => x);
@@ -77,12 +77,10 @@ export default function DashboardPage() {
         </div>
       </TooltipProvider>
 
-            
       <div className="grid grid-cols-2 gap-4 mt-4 w-full min-h-[calc(100vh-200px)]">
-      <Motion1/>
-      <MotionStagger/>
-        {/* <PlaceholderContent /> */}
-     
+        <MotionTemplate />
+        <MotionStagger />
+        <MotionList />
       </div>
     </ContentLayout>
   );
