@@ -1,11 +1,11 @@
-import { motion, stagger, useAnimate } from 'motion/react';
+import { motion, useAnimate } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 const boxnew = {
   width: 540 / 2,
   height: 100 / 2,
-  backgroundColor: '#3354F4',
+  backgroundColor: 'var(--main)',
   borderRadius: 0,
   margin: 1,
   transformOrigin: 'center center',

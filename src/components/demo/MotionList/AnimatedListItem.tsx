@@ -27,7 +27,7 @@ export default function AnimatedListItem({ children }: AnimatedListItemProps) {
       transition={{
         duration: t(0.15),
         type: 'spring',
-        bounce: 0,
+        bounce: 0.3,
         opacity: { duration: t(0.03) },
       }}
     >

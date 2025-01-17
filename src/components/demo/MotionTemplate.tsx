@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 const box = {
   width: 100,
   height: 100,
-  backgroundColor: '#3354F4',
+  backgroundColor: 'var(--main)',
   borderRadius: 0,
   transformOrigin: 'center center', // 可以是 "left top", "right bottom" 等
 };

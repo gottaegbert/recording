@@ -6,6 +6,7 @@ let titles = [
   ['This Week in Sports', 'The finals are heating up'],
   ['Changelog update', 'Edge subroutines and more'],
   ['React Hawaii is here!', 'Time for fun in the sun'],
+  ['xiaohongshu 你好', '世界民族大团结'],
 ];
 
 export interface MessageData {
