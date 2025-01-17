@@ -5,8 +5,8 @@ import {
   Bookmark,
   SquarePen,
   LayoutGrid,
-  LucideIcon
-} from "lucide-react";
+  LucideIcon,
+} from 'lucide-react';
 
 type Submenu = {
   href: string;
@@ -30,60 +30,60 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
   return [
     {
-      groupLabel: "",
+      groupLabel: '',
       menus: [
         {
-          href: "/dashboard",
-          label: "Dashboard",
+          href: '/dashboard',
+          label: 'WorkingOn',
           icon: LayoutGrid,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+      ],
     },
     {
-      groupLabel: "Contents",
+      groupLabel: 'Contents',
       menus: [
         {
-          href: "",
-          label: "Posts",
+          href: '',
+          label: 'Posts',
           icon: SquarePen,
           submenus: [
             {
-              href: "/posts",
-              label: "All Posts"
+              href: '/posts',
+              label: 'All Posts',
             },
             {
-              href: "/posts/new",
-              label: "New Post"
-            }
-          ]
+              href: '/posts/new',
+              label: 'New Post',
+            },
+          ],
         },
-        {
-          href: "/categories",
-          label: "Categories",
-          icon: Bookmark
-        },
-        {
-          href: "/tags",
-          label: "Tags",
-          icon: Tag
-        }
-      ]
+        // {
+        //   href: '/categories',
+        //   label: 'Categories',
+        //   icon: Bookmark,
+        // },
+        // {
+        //   href: '/tags',
+        //   label: 'Tags',
+        //   icon: Tag,
+        // },
+      ],
     },
-    {
-      groupLabel: "Settings",
-      menus: [
-        {
-          href: "/users",
-          label: "Users",
-          icon: Users
-        },
-        {
-          href: "/account",
-          label: "Account",
-          icon: Settings
-        }
-      ]
-    }
+    // {
+    //   groupLabel: 'Settings',
+    //   menus: [
+    //     {
+    //       href: '/users',
+    //       label: 'Users',
+    //       icon: Users,
+    //     },
+    //     {
+    //       href: '/account',
+    //       label: 'Account',
+    //       icon: Settings,
+    //     },
+    //   ],
+    // },
   ];
 }

@@ -1,41 +1,39 @@
-import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
+/* eslint-disable no-undef */
+import type { Metadata } from 'next';
+import { GeistSans } from 'geist/font/sans';
 
-import "./globals.css";
+import './globals.css';
 
-import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ThemeProvider } from '@/components/providers/theme-provider';
 
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.APP_URL
       ? `${process.env.APP_URL}`
       : process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : `http://localhost:${process.env.PORT || 3000}`
+        ? `https://${process.env.VERCEL_URL}`
+        : `http://localhost:${process.env.PORT || 3000}`
   ),
-  title: "shadcn/ui sidebar",
-  description:
-    "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness.",
+  title: 'Siyu-pace',
+  description: 'record my step',
   alternates: {
-    canonical: "/"
+    canonical: '/',
   },
   openGraph: {
-    url: "/",
-    title: "shadcn/ui sidebar",
-    description:
-      "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness.",
-    type: "website"
+    url: '/',
+    title: 'Siyu-pace',
+    description: 'record my step',
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "shadcn/ui sidebar",
-    description:
-      "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness."
-  }
+    card: 'summary_large_image',
+    title: 'Siyu-pace',
+    description: 'record my step',
+  },
 };
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
