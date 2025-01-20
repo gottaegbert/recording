@@ -21,9 +21,9 @@ import { useSidebar } from '@/hooks/use-sidebar';
 import { useStore } from '@/hooks/use-store';
 import MotionStagger from '@/components/demo/MotionStagger';
 import MotionList from '@/components/demo/MotionList';
-import MotionTemplate from '@/components/demo/MotionTemplate';
 import MotionDrag from '@/components/demo/MotionDrag';
 import MotionNumber from '@/components/demo/MotionNumber';
+import MotionImageEntrance from '@/components/demo/MotionImageEntrance';
 
 export default function DashboardPage() {
   const sidebar = useStore(useSidebar, (x) => x);
@@ -80,7 +80,7 @@ export default function DashboardPage() {
       </TooltipProvider>
 
       <div className="grid grid-cols-2 gap-4 mt-4 w-full min-h-[calc(100vh-200px)]">
-        <MotionTemplate />
+        <MotionImageEntrance />
         <MotionStagger />
         <MotionList />
         <MotionDrag />
