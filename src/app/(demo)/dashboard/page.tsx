@@ -23,6 +23,7 @@ import MotionStagger from '@/components/demo/MotionStagger';
 import MotionList from '@/components/demo/MotionList';
 import MotionTemplate from '@/components/demo/MotionTemplate';
 import MotionDrag from '@/components/demo/MotionDrag';
+import MotionNumber from '@/components/demo/MotionNumber';
 
 export default function DashboardPage() {
   const sidebar = useStore(useSidebar, (x) => x);
@@ -83,6 +84,7 @@ export default function DashboardPage() {
         <MotionStagger />
         <MotionList />
         <MotionDrag />
+        <MotionNumber />
       </div>
     </ContentLayout>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Ellipsis, LogOut } from 'lucide-react';
+import { Ellipsis, Flame } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
@@ -123,7 +123,7 @@ export function Menu({ isOpen }: MenuProps) {
                     className="w-full justify-center h-10 mt-5"
                   >
                     <span className={cn(isOpen === false ? '' : 'mr-4')}>
-                      <LogOut size={18} />
+                      <Flame size={18} />
                     </span>
                     <p
                       className={cn(
@@ -131,12 +131,12 @@ export function Menu({ isOpen }: MenuProps) {
                         isOpen === false ? 'opacity-0 hidden' : 'opacity-100'
                       )}
                     >
-                      Sign out
+                      Visit my project
                     </p>
                   </Button>
                 </TooltipTrigger>
                 {isOpen === false && (
-                  <TooltipContent side="right">Sign out</TooltipContent>
+                  <TooltipContent side="right">Visit</TooltipContent>
                 )}
               </Tooltip>
             </TooltipProvider>
