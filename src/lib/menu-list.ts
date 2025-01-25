@@ -35,21 +35,21 @@ export function getMenuList(pathname: string): Group[] {
     {
       groupLabel: 'Contents',
       menus: [
-        {
-          href: '',
-          label: 'Posts',
-          icon: SquarePen,
-          submenus: [
-            {
-              href: '/posts',
-              label: 'All Posts',
-            },
-            {
-              href: '/posts/new',
-              label: 'New Post',
-            },
-          ],
-        },
+        // {
+        //   href: '',
+        //   label: 'Posts',
+        //   icon: SquarePen,
+        //   submenus: [
+        //     {
+        //       href: '/posts',
+        //       label: 'All Posts',
+        //     },
+        //     {
+        //       href: '/posts/new',
+        //       label: 'New Post',
+        //     },
+        //   ],
+        // },
         // {
         //   href: '/categories',
         //   label: 'Categories',

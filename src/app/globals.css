@@ -4,7 +4,8 @@
 
 @layer base {
   :root {
-    --main: #3354f4;
+    --ball: #73e067;
+    --main: #73e067;
     --backmain: #3353f45a;
 
     --background: 0 0% 100%;
@@ -39,6 +40,7 @@
   }
 
   .dark {
+    --ball: #67e0d2;
     --main: #3354f4;
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;

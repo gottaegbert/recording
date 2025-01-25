@@ -19,6 +19,7 @@ const config = {
     },
     extend: {
       colors: {
+        ball: 'var(--ball)',
         main: 'var(--main)',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

@@ -14,20 +14,20 @@ export const metadata: Metadata = {
         ? `https://${process.env.VERCEL_URL}`
         : `http://localhost:${process.env.PORT || 3000}`
   ),
-  title: 'Siyu-pace',
+  title: 'whothree-pace',
   description: 'record my step',
   alternates: {
     canonical: '/',
   },
   openGraph: {
     url: '/',
-    title: 'Siyu-pace',
+    title: 'whothree-pace',
     description: 'record my step',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Siyu-pace',
+    title: 'whothree-pace',
     description: 'record my step',
   },
 };

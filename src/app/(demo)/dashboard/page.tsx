@@ -24,6 +24,7 @@ import MotionList from '@/components/demo/MotionList';
 import MotionDrag from '@/components/demo/MotionDrag';
 import MotionNumber from '@/components/demo/MotionNumber';
 import MotionImageEntrance from '@/components/demo/MotionImageEntrance';
+import CursorBall from '@/components/demo/3D/CursorBall';
 
 export default function DashboardPage() {
   const sidebar = useStore(useSidebar, (x) => x);
@@ -81,6 +82,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-2 gap-4 mt-4 w-full min-h-[calc(100vh-200px)]">
         <MotionImageEntrance />
+        <CursorBall />
         <MotionStagger />
         <MotionList />
         <MotionDrag />

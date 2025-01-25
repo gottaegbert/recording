@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 
 const text = {
   fontSize: 64,
-  color: '#4ff0b7',
+  color: 'var(--ball)',
 };
 
 export default function MotionNumber() {
