@@ -19,7 +19,7 @@ export default function MotionNumber() {
   useEffect(() => {
     const controls = animate(count, 100, { duration: 10 });
     return () => controls.stop();
-  }, []);
+  }, [count]);
   return (
     <Card className="rounded-lg border-none mt-6">
       <CardContent className="p-6">

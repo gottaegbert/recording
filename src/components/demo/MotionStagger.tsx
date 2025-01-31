@@ -28,7 +28,7 @@ export default function MotionStagger() {
     await animate(
       scope.current,
       { x: -150, y: 0, opacity: 0 },
-      { duration: 0 }
+      { duration: 0 },
     );
     // 依次执行进入动画
     await animateY(
@@ -37,7 +37,7 @@ export default function MotionStagger() {
       {
         duration: 0.15,
         ease: [0.36, 0.01, 0.1, 1], // 添加 easing
-      }
+      },
     );
     await animate(
       scope.current,
@@ -45,7 +45,7 @@ export default function MotionStagger() {
       {
         duration: 0.15,
         ease: [0.36, 0.01, 0.1, 1], // 添加 easing
-      }
+      },
     );
   };
   return (

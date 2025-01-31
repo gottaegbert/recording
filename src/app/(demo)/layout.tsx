@@ -1,3 +1,4 @@
+import React from 'react';
 import AdminPanelLayout from '@/components/admin-panel/admin-panel-layout';
 
 export default function DemoLayout({

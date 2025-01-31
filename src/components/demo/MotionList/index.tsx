@@ -40,7 +40,7 @@ const EmailComponent = () => {
 
   const archiveMessages = () => {
     setMessages((prev) =>
-      prev.filter((message) => !selectedMessages.includes(message.id))
+      prev.filter((message) => !selectedMessages.includes(message.id)),
     );
     setSelectedMessages([]);
   };

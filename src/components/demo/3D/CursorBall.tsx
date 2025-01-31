@@ -115,16 +115,18 @@ function Clump({
             .normalize()
             .multiplyScalar(-40)
             .toArray(),
-          [0, 0, 0]
+          [0, 0, 0],
         );
     }
   });
   //@ts-ignore
   return (
     <instancedMesh
+      //@ts-ignore
       ref={ref}
       castShadow
       receiveShadow
+      //@ts-ignore
       args={[null, null, 25]}
       geometry={sphereGeometry}
       material={baubleMaterial}
@@ -144,7 +146,7 @@ function Pointer() {
     api.position.set(
       (state.mouse.x * viewport.width) / 2,
       (state.mouse.y * viewport.height) / 2,
-      0
-    )
+      0,
+    ),
   );
 }
