@@ -43,7 +43,7 @@ export default function CursorBall() {
   return (
     <Card className="rounded-lg border-none mt-6">
       <CardContent className="p-0">
-        <div className="w-full h-[60vh]">
+        <div className="w-full h-[90vh]">
           <div
             className="flex flex-col relative"
             style={{ aspectRatio: '9/16' }}
@@ -69,10 +69,6 @@ export default function CursorBall() {
                 <Clump />
               </Physics>
               <Environment files="/adamsbridge.hdr" />
-              {/* <EffectComposer disableNormalPass multisampling={0}>
-      <N8AO color="black" aoRadius={2} intensity={1} aoSamples={6} denoiseSamples={4} />
-      <SMAA />
-    </EffectComposer> */}
             </Canvas>
           </div>
         </div>
@@ -81,10 +77,9 @@ export default function CursorBall() {
   );
 }
 function Clump({
+  scale = 1,
   mat = new THREE.Matrix4(),
   vec = new THREE.Vector3(),
-
-  ...props
 }) {
   const mainColor = useThemeColor('--ball');
   const baubleMaterial = new THREE.MeshStandardMaterial({
@@ -99,24 +94,26 @@ function Clump({
     angularDamping: 0.1,
     linearDamping: 0.65,
     position: [rfs(20), rfs(20), rfs(20)],
+    instances: 40,
   }));
   useFrame(() => {
+    if (!ref.current) return;
+    const mesh = ref.current as THREE.InstancedMesh;
+
     for (let i = 0; i < 40; i++) {
-      // Get current whereabouts of the instanced sphere
-      //@ts-ignore
-      ref.current.getMatrixAt(i, mat);
-      // Normalize the position and multiply by a negative force.
-      // This is enough to drive it towards the center-point.
-      api
-        .at(i)
-        .applyForce(
-          vec
-            .setFromMatrixPosition(mat)
-            .normalize()
-            .multiplyScalar(-40)
-            .toArray(),
-          [0, 0, 0],
-        );
+      try {
+        mesh.getMatrixAt(i, mat);
+        const force = vec
+          .setFromMatrixPosition(mat)
+          .normalize()
+          .multiplyScalar(-40);
+
+        // @ts-ignore
+        api.at(i)?.applyForce([force.x, force.y, force.z], [0, 0, 0]);
+      } catch (e) {
+        // 忽略错误继续执行
+        continue;
+      }
     }
   });
   //@ts-ignore
@@ -127,7 +124,7 @@ function Clump({
       castShadow
       receiveShadow
       //@ts-ignore
-      args={[null, null, 25]}
+      args={[null, null, 40]}
       geometry={sphereGeometry}
       material={baubleMaterial}
       material-map={texture}
