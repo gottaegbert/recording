@@ -25,13 +25,15 @@ import MotionDrag from '@/components/demo/MotionDrag';
 import MotionNumber from '@/components/demo/MotionNumber';
 import MotionImageEntrance from '@/components/demo/MotionImageEntrance';
 import CursorBall from '@/components/demo/3D/CursorBall';
+import GradientBackground from '@/components/demo/Shader/ GradientBackgroud';
 
-export default function DashboardPage() {
+export default function workingonPage() {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const sidebar = useStore(useSidebar, (x) => x);
   if (!sidebar) return null;
   const { settings, setSettings } = sidebar;
   return (
-    <ContentLayout title="Dashboard">
+    <ContentLayout title="workingon">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -41,7 +43,7 @@ export default function DashboardPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Dashboard</BreadcrumbPage>
+            <BreadcrumbPage>WorkingOn</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -81,6 +83,7 @@ export default function DashboardPage() {
       </TooltipProvider>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full min-h-[calc(100vh-200px)]">
+        <GradientBackground />
         <MotionImageEntrance />
         <CursorBall />
         <MotionStagger />
