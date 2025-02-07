@@ -25,7 +25,7 @@ import MotionDrag from '@/components/demo/MotionDrag';
 import MotionNumber from '@/components/demo/MotionNumber';
 import MotionImageEntrance from '@/components/demo/MotionImageEntrance';
 import CursorBall from '@/components/demo/3D/CursorBall';
-import GradientBackground from '@/components/demo/Shader/ GradientBackgroud';
+import GradientBackground from '@/components/demo/Shader/GradientBackgroud';
 
 export default function workingonPage() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
