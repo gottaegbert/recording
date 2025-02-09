@@ -11,7 +11,6 @@ export default function GradientBackground({ tint }: GradientBackgroundProps) {
   useEffect(() => {
     const gradient = new Gradient();
     gradient.initGradient('#gradient-canvas');
-    // gradient.updateFrequency(0.00007)
   }, []);
 
   return (

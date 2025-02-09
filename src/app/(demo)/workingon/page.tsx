@@ -26,7 +26,7 @@ import MotionNumber from '@/components/demo/MotionNumber';
 import MotionImageEntrance from '@/components/demo/MotionImageEntrance';
 import CursorBall from '@/components/demo/3D/CursorBall';
 import GradientBackground from '@/components/demo/Shader/GradientBackgroud';
-
+import CircleShaderComponent from '@/components/demo/Shader/CircleShader';
 export default function workingonPage() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const sidebar = useStore(useSidebar, (x) => x);
@@ -83,6 +83,7 @@ export default function workingonPage() {
       </TooltipProvider>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full min-h-[calc(100vh-200px)]">
+        <CircleShaderComponent />
         <GradientBackground />
         <MotionImageEntrance />
         <CursorBall />
