@@ -86,11 +86,11 @@ export default function workingonPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full min-h-[calc(100vh-200px)]">
         <ToolbarSwitch />
-        {/* <FlowerShaderComponent />
+        <FlowerShaderComponent />
 
         <GradientBackground />
         <MotionImageEntrance />
-        <CursorBall /> */}
+        <CursorBall />
         <MotionStagger />
         <MotionList />
         <MotionDrag />
