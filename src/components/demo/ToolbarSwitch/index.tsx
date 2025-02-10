@@ -50,8 +50,8 @@ export default function ToolbarSwitch() {
                 {!isSearchVisible && !isProcessedlistVisible ? (
                   <motion.div
                     className="flex gap-24 w-full justify-center "
-                    initial={{ y: 60 }}
-                    animate={{ y: 0 }}
+                    initial={{ y: 60, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 60 }}
                     transition={{
                       duration: 0.3,
@@ -104,23 +104,11 @@ export default function ToolbarSwitch() {
                           <LayersIcon className="h-8 w-8" />
                         </MenubarTrigger>
                         <MenubarContent>
-                          <MenubarCheckboxItem>
-                            Always Show Bookmarks Bar
-                          </MenubarCheckboxItem>
                           <MenubarCheckboxItem checked>
-                            Always Show Full URLs
+                            单次加工
                           </MenubarCheckboxItem>
-                          <MenubarSeparator />
-                          <MenubarItem inset>
-                            Reload <MenubarShortcut>⌘R</MenubarShortcut>
-                          </MenubarItem>
-                          <MenubarItem disabled inset>
-                            Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
-                          </MenubarItem>
-                          <MenubarSeparator />
-                          <MenubarItem inset>Toggle Fullscreen</MenubarItem>
-                          <MenubarSeparator />
-                          <MenubarItem inset>Hide Sidebar</MenubarItem>
+                          <MenubarItem inset>单文件加工</MenubarItem>
+                          <MenubarItem inset>按列表加工</MenubarItem>
                         </MenubarContent>
                       </MenubarMenu>
 
@@ -134,17 +122,15 @@ export default function ToolbarSwitch() {
                           <BorderDottedIcon className="h-8 w-8" />
                         </MenubarTrigger>
                         <MenubarContent>
-                          <MenubarRadioGroup value="benoit">
-                            <MenubarRadioItem value="andy">
-                              全屏显示模式
-                            </MenubarRadioItem>
-                            <MenubarRadioItem value="benoit">
-                              常规显示模式
-                            </MenubarRadioItem>
-                            <MenubarRadioItem value="Luis">
-                              最小化显示模式
-                            </MenubarRadioItem>
-                          </MenubarRadioGroup>
+                          <MenubarCheckboxItem disabled>
+                            全屏显示模式
+                          </MenubarCheckboxItem>
+                          <MenubarCheckboxItem checked>
+                            常规显示模式
+                          </MenubarCheckboxItem>
+                          <MenubarCheckboxItem>
+                            最小化显示模式
+                          </MenubarCheckboxItem>
                           <MenubarSeparator />
                           <MenubarItem inset>导入后置顶</MenubarItem>
                         </MenubarContent>
@@ -154,8 +140,8 @@ export default function ToolbarSwitch() {
                 ) : isSearchVisible ? (
                   <motion.div
                     className="flex gap-6 w-full"
-                    initial={{ y: -60 }}
-                    animate={{ y: 0 }}
+                    initial={{ y: -60, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -60 }}
                     transition={{
                       duration: 0.3,
@@ -186,8 +172,8 @@ export default function ToolbarSwitch() {
                 ) : (
                   <motion.div
                     className="flex gap-6 h-full w-full"
-                    initial={{ y: -60 }}
-                    animate={{ y: 0 }}
+                    initial={{ y: -60, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -60 }}
                     transition={{
                       duration: 0.3,
@@ -200,7 +186,11 @@ export default function ToolbarSwitch() {
                       <div className="relative flex-12 text-white">
                         已加工列表/零件模式
                       </div>
-                      <Button variant="outline" onClick={toggleProcessedlist}>
+                      <Button
+                        className="text-white"
+                        variant="ghost"
+                        onClick={toggleProcessedlist}
+                      >
                         退出
                       </Button>
                       <div className="relative flex-4"></div>

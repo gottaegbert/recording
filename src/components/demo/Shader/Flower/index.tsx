@@ -6,12 +6,14 @@ class FlowerShader {
   private gl: WebGLRenderingContext | null;
   private program: WebGLProgram | null;
   private startTime: number;
+  private mouseX: number;
 
   constructor() {
     this.canvas = null;
     this.gl = null;
     this.program = null;
     this.startTime = Date.now();
+    this.mouseX = 0;
   }
 
   initShader(canvas: HTMLCanvasElement): void {
@@ -124,12 +126,16 @@ class FlowerShader {
     this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
-    const currentTime = (Date.now() - this.startTime) / 1000.0;
-    this.gl.uniform1f(timeLocation, currentTime);
+    this.gl.uniform1f(timeLocation, this.mouseX);
 
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
 
     requestAnimationFrame(() => this.render(timeLocation));
+  }
+
+  updateMousePosition(x: number): void {
+    if (!this.canvas) return;
+    this.mouseX = x / this.canvas.width;
   }
 }
 
@@ -144,6 +150,18 @@ export default function FlowerShaderComponent() {
 
       const flowerShader = new FlowerShader();
       flowerShader.initShader(canvas);
+
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        flowerShader.updateMousePosition(x * 5);
+      };
+
+      canvas.addEventListener('mousemove', handleMouseMove);
+
+      return () => {
+        canvas.removeEventListener('mousemove', handleMouseMove);
+      };
     }
   }, []);
 
