@@ -1,8 +1,8 @@
 export const perspective = {
   initial: {
-    opacity: 0,
     rotateX: 90,
-    translateY: 80,
+    opacity: 0,
+    translateY: 100,
     translateX: -20,
   },
   enter: (i) => ({
@@ -12,7 +12,7 @@ export const perspective = {
     translateX: 0,
     transition: {
       duration: 0.65,
-      delay: 0.5 + i * 0.1,
+      delay: 0.35 + i * 0.07,
       ease: [0.215, 0.61, 0.355, 1],
       opacity: { duration: 0.35 },
     },

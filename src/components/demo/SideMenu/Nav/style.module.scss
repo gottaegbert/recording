@@ -10,7 +10,8 @@
     gap: 10px;
     flex-direction: column;
     .linkContainer {
-      perspective: 120px;
+      // perspective: 1px;
+      perspective: 130px;
       perspective-origin: bottom;
     }
     a {

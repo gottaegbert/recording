@@ -1,5 +1,5 @@
 import styles from './style.module.scss';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { links, footerLinks } from './data';
 import { perspective, slideIn } from './anim';
 
