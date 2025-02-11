@@ -35,13 +35,13 @@ export default function DragConstraints() {
   };
 
   return (
-    <Card className="rounded-lg border-none mt-6">
+    <Card className="mt-6 rounded-lg border-none">
       <CardContent className="p-6">
         <Button variant="outline" onClick={handleDrag}>
           Drag
         </Button>
-        <div className="flex justify-center items-center min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)]">
-          <div className="flex flex-col relative">
+        <div className="flex min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)] items-center justify-center">
+          <div className="relative flex flex-col">
             <motion.div ref={constraintsRef} style={constraints}>
               <motion.div
                 drag="x"

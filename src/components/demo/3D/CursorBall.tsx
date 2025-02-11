@@ -41,11 +41,11 @@ const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
 
 export default function CursorBall() {
   return (
-    <Card className="rounded-lg border-none mt-6">
+    <Card className="mt-6 rounded-lg border-none">
       <CardContent className="p-0">
-        <div className="w-full h-[90vh]">
+        <div className="h-[90vh] w-full">
           <div
-            className="flex flex-col relative"
+            className="relative flex flex-col"
             style={{ aspectRatio: '9/16' }}
           >
             <Canvas
