@@ -4,8 +4,6 @@ import {
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
   MenubarSeparator,
   MenubarShortcut,
   MenubarSub,
@@ -21,6 +19,7 @@ import {
   LayersIcon,
   MagnifyingGlassIcon,
   MixerHorizontalIcon,
+  FileIcon,
 } from '@radix-ui/react-icons';
 import { useState } from 'react';
 
@@ -41,15 +40,19 @@ export default function ToolbarSwitch() {
   };
 
   return (
-    <Card className="rounded-lg border-none mt-6 overflow-hidden">
-      <CardContent className="flex justify-center items-center p-0 relative w-full h-full">
-        <div className="flex justify-center items-center min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)]">
-          <motion.div layout className="overflow-hidden  w-[500px]">
-            <Menubar className="relative flex w-full h-16 p-0 rounded-none ">
-              <AnimatePresence mode="popLayout">
+    <Card className="mt-6 overflow-hidden rounded-lg border-none">
+      <CardContent className="relative flex h-full w-full items-center justify-center p-0">
+        <div className="flex min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)] flex-col items-center justify-center">
+          <motion.div
+            layout
+            className="relative flex overflow-hidden"
+            key="main"
+          >
+            <Menubar className="flex h-16 w-[450px] rounded-none p-0">
+              <AnimatePresence mode="popLayout" initial={false}>
                 {!isSearchVisible && !isProcessedlistVisible ? (
                   <motion.div
-                    className="flex gap-24 w-full justify-center "
+                    className="flex w-full justify-between gap-24 p-2"
                     initial={{ y: 60, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 60 }}
@@ -139,7 +142,7 @@ export default function ToolbarSwitch() {
                   </motion.div>
                 ) : isSearchVisible ? (
                   <motion.div
-                    className="flex gap-6 w-full"
+                    className="flex w-full justify-between gap-24"
                     initial={{ y: -60, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -60 }}
@@ -150,17 +153,17 @@ export default function ToolbarSwitch() {
                     key="search-toolbar"
                     layout
                   >
-                    <div className="transition-all duration-300 ease-in-out w-full">
-                      <div className="flex w-full space-x-8 items-center justify-center">
-                        <div className="relative flex-12">
-                          <MagnifyingGlassIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-8 w-8" />
+                    <div>
+                      <div className="flex w-[450px] items-center justify-between p-2">
+                        <div className="flex-12 relative gap-24">
+                          <MagnifyingGlassIcon className="absolute left-2 top-1/2 h-8 w-8 -translate-y-1/2 transform" />
                           <Input
                             type="email"
                             placeholder="请输入搜索内容"
-                            className="pl-12"
+                            className="pl-24"
                           />
                         </div>
-                        <div className="relative flex-4">
+                        <div className="flex-4 relative">
                           <MixerHorizontalIcon className="h-8 w-8" />
                         </div>
                         <Button variant="outline" onClick={toggleSearch}>
@@ -171,7 +174,7 @@ export default function ToolbarSwitch() {
                   </motion.div>
                 ) : (
                   <motion.div
-                    className="flex gap-6 h-full w-full"
+                    className="flex h-full w-full justify-between gap-24"
                     initial={{ y: -60, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -60 }}
@@ -182,8 +185,8 @@ export default function ToolbarSwitch() {
                     key="processed-toolbar"
                     layout
                   >
-                    <div className="flex w-full space-x-20 items-center justify-center bg-blue-600">
-                      <div className="relative flex-12 text-white">
+                    <div className="flex w-[450px] items-center justify-between bg-blue-600 p-2">
+                      <div className="flex-12 relative text-white">
                         已加工列表/零件模式
                       </div>
                       <Button
@@ -193,13 +196,16 @@ export default function ToolbarSwitch() {
                       >
                         退出
                       </Button>
-                      <div className="relative flex-4"></div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </Menubar>
           </motion.div>
+          <div className="flex h-80 w-full items-center justify-center space-x-20 bg-blue-200 text-blue-600">
+            <FileIcon className="h-8 w-8" />
+            <div className="flex flex-col">File List</div>
+          </div>
         </div>
       </CardContent>
     </Card>
