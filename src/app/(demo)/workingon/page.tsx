@@ -29,6 +29,7 @@ import GradientBackground from '@/components/demo/Shader/GradientBackground';
 import CircleShaderComponent from '@/components/demo/Shader/CircleShader';
 import FlowerShaderComponent from '@/components/demo/Shader/Flower';
 import ToolbarSwitch from '@/components/demo/ToolbarSwitch';
+import SideMenu from '@/components/demo/SideMenu';
 export default function workingonPage() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const sidebar = useStore(useSidebar, (x) => x);
@@ -85,6 +86,7 @@ export default function workingonPage() {
       </TooltipProvider>
 
       <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <SideMenu />
         <ToolbarSwitch />
         <FlowerShaderComponent />
         <GradientBackground />
