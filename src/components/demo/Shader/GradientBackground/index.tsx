@@ -14,8 +14,8 @@ export default function GradientBackground({ tint }: GradientBackgroundProps) {
   }, []);
 
   return (
-    <Card className="rounded-lg border-none mt-6 overflow-hidden">
-      <CardContent className="p-0 relative h-full">
+    <Card className="mt-6 overflow-hidden rounded-lg border-none">
+      <CardContent className="relative h-full p-0">
         {/* 固定高度并添加 overflow-hidden */}
         <canvas
           id="gradient-canvas"

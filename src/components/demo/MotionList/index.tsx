@@ -6,9 +6,9 @@ import { Card, CardContent } from '@/components/ui/card';
 
 export default function MotionList() {
   return (
-    <Card className="rounded-lg border-none mt-6 overflow-hidden">
-      <CardContent className="p-0 relative h-full">
-        <main className="flex min-h-screen items-center justify-center ">
+    <Card className="mt-6 overflow-hidden rounded-lg border-none">
+      <CardContent className="relative h-full p-0">
+        <main className="flex min-h-screen items-center justify-center">
           <div className="h-[800px] w-full max-w-lg">
             <EmailComponent />
           </div>
@@ -50,27 +50,27 @@ const EmailComponent = () => {
   };
 
   return (
-    <div className="bg-background rounded-xl border-b-muted border-[1px]">
-      <div className="flex justify-between w-full border-b-muted border-b-[1px] p-4">
+    <div className="rounded-xl border-[1px] border-b-muted bg-background">
+      <div className="flex w-full justify-between border-b-[1px] border-b-muted p-4">
         <button
-          className="text-zinc-400 -mx-2 rounded px-2 py-1 hover:text-zinc-500"
+          className="-mx-2 rounded px-2 py-1 text-zinc-400 hover:text-zinc-500"
           onClick={addMessage}
         >
           Add
         </button>
         <button
-          className="text-zinc-400 -mx-2 rounded px-2 py-1 hover:text-zinc-500"
+          className="-mx-2 rounded px-2 py-1 text-zinc-400 hover:text-zinc-500"
           onClick={archiveMessages}
         >
           Archive
         </button>
       </div>
-      <div className="overflow-y-scroll px-3 py-2 max-h-[400px]">
+      <div className="max-h-[400px] overflow-y-scroll px-3 py-2">
         <ul>
           <AnimatePresence initial={false}>
             {messages.length == 0 && (
               <AnimatedListItem>
-                <h1 className="text-center font-semibold py-4">
+                <h1 className="py-4 text-center font-semibold">
                   You have no messages.
                 </h1>
               </AnimatedListItem>
@@ -80,7 +80,7 @@ const EmailComponent = () => {
                 <div className="py-0.5 transition">
                   <button
                     onClick={() => toggleMessage(message.id)}
-                    className={`flex flex-col w-full p-4 rounded-md transition-colors ${
+                    className={`flex w-full flex-col rounded-md p-4 transition-colors ${
                       selectedMessages.includes(message.id)
                         ? 'bg-main'
                         : 'bg-background'

@@ -50,7 +50,7 @@ export default function workingonPage() {
         </BreadcrumbList>
       </Breadcrumb>
       <TooltipProvider>
-        <div className="flex gap-6 mt-6">
+        <div className="mt-6 flex gap-6">
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center space-x-2">
@@ -84,7 +84,7 @@ export default function workingonPage() {
         </div>
       </TooltipProvider>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full min-h-[calc(100vh-200px)]">
+      <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <ToolbarSwitch />
         <FlowerShaderComponent />
         <GradientBackground />

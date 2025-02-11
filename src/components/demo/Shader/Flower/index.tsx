@@ -166,8 +166,8 @@ export default function FlowerShaderComponent() {
   }, []);
 
   return (
-    <Card className="rounded-lg border-none mt-6 overflow-hidden">
-      <CardContent className="p-0 relative w-full h-full">
+    <Card className="mt-6 overflow-hidden rounded-lg border-none">
+      <CardContent className="relative h-full w-full p-0">
         <canvas
           id="circle-canvas"
           style={{
