@@ -23,7 +23,7 @@ export function ModeToggle() {
           <Button
             className={cn(
               'mr-2 h-8 w-8 rounded-full bg-background',
-              'absolute right-0 top-full z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1',
+              'right-0 top-full z-50 min-w-[2rem] overflow-hidden rounded-md border bg-popover p-1',
             )}
             variant="outline"
             size="icon"

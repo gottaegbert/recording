@@ -38,8 +38,8 @@ export default function Button({ isActive, toggleMenu }: ButtonProps) {
 function PerspectiveText({ label }: { label: string }) {
   return (
     <div className={styles.perspectiveText}>
-      <p>{label}</p>
-      <p>{label}</p>
+      <p className="text-black">{label}</p>
+      <p className="text-black">{label}</p>
     </div>
   );
 }

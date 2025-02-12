@@ -35,6 +35,7 @@ export default function index() {
               animate="enter"
               exit="exit"
               key={`f_${i}`}
+              className="text-black"
             >
               {title}
             </motion.a>

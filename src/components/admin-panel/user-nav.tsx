@@ -46,18 +46,20 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Siyu Hu</p>
+            <p className="text-xs font-medium leading-none">Contact</p>
+            <DropdownMenuSeparator />
+            <p className="text-lg font-medium">Siyu Hu</p>
             <p className="text-xs leading-none text-muted-foreground">
               gottaegbert@outlook.com
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link href="/workingon" className="flex items-center">
               <LayoutGrid className="mr-3 h-4 w-4 text-muted-foreground" />
-              workingon
+              WorkingOn
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
@@ -71,7 +73,7 @@ export function UserNav() {
         <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
           <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />
           Sign out
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -65,7 +65,7 @@ const EmailComponent = () => {
           Archive
         </button>
       </div>
-      <div className="max-h-[400px] overflow-y-scroll px-3 py-2">
+      <div className="custom-scrollbar max-h-[400px] overflow-y-auto px-3 py-2">
         <ul>
           <AnimatePresence initial={false}>
             {messages.length == 0 && (
