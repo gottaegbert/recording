@@ -37,7 +37,7 @@ export default function DragConstraints() {
   return (
     <Card className="mt-6 rounded-lg border-none">
       <CardContent className="p-6">
-        <Button variant="outline" onClick={handleDrag}>
+        <Button variant="outline" size="sm" onClick={handleDrag}>
           Drag
         </Button>
         <div className="flex min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)] items-center justify-center">

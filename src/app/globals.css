@@ -99,5 +99,5 @@
 
 .custom-scrollbar {
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #78787843 transparent; /* Firefox */
+  scrollbar-color: var(--tsecondary) transparent; /* Firefox */
 }

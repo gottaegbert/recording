@@ -62,7 +62,7 @@ export function Menu({ isOpen }: MenuProps) {
                                 (active === undefined &&
                                   pathname.startsWith(href)) ||
                                 active
-                                  ? 'secondary'
+                                  ? 'outline'
                                   : 'ghost'
                               }
                               className="mb-1 h-10 w-full justify-start"

@@ -1,4 +1,5 @@
-import { SquarePen, LayoutGrid, LucideIcon } from 'lucide-react';
+import { SquarePen, LayoutGrid } from 'lucide-react';
+import { LightningBoltIcon, ShadowIcon } from '@radix-ui/react-icons';
 
 type Submenu = {
   href: string;
@@ -10,7 +11,7 @@ type Menu = {
   href: string;
   label: string;
   active?: boolean;
-  icon: LucideIcon;
+  icon: any;
   submenus?: Submenu[];
 };
 
@@ -30,26 +31,38 @@ export function getMenuList(pathname: string): Group[] {
           icon: LayoutGrid,
           submenus: [],
         },
+        {
+          href: '/effect',
+          label: 'Effect（3D/Shader）',
+          icon: ShadowIcon,
+          submenus: [],
+        },
+        {
+          href: '/motion',
+          label: 'Motion',
+          icon: LightningBoltIcon,
+          submenus: [],
+        },
       ],
     },
     {
       groupLabel: 'Contents',
       menus: [
-        // {
-        //   href: '',
-        //   label: 'Posts',
-        //   icon: SquarePen,
-        //   submenus: [
-        //     {
-        //       href: '/posts',
-        //       label: 'All Posts',
-        //     },
-        //     {
-        //       href: '/posts/new',
-        //       label: 'New Post',
-        //     },
-        //   ],
-        // },
+        {
+          href: '',
+          label: 'Posts',
+          icon: SquarePen,
+          submenus: [
+            {
+              href: '/posts',
+              label: 'All Posts',
+            },
+            {
+              href: '/posts/new',
+              label: 'New Post',
+            },
+          ],
+        },
         // {
         //   href: '/categories',
         //   label: 'Categories',

@@ -35,10 +35,10 @@ export default function MotionImageEntrance() {
   return (
     <Card className="mt-6 rounded-lg border-none">
       <CardContent className="p-6">
-        <Button variant="outline" onClick={randomizeCount}>
+        <Button variant="outline" size="sm" onClick={randomizeCount}>
           Random Rect Number
         </Button>
-        <Button variant="outline" onClick={randomizeRotation}>
+        <Button variant="outline" size="sm" onClick={randomizeRotation}>
           Random Rect Angle
         </Button>
         <div className="flex min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)] flex-col items-center justify-center">
