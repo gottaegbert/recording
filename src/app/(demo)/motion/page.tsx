@@ -85,11 +85,11 @@ export default function MotionPage() {
       <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <SideMenu />
         <ToolbarSwitch />
-        <MotionImageEntrance />
-        <MotionStagger />
         <MotionList />
+        <MotionStagger />
         <MotionDrag />
         <MotionNumber />
+        <MotionImageEntrance />
       </div>
     </ContentLayout>
   );
