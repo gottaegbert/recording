@@ -33,7 +33,7 @@ export default function MotionPage() {
   if (!sidebar) return null;
   const { settings, setSettings } = sidebar;
   return (
-    <ContentLayout title="workingon">
+    <ContentLayout title="Posts">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -43,11 +43,11 @@ export default function MotionPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>WorkingOn</BreadcrumbPage>
+            <BreadcrumbPage>Motion</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <TooltipProvider>
+      {/* <TooltipProvider>
         <div className="mt-6 flex gap-6">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -80,14 +80,12 @@ export default function MotionPage() {
             </TooltipContent>
           </Tooltip>
         </div>
-      </TooltipProvider>
+      </TooltipProvider> */}
 
       <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <SideMenu />
         <ToolbarSwitch />
-
         <MotionImageEntrance />
-
         <MotionStagger />
         <MotionList />
         <MotionDrag />

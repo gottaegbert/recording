@@ -18,8 +18,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { useSidebar } from '@/hooks/use-sidebar';
+import { useStore } from '@/hooks/use-store';
 
 export function UserNav() {
+  const sidebar = useStore(useSidebar, (x) => x);
+  if (!sidebar) return null;
+  const { settings, setSettings } = sidebar;
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
@@ -52,6 +59,42 @@ export function UserNav() {
             </p>
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <TooltipProvider>
+          <div className="mb-8 mt-8 flex justify-center gap-6">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is-hover-open"
+                    onCheckedChange={(x) => setSettings({ isHoverOpen: x })}
+                    checked={settings.isHoverOpen}
+                  />
+                  <Label htmlFor="is-hover-open">Hover Open</Label>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>When hovering on the sidebar in mini state, it will open</p>
+              </TooltipContent>
+            </Tooltip>
+            {/* <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="disable-sidebar"
+                    onCheckedChange={(x) => setSettings({ disabled: x })}
+                    checked={settings.disabled}
+                  />
+                  <Label htmlFor="disable-sidebar">Disable Sidebar</Label>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Hide sidebar</p>
+              </TooltipContent>
+            </Tooltip> */}
+          </div>
+        </TooltipProvider>
+
         {/* <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>

@@ -1,6 +1,10 @@
-# [shadcn/ui sidebar](https://shadcn-ui-sidebar.salimi.my) &middot; [![Author Salimi](https://img.shields.io/badge/Author-Salimi-%3C%3E)](https://www.salimi.my)
+# ?3 Collection
 
-A stunning and functional retractable sidebar for Next.js built on top of [shadcn/ui](https://ui.shadcn.com) complete with desktop and mobile responsiveness.
+Fork From [shadcn/ui sidebar](https://shadcn-ui-sidebar.salimi.my)
+
+Here are my collections and practice of 3d/motion/UI
+
+## >
 
 ## Features
 
@@ -34,9 +38,10 @@ npx shadcn@latest add https://shadcn-ui-sidebar.salimi.my/registry/shadcn-sideba
 ```
 
 ### Usage example for Nextjs
+
 ```tsx
 //layout.tsx
-import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
+import AdminPanelLayout from '@/components/admin-panel/admin-panel-layout';
 
 export default async function Layout({
   children,
@@ -47,7 +52,7 @@ export default async function Layout({
 }
 
 //page.tsx
-import { ContentLayout } from "@/components/admin-panel/content-layout";
+import { ContentLayout } from '@/components/admin-panel/content-layout';
 
 export default function Page() {
   return (
@@ -82,7 +87,7 @@ export default function Page() {
 ## Demo
 
 The app is hosted on Vercel. [Click here](https://shadcn-ui-sidebar.salimi.my) to visit.
-<br>
+`<br>`
 Direct demo link: `https://shadcn-ui-sidebar.salimi.my`
 
 ## Screenshots
