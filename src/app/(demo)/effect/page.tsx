@@ -18,7 +18,7 @@ import GradientBackground from '@/components/demo/Shader/GradientBackground';
 import CircleShaderComponent from '@/components/demo/Shader/CircleShader';
 import FlowerShaderComponent from '@/components/demo/Shader/Flower';
 import MotionWrapper from '@/components/transition/motion-wrapper';
-
+import DynamicImageTransition from '@/components/demo/Shader/DynamicImagetransition';
 export default function EffectPage() {
   const sidebar = useStore(useSidebar, (x) => x);
   if (!sidebar) return null;
@@ -41,10 +41,10 @@ export default function EffectPage() {
         </Breadcrumb>
 
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <CursorBall />
-          <FlowerShaderComponent />
+          <DynamicImageTransition />
           <GradientBackground />
-          <CircleShaderComponent />
+          <FlowerShaderComponent />
+          <CursorBall />
         </div>
       </ContentLayout>
     </MotionWrapper>
