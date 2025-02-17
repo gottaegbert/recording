@@ -12,6 +12,8 @@ import {
 
 import SideMenu from '@/components/demo/SideMenu';
 import { motion } from 'motion/react';
+import CircleShaderComponent from '@/components/demo/Shader/CircleShader';
+import ImageShaderComponent from '@/components/demo/Shader/DynamicImagetransition';
 
 export default function WorkingOnPage() {
   return (
@@ -43,6 +45,7 @@ export default function WorkingOnPage() {
 
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <SideMenu />
+          <ImageShaderComponent />
         </div>
       </ContentLayout>
     </motion.div>
