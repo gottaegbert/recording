@@ -188,7 +188,7 @@ export default function WireframeCubeShaderComponent({
   const shaderVersion = useShaderHotReload();
   const shaderInstanceRef = useRef<WireframeCubeShader | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [expandValue, setExpandValue] = useState(0);
   const expandAnimationRef = useRef<number | null>(null);
 
@@ -202,7 +202,7 @@ export default function WireframeCubeShaderComponent({
     const targetValue = isExpanded ? 1 : 0;
     const startValue = expandValue;
     const startTime = Date.now();
-    const duration = 800; // 动画持续时间（毫秒）
+    const duration = 1000; // 动画持续时间（毫秒）
 
     // 动画函数
     const animate = () => {

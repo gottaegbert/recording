@@ -63,9 +63,9 @@ export const fragmentShaderSource = `
           
           // 添加旋转（只有当展开时才完全旋转）
           float rotFactor = uExpand;
-          verts[i] = rotatey(verts[i], 0.3 * time * rotFactor);
+          verts[i] = rotatey(verts[i], 0.1 * time * rotFactor);
           verts[i] = rotatex(verts[i], 0.2 * time * rotFactor);
-          verts[i] = rotatez(verts[i], 0.1 * time * rotFactor);
+          verts[i] = rotatez(verts[i], 0.3 * time * rotFactor);
           
           // 计算投影
           float dist = -100.0;

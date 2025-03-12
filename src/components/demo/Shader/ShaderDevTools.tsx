@@ -45,10 +45,7 @@ export function ShaderDevTools({
         fontSize: '12px',
       }}
     >
-      <Button
-        onClick={handleReload}
-        className="rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
-      >
+      <Button onClick={handleReload} className="rounded">
         Reload Shader
       </Button>
       {/* 
@@ -62,8 +59,10 @@ export function ShaderDevTools({
       )} */}
 
       {lastModified && (
-        <div className="text-xs text-gray-300">
-          Last reload: {lastModified.toLocaleTimeString()}
+        <div className="text-sm text-gray-300">
+          Last reload:
+          <br />
+          {lastModified.toLocaleTimeString()}
         </div>
       )}
     </div>
