@@ -12,9 +12,11 @@ import {
 
 import SideMenu from '@/components/demo/SideMenu';
 import { motion } from 'motion/react';
-import CircleShaderComponent from '@/components/demo/Shader/CircleShader';
+import CircleShaderComponent from '@/components/demo/Shader/CircleShader/index';
 import ImageShaderComponent from '@/components/demo/Shader/DynamicImagetransition';
 import LaserCutShaderComponent from '@/components/demo/Shader/LaserCut';
+import WireframeCubeShaderComponent from '@/components/demo/Shader/WireframeCube';
+
 export default function WorkingOnPage() {
   return (
     <motion.div
@@ -47,6 +49,7 @@ export default function WorkingOnPage() {
           {/* <SideMenu />
           <ImageShaderComponent /> */}
           <LaserCutShaderComponent />
+          <WireframeCubeShaderComponent />
         </div>
       </ContentLayout>
     </motion.div>

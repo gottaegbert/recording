@@ -15,7 +15,7 @@ import { useStore } from '@/hooks/use-store';
 
 import CursorBall from '@/components/demo/3D/CursorBall';
 import GradientBackground from '@/components/demo/Shader/GradientBackground';
-import CircleShaderComponent from '@/components/demo/Shader/CircleShader';
+import CircleShaderComponent from '@/components/demo/Shader/CircleShader/index';
 import FlowerShaderComponent from '@/components/demo/Shader/Flower';
 import MotionWrapper from '@/components/transition/motion-wrapper';
 import DynamicImageTransition from '@/components/demo/Shader/DynamicImagetransition';

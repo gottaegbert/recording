@@ -1,39 +1,40 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { vertexShaderSource, fragmentShaderSource } from './shaders';
-import {
-  useShaderHotReload,
-  triggerShaderReload,
-} from '@/utils/shaderHotReload';
+import { useShaderHotReload } from '@/utils/shaderHotReload';
 import { ShaderDevTools } from '../ShaderDevTools';
+import { Button } from '@/components/ui/button';
 
-class LaserCutShader {
+class WireframeCubeShader {
   private canvas: HTMLCanvasElement | null;
   private gl: WebGLRenderingContext | null;
   private program: WebGLProgram | null;
   private startTime: number;
-  private mouseX: number;
-  private mouseY: number;
   private animationFrameId: number | null;
+  private expandLocation: WebGLUniformLocation | null;
+  private expandValue: number;
 
   constructor() {
     this.canvas = null;
     this.gl = null;
     this.program = null;
     this.startTime = Date.now();
-    this.mouseX = 0;
-    this.mouseY = 0;
     this.animationFrameId = null;
+    this.expandLocation = null;
+    this.expandValue = 0; // 默认为折叠状态
   }
 
   initShader(
     canvas: HTMLCanvasElement,
     vertexSrc: string,
     fragmentSrc: string,
+    initialExpand: number = 0,
   ): void {
     this.canvas = canvas;
+    this.expandValue = initialExpand;
+
     const gl = canvas.getContext('webgl', {
       alpha: true,
       premultipliedAlpha: false,
@@ -70,13 +71,19 @@ class LaserCutShader {
     gl.enableVertexAttribArray(position);
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
 
-    const resolution = gl.getUniformLocation(program, 'iResolution');
-    gl.uniform2f(resolution, canvas.width, canvas.height);
+    // Set resolution uniform
+    const resolutionLocation = gl.getUniformLocation(program, 'iResolution');
+    gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
 
+    // Get expand uniform location
+    this.expandLocation = gl.getUniformLocation(program, 'uExpand');
+    gl.uniform1f(this.expandLocation, this.expandValue);
+
+    // Get time uniform location
     const timeLocation = gl.getUniformLocation(program, 'iTime');
-    if (timeLocation !== null && resolution !== null) {
+    if (timeLocation !== null && resolutionLocation !== null) {
       this.startTime = Date.now();
-      this.render(timeLocation, resolution);
+      this.render(timeLocation, resolutionLocation);
     }
   }
 
@@ -110,6 +117,11 @@ class LaserCutShader {
     const currentTime = (Date.now() - this.startTime) / 1000;
     this.gl.uniform1f(timeLocation, currentTime);
 
+    // Update expansion value
+    if (this.expandLocation !== null) {
+      this.gl.uniform1f(this.expandLocation, this.expandValue);
+    }
+
     // Update resolution if canvas size changes
     this.gl.uniform2f(
       resolutionLocation,
@@ -124,17 +136,34 @@ class LaserCutShader {
     );
   }
 
-  updateMousePosition(x: number, y: number): void {
-    if (!this.canvas) return;
-    this.mouseX = x / this.canvas.width;
-    this.mouseY = y / this.canvas.height;
-  }
-
   resize(): void {
-    if (!this.canvas || !this.gl) return;
+    if (!this.canvas || !this.gl || !this.program) return;
+
     this.canvas.width = this.canvas.offsetWidth;
     this.canvas.height = this.canvas.offsetHeight;
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+
+    // Update resolution uniform
+    const resolutionLocation = this.gl.getUniformLocation(
+      this.program,
+      'iResolution',
+    );
+    if (resolutionLocation) {
+      this.gl.uniform2f(
+        resolutionLocation,
+        this.canvas.width,
+        this.canvas.height,
+      );
+    }
+  }
+
+  // 更新展开值（0-1之间）
+  updateExpand(value: number): void {
+    this.expandValue = Math.max(0, Math.min(1, value)); // 确保在0-1范围内
+    if (this.gl && this.program && this.expandLocation !== null) {
+      this.gl.useProgram(this.program);
+      this.gl.uniform1f(this.expandLocation, this.expandValue);
+    }
   }
 
   cleanup(): void {
@@ -149,16 +178,71 @@ class LaserCutShader {
   }
 }
 
-export default function LaserCutShaderComponent() {
-  // Use shader hot reload hook instead of manual state
-  const shaderVersion = useShaderHotReload();
-  const shaderInstanceRef = useRef<LaserCutShader | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+interface WireframeCubeShaderProps {
+  className?: string;
+}
 
-  // Initialize shader
+export default function WireframeCubeShaderComponent({
+  className,
+}: WireframeCubeShaderProps) {
+  const shaderVersion = useShaderHotReload();
+  const shaderInstanceRef = useRef<WireframeCubeShader | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [expandValue, setExpandValue] = useState(0);
+  const expandAnimationRef = useRef<number | null>(null);
+
+  // 处理动画过渡
+  useEffect(() => {
+    // 清除之前的动画
+    if (expandAnimationRef.current !== null) {
+      cancelAnimationFrame(expandAnimationRef.current);
+    }
+
+    const targetValue = isExpanded ? 1 : 0;
+    const startValue = expandValue;
+    const startTime = Date.now();
+    const duration = 800; // 动画持续时间（毫秒）
+
+    // 动画函数
+    const animate = () => {
+      const now = Date.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // 使用easeInOutCubic缓动函数使动画更自然
+      const easeInOutCubic = (t: number) => {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      };
+
+      const newValue =
+        startValue + (targetValue - startValue) * easeInOutCubic(progress);
+      setExpandValue(newValue);
+
+      // 更新shader中的展开值
+      if (shaderInstanceRef.current) {
+        shaderInstanceRef.current.updateExpand(newValue);
+      }
+
+      if (progress < 1) {
+        expandAnimationRef.current = requestAnimationFrame(animate);
+      } else {
+        expandAnimationRef.current = null;
+      }
+    };
+
+    expandAnimationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (expandAnimationRef.current !== null) {
+        cancelAnimationFrame(expandAnimationRef.current);
+      }
+    };
+  }, [isExpanded]);
+
   useEffect(() => {
     const canvas = document.getElementById(
-      'laser-cut-canvas',
+      'wireframe-cube-canvas',
     ) as HTMLCanvasElement;
     canvasRef.current = canvas;
 
@@ -171,75 +255,79 @@ export default function LaserCutShaderComponent() {
         shaderInstanceRef.current.cleanup();
       }
 
-      const laserCutShader = new LaserCutShader();
-      shaderInstanceRef.current = laserCutShader;
+      const wireframeCubeShader = new WireframeCubeShader();
+      shaderInstanceRef.current = wireframeCubeShader;
 
       try {
-        laserCutShader.initShader(
+        wireframeCubeShader.initShader(
           canvas,
           vertexShaderSource,
           fragmentShaderSource,
+          expandValue,
         );
-        console.log('✅ Shader initialized successfully');
+        console.log('✅ Wireframe cube shader initialized successfully');
       } catch (error) {
-        console.error('❌ Failed to initialize shader:', error);
+        console.error('❌ Failed to initialize wireframe cube shader:', error);
       }
 
-      const handleMouseMove = (e: MouseEvent) => {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        laserCutShader.updateMousePosition(x, y);
-      };
-
       const handleResize = () => {
-        laserCutShader.resize();
+        wireframeCubeShader.resize();
       };
 
       window.addEventListener('resize', handleResize);
-      canvas.addEventListener('mousemove', handleMouseMove);
 
       return () => {
         window.removeEventListener('resize', handleResize);
-        canvas.removeEventListener('mousemove', handleMouseMove);
-        laserCutShader.cleanup();
+        wireframeCubeShader.cleanup();
       };
     }
   }, [shaderVersion]); // Re-initialize when shader version changes
 
+  // 切换展开/折叠状态
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   // Helper to open the shader file in editor
   const openShaderInEditor = () => {
-    // This uses the Cursor built-in capabilities if available
-    // Or falls back to a console message
     if (typeof window !== 'undefined') {
       if (
         'cursor' in window &&
         typeof (window as any).cursor?.openFile === 'function'
       ) {
         (window as any).cursor.openFile(
-          './src/components/demo/Shader/LaserCut/shaders.ts',
+          './src/components/demo/Shader/WireframeCube/shaders.ts',
         );
       } else {
         console.log(
-          '📂 To edit the shader, open: src/components/demo/Shader/LaserCut/shaders.ts',
+          '📂 To edit the shader, open: src/components/demo/Shader/WireframeCube/shaders.ts',
         );
       }
     }
   };
 
   return (
-    <Card className="mt-6 overflow-hidden rounded-lg border-none">
+    <Card
+      className={`mt-6 overflow-hidden rounded-lg border-none ${className || ''}`}
+    >
       <CardContent className="relative h-full w-full p-0">
         <canvas
-          id="laser-cut-canvas"
+          id="wireframe-cube-canvas"
           style={{
             position: 'absolute',
             top: 0,
             left: 0,
             width: '100%',
             height: '100%',
+            background: 'rgba(0, 0, 0, 0.9)', // 深色背景使线框更加突出
           }}
         />
+
+        {/* 控制按钮 */}
+        <Button onClick={toggleExpand} className="absolute left-2 top-2 z-10">
+          {isExpanded ? 'Close' : 'Expand'}
+        </Button>
+
         <ShaderDevTools
           position="bottom-right"
           onOpenEditor={openShaderInEditor}

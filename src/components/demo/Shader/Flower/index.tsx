@@ -1,5 +1,10 @@
-import { useEffect } from 'react';
+'use client';
+
+import { useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { vertexShaderSource, fragmentShaderSource } from './shaders';
+import { useShaderHotReload } from '@/utils/shaderHotReload';
+import { ShaderDevTools } from '../ShaderDevTools';
 
 class FlowerShader {
   private canvas: HTMLCanvasElement | null;
@@ -7,6 +12,7 @@ class FlowerShader {
   private program: WebGLProgram | null;
   private startTime: number;
   private mouseX: number;
+  private animationFrameId: number | null;
 
   constructor() {
     this.canvas = null;
@@ -14,9 +20,14 @@ class FlowerShader {
     this.program = null;
     this.startTime = Date.now();
     this.mouseX = 0;
+    this.animationFrameId = null;
   }
 
-  initShader(canvas: HTMLCanvasElement): void {
+  initShader(
+    canvas: HTMLCanvasElement,
+    vertexSrc: string,
+    fragmentSrc: string,
+  ): void {
     this.canvas = canvas;
     const gl = canvas.getContext('webgl', {
       alpha: true,
@@ -28,46 +39,8 @@ class FlowerShader {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    const vertexShader = this.createShader(
-      gl.VERTEX_SHADER,
-      `
-      attribute vec2 position;
-      void main() {
-        gl_Position = vec4(position, 0.0, 1.0);
-      }
-    `,
-    );
-
-    const fragmentShader = this.createShader(
-      gl.FRAGMENT_SHADER,
-      `
-      #ifdef GL_ES
-      precision mediump float;
-      #endif
-
-      uniform vec2 u_resolution;
-      uniform vec2 u_mouse;
-      uniform float u_time;
-
-      void main() {
-          vec2 st = gl_FragCoord.xy / u_resolution.xy;
-          vec3 color = vec3(0.0);
-
-          vec2 pos = vec2(0.5) - st;
-
-          float r = length(pos) * 2.0;
-          float a = atan(pos.y, pos.x);
-
-          float f = abs(cos(a * (3.0 + sin(u_time) * 2.0)));
-          f = abs(cos(a * (2.5 + sin(u_time) * 2.0))) * 0.5 + 0.3;
-
-          color = vec3(1.0 - smoothstep(f, f + 0.02, r));
-          gl_FragColor = vec4(color, 1.0);
-      }
-    `,
-    );
-
-    // 默认花的颜色
+    const vertexShader = this.createShader(gl.VERTEX_SHADER, vertexSrc);
+    const fragmentShader = this.createShader(gl.FRAGMENT_SHADER, fragmentSrc);
 
     if (!vertexShader || !fragmentShader) return;
 
@@ -97,6 +70,7 @@ class FlowerShader {
 
     const mouse = gl.getUniformLocation(program, 'u_mouse');
     gl.uniform2f(mouse, 0.5, 0.5);
+
     const timeLocation = gl.getUniformLocation(program, 'u_time');
     if (timeLocation !== null) {
       this.render(timeLocation);
@@ -130,26 +104,69 @@ class FlowerShader {
 
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
 
-    requestAnimationFrame(() => this.render(timeLocation));
+    this.animationFrameId = requestAnimationFrame(() =>
+      this.render(timeLocation),
+    );
   }
 
   updateMousePosition(x: number): void {
     if (!this.canvas) return;
     this.mouseX = x / this.canvas.width;
   }
+
+  resize(): void {
+    if (!this.canvas || !this.gl) return;
+    this.canvas.width = this.canvas.offsetWidth;
+    this.canvas.height = this.canvas.offsetHeight;
+    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  cleanup(): void {
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
+
+    if (this.gl && this.program) {
+      this.gl.deleteProgram(this.program);
+      this.program = null;
+    }
+  }
 }
 
 export default function FlowerShaderComponent() {
+  // Use shader hot reload hook
+  const shaderVersion = useShaderHotReload();
+  const shaderInstanceRef = useRef<FlowerShader | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
   useEffect(() => {
     const canvas = document.getElementById(
       'circle-canvas',
     ) as HTMLCanvasElement;
+    canvasRef.current = canvas;
+
     if (canvas) {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
 
+      // Clean up previous shader instance if exists
+      if (shaderInstanceRef.current) {
+        shaderInstanceRef.current.cleanup();
+      }
+
       const flowerShader = new FlowerShader();
-      flowerShader.initShader(canvas);
+      shaderInstanceRef.current = flowerShader;
+
+      try {
+        flowerShader.initShader(
+          canvas,
+          vertexShaderSource,
+          fragmentShaderSource,
+        );
+        console.log('✅ Flower shader initialized successfully');
+      } catch (error) {
+        console.error('❌ Failed to initialize flower shader:', error);
+      }
 
       const handleMouseMove = (e: MouseEvent) => {
         const rect = canvas.getBoundingClientRect();
@@ -157,13 +174,38 @@ export default function FlowerShaderComponent() {
         flowerShader.updateMousePosition(x * 5);
       };
 
+      const handleResize = () => {
+        flowerShader.resize();
+      };
+
+      window.addEventListener('resize', handleResize);
       canvas.addEventListener('mousemove', handleMouseMove);
 
       return () => {
+        window.removeEventListener('resize', handleResize);
         canvas.removeEventListener('mousemove', handleMouseMove);
+        flowerShader.cleanup();
       };
     }
-  }, []);
+  }, [shaderVersion]); // Re-initialize when shader version changes
+
+  // Helper to open the shader file in editor
+  const openShaderInEditor = () => {
+    if (typeof window !== 'undefined') {
+      if (
+        'cursor' in window &&
+        typeof (window as any).cursor?.openFile === 'function'
+      ) {
+        (window as any).cursor.openFile(
+          './src/components/demo/Shader/Flower/shaders.ts',
+        );
+      } else {
+        console.log(
+          '📂 To edit the shader, open: src/components/demo/Shader/Flower/shaders.ts',
+        );
+      }
+    }
+  };
 
   return (
     <Card className="mt-6 overflow-hidden rounded-lg border-none">
@@ -177,6 +219,10 @@ export default function FlowerShaderComponent() {
             width: '100%',
             height: '100%',
           }}
+        />
+        <ShaderDevTools
+          position="bottom-right"
+          onOpenEditor={openShaderInEditor}
         />
       </CardContent>
     </Card>
