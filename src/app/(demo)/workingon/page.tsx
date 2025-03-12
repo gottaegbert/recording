@@ -14,7 +14,7 @@ import SideMenu from '@/components/demo/SideMenu';
 import { motion } from 'motion/react';
 import CircleShaderComponent from '@/components/demo/Shader/CircleShader';
 import ImageShaderComponent from '@/components/demo/Shader/DynamicImagetransition';
-
+import LaserCutShaderComponent from '@/components/demo/Shader/LaserCut';
 export default function WorkingOnPage() {
   return (
     <motion.div
@@ -44,8 +44,9 @@ export default function WorkingOnPage() {
         </Breadcrumb>
 
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <SideMenu />
-          <ImageShaderComponent />
+          {/* <SideMenu />
+          <ImageShaderComponent /> */}
+          <LaserCutShaderComponent />
         </div>
       </ContentLayout>
     </motion.div>
