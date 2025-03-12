@@ -12,10 +12,10 @@ import {
 
 import SideMenu from '@/components/demo/SideMenu';
 import { motion } from 'motion/react';
-import CircleShaderComponent from '@/components/demo/Shader/CircleShader/index';
-import ImageShaderComponent from '@/components/demo/Shader/DynamicImagetransition';
+// import ImageShaderComponent from '@/components/demo/Shader/DynamicImagetransition';
 import LaserCutShaderComponent from '@/components/demo/Shader/LaserCut';
 import WireframeCubeShaderComponent from '@/components/demo/Shader/WireframeCube';
+import LaserBorderShaderComponent from '@/components/demo/Shader/LaserBorder';
 
 export default function WorkingOnPage() {
   return (
@@ -50,6 +50,7 @@ export default function WorkingOnPage() {
           <ImageShaderComponent /> */}
           <LaserCutShaderComponent />
           <WireframeCubeShaderComponent />
+          <LaserBorderShaderComponent />
         </div>
       </ContentLayout>
     </motion.div>
