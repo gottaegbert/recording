@@ -286,7 +286,7 @@ export default function LaserBorderShaderComponent({
             size="sm"
             onClick={() => setShowControls(!showControls)}
           >
-            {showControls ? '隐藏控制' : '显示控制'}
+            {showControls ? 'Hide Control' : 'Show Control'}
           </Button>
         </div>
 
@@ -295,7 +295,7 @@ export default function LaserBorderShaderComponent({
             <div className="space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label>动画速度: {speedFactor.toFixed(1)}x</Label>
+                  <Label>Animation Speed: {speedFactor.toFixed(1)}x</Label>
                   <div className="flex space-x-2">
                     <Button
                       variant="outline"
@@ -321,7 +321,7 @@ export default function LaserBorderShaderComponent({
                   checked={colorCycle}
                   onCheckedChange={setColorCycle}
                 />
-                <Label htmlFor="color-cycle">颜色循环</Label>
+                <Label htmlFor="color-cycle">Color Cycle</Label>
               </div>
             </div>
           </div>
