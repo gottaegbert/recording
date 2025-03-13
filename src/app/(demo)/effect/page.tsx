@@ -18,6 +18,10 @@ import GradientBackground from '@/components/demo/Shader/GradientBackground';
 import FlowerShaderComponent from '@/components/demo/Shader/Flower';
 import MotionWrapper from '@/components/transition/motion-wrapper';
 import DynamicImageTransition from '@/components/demo/Shader/DynamicImagetransition';
+import LaserBorderShaderComponent from '@/components/demo/Shader/LaserBorder';
+import LaserLoadingShaderComponent from '@/components/demo/Shader/LaserLoading';
+import WireframeCubeShaderComponent from '@/components/demo/Shader/WireframeCube';
+import LaserCutShaderComponent from '@/components/demo/Shader/LaserCut';
 export default function EffectPage() {
   const sidebar = useStore(useSidebar, (x) => x);
   if (!sidebar) return null;
@@ -40,6 +44,10 @@ export default function EffectPage() {
         </Breadcrumb>
 
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <LaserCutShaderComponent />
+          <WireframeCubeShaderComponent />
+          <LaserBorderShaderComponent />
+          <LaserLoadingShaderComponent />
           <DynamicImageTransition />
           <GradientBackground />
           <FlowerShaderComponent />

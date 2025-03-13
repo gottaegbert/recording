@@ -1,11 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { vertexShaderSource, fragmentShaderSource } from './shaders';
 import { useShaderHotReload } from '@/utils/shaderHotReload';
 import { ShaderDevTools } from '../ShaderDevTools';
 import { Button } from '@/components/ui/button';
+import { FullscreenButton } from '../FullscreenButton';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import {
+  ShaderCard,
+  ShaderCanvas,
+  ShaderControls,
+  ShaderControlPanel,
+} from '../ShaderStyles';
 
 class WireframeCubeShader {
   private canvas: HTMLCanvasElement | null;
@@ -191,6 +199,19 @@ export default function WireframeCubeShaderComponent({
   const [isExpanded, setIsExpanded] = useState(true);
   const [expandValue, setExpandValue] = useState(0);
   const expandAnimationRef = useRef<number | null>(null);
+  const [speedFactor, setSpeedFactor] = useState(1.0);
+  const [isAnimating, setIsAnimating] = useState(true);
+  const [showControls, setShowControls] = useState(false);
+  const containerId = 'wireframe-cube-container';
+  const canvasId = 'wireframe-cube-canvas';
+
+  // 调整动画速度
+  const adjustSpeed = (delta: number) => {
+    setSpeedFactor((prev) => {
+      const newSpeed = Math.max(0.1, Math.min(3.0, prev + delta));
+      return Number(newSpeed.toFixed(1));
+    });
+  };
 
   // 处理动画过渡
   useEffect(() => {
@@ -241,9 +262,7 @@ export default function WireframeCubeShaderComponent({
   }, [isExpanded]);
 
   useEffect(() => {
-    const canvas = document.getElementById(
-      'wireframe-cube-canvas',
-    ) as HTMLCanvasElement;
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     canvasRef.current = canvas;
 
     if (canvas) {
@@ -307,32 +326,60 @@ export default function WireframeCubeShaderComponent({
   };
 
   return (
-    <Card
-      className={`mt-6 overflow-hidden rounded-lg border-none ${className || ''}`}
-    >
-      <CardContent className="relative h-full w-full p-0">
-        <canvas
-          id="wireframe-cube-canvas"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0, 0, 0, 0.9)', // 深色背景使线框更加突出
-          }}
-        />
+    <ShaderCard id={containerId} className={className} height="400px">
+      <ShaderCanvas id={canvasId} />
 
-        {/* 控制按钮 */}
-        <Button onClick={toggleExpand} className="absolute left-2 top-2 z-10">
-          {isExpanded ? 'Close' : 'Expand'}
+      <ShaderControls>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => setShowControls(!showControls)}
+        >
+          {showControls ? '隐藏控制' : '显示控制'}
         </Button>
+        <Button onClick={toggleExpand} variant="default" size="sm">
+          {isExpanded ? '折叠' : '展开'}
+        </Button>
+        <FullscreenButton targetId={containerId} />
+      </ShaderControls>
 
-        <ShaderDevTools
-          position="bottom-right"
-          onOpenEditor={openShaderInEditor}
-        />
-      </CardContent>
-    </Card>
+      <ShaderControlPanel show={showControls}>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>动画速度: {speedFactor.toFixed(1)}x</Label>
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => adjustSpeed(-0.1)}
+              >
+                -
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => adjustSpeed(0.1)}
+              >
+                +
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="animation-toggle"
+            checked={isAnimating}
+            onCheckedChange={setIsAnimating}
+          />
+          <Label htmlFor="animation-toggle">动画开关</Label>
+        </div>
+      </ShaderControlPanel>
+
+      <ShaderDevTools
+        position="bottom-right"
+        onOpenEditor={openShaderInEditor}
+      />
+    </ShaderCard>
   );
 }

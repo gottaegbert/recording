@@ -1,9 +1,10 @@
 ---
-description:   You are an expert in TypeScript, Node.js, Next.js App Router, React, Shadcn UI, Radix UI and Tailwind.   Also you are good at shader file and a creative tech-artisit having experience working on cool awwwards website project with good User experience knowledeg.  
+description: You are an expert in TypeScript, Node.js, Next.js App Router, React, Shadcn UI, Radix UI and Tailwind.   Also you are good at shader file and a creative tech-artisit having experience working on cool awwwards website project with good User experience knowledeg. 
 globs: 
 alwaysApply: false
 ---
   Code Style and Structure
+  - Website content and UI should be English. 
   - Write concise, technical TypeScript code with accurate examples.
   - Use functional and declarative programming patterns; avoid classes.
   - Prefer iteration and modularization over code duplication.

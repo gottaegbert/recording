@@ -10,14 +10,14 @@ import { useShaderHotReload } from '@/utils/shaderHotReload';
 import { ShaderDevTools } from '../ShaderDevTools';
 import { FullscreenButton } from '../FullscreenButton';
 
-class LaserBorderShader {
+class LaserLoadingShader {
   private canvas: HTMLCanvasElement | null;
   private gl: WebGLRenderingContext | null;
   private program: WebGLProgram | null;
   private startTime: number;
   private animationFrameId: number | null;
   private speedFactor: number = 1.0;
-  private colorCycle: boolean = true;
+  private isAnimating: boolean = true;
 
   constructor() {
     this.canvas = null;
@@ -31,11 +31,11 @@ class LaserBorderShader {
     canvas: HTMLCanvasElement,
     vertexSrc: string,
     fragmentSrc: string,
-    options = { speedFactor: 1.0, colorCycle: true },
+    options = { speedFactor: 1.0, isAnimating: true },
   ): void {
     this.canvas = canvas;
     this.speedFactor = options.speedFactor;
-    this.colorCycle = options.colorCycle;
+    this.isAnimating = options.isAnimating;
 
     const gl = canvas.getContext('webgl', {
       alpha: true,
@@ -112,9 +112,9 @@ class LaserBorderShader {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
     // Update time uniform - apply speed factor
-    const timeValue = this.colorCycle
+    const timeValue = this.isAnimating
       ? ((Date.now() - this.startTime) / 1000) * this.speedFactor
-      : (((Date.now() - this.startTime) / 1000) * this.speedFactor) % 10.0; // 限制时间，防止颜色循环
+      : 0; // 如果不在动画中，时间保持为0
 
     this.gl.uniform1f(timeLocation, timeValue);
 
@@ -132,12 +132,15 @@ class LaserBorderShader {
     );
   }
 
-  updateSettings(options: { speedFactor?: number; colorCycle?: boolean }) {
+  updateSettings(options: { speedFactor?: number; isAnimating?: boolean }) {
     if (options.speedFactor !== undefined) {
       this.speedFactor = options.speedFactor;
     }
-    if (options.colorCycle !== undefined) {
-      this.colorCycle = options.colorCycle;
+    if (options.isAnimating !== undefined) {
+      this.isAnimating = options.isAnimating;
+      if (options.isAnimating) {
+        this.startTime = Date.now(); // 重置开始时间
+      }
     }
   }
 
@@ -174,20 +177,20 @@ class LaserBorderShader {
   }
 }
 
-interface LaserBorderShaderProps {
+interface LaserLoadingShaderProps {
   className?: string;
 }
 
-export default function LaserBorderShaderComponent({
+export default function LaserLoadingShaderComponent({
   className,
-}: LaserBorderShaderProps) {
+}: LaserLoadingShaderProps) {
   const shaderVersion = useShaderHotReload();
-  const shaderInstanceRef = useRef<LaserBorderShader | null>(null);
+  const shaderInstanceRef = useRef<LaserLoadingShader | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [speedFactor, setSpeedFactor] = useState(1.0);
-  const [colorCycle, setColorCycle] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(true);
   const [showControls, setShowControls] = useState(false);
-  const containerId = 'laser-border-container';
+  const containerId = 'laser-loading-container';
 
   // 调整速度的函数
   const adjustSpeed = (amount: number) => {
@@ -199,7 +202,7 @@ export default function LaserBorderShaderComponent({
 
   useEffect(() => {
     const canvas = document.getElementById(
-      'laser-border-canvas',
+      'laser-loading-canvas',
     ) as HTMLCanvasElement;
     canvasRef.current = canvas;
 
@@ -212,40 +215,40 @@ export default function LaserBorderShaderComponent({
         shaderInstanceRef.current.cleanup();
       }
 
-      const laserBorderShader = new LaserBorderShader();
-      shaderInstanceRef.current = laserBorderShader;
+      const laserLoadingShader = new LaserLoadingShader();
+      shaderInstanceRef.current = laserLoadingShader;
 
       try {
-        laserBorderShader.initShader(
+        laserLoadingShader.initShader(
           canvas,
           vertexShaderSource,
           fragmentShaderSource,
-          { speedFactor, colorCycle },
+          { speedFactor, isAnimating },
         );
-        console.log('✅ Laser border shader initialized successfully');
+        console.log('✅ Laser loading shader initialized successfully');
       } catch (error) {
-        console.error('❌ Failed to initialize laser border shader:', error);
+        console.error('❌ Failed to initialize laser loading shader:', error);
       }
 
       const handleResize = () => {
-        laserBorderShader.resize();
+        laserLoadingShader.resize();
       };
 
       window.addEventListener('resize', handleResize);
 
       return () => {
         window.removeEventListener('resize', handleResize);
-        laserBorderShader.cleanup();
+        laserLoadingShader.cleanup();
       };
     }
-  }, [shaderVersion, speedFactor, colorCycle]); // Re-initialize when shader version or settings change
+  }, [shaderVersion, speedFactor, isAnimating]); // Re-initialize when shader version or settings change
 
   // Update shader settings without recreating
   useEffect(() => {
     if (shaderInstanceRef.current) {
-      shaderInstanceRef.current.updateSettings({ speedFactor, colorCycle });
+      shaderInstanceRef.current.updateSettings({ speedFactor, isAnimating });
     }
-  }, [speedFactor, colorCycle]);
+  }, [speedFactor, isAnimating]);
 
   // Helper to open the shader file in editor
   const openShaderInEditor = () => {
@@ -255,11 +258,11 @@ export default function LaserBorderShaderComponent({
         typeof (window as any).cursor?.openFile === 'function'
       ) {
         (window as any).cursor.openFile(
-          './src/components/demo/Shader/LaserBorder/shaders.ts',
+          './src/components/demo/Shader/LaserLoading/shaders.ts',
         );
       } else {
         console.log(
-          '📂 To edit the shader, open: src/components/demo/Shader/LaserBorder/shaders.ts',
+          '📂 To edit the shader, open: src/components/demo/Shader/LaserLoading/shaders.ts',
         );
       }
     }
@@ -272,7 +275,7 @@ export default function LaserBorderShaderComponent({
     >
       <CardContent className="relative h-full w-full p-0">
         <canvas
-          id="laser-border-canvas"
+          id="laser-loading-canvas"
           style={{
             position: 'absolute',
             top: 0,
@@ -321,11 +324,11 @@ export default function LaserBorderShaderComponent({
 
               <div className="flex items-center space-x-2">
                 <Switch
-                  id="color-cycle"
-                  checked={colorCycle}
-                  onCheckedChange={setColorCycle}
+                  id="animation-toggle"
+                  checked={isAnimating}
+                  onCheckedChange={setIsAnimating}
                 />
-                <Label htmlFor="color-cycle">颜色循环</Label>
+                <Label htmlFor="animation-toggle">动画开关</Label>
               </div>
             </div>
           </div>

@@ -16,6 +16,7 @@ import { motion } from 'motion/react';
 import LaserCutShaderComponent from '@/components/demo/Shader/LaserCut';
 import WireframeCubeShaderComponent from '@/components/demo/Shader/WireframeCube';
 import LaserBorderShaderComponent from '@/components/demo/Shader/LaserBorder';
+import LaserLoadingShaderComponent from '@/components/demo/Shader/LaserLoading';
 
 export default function WorkingOnPage() {
   return (
@@ -48,9 +49,10 @@ export default function WorkingOnPage() {
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {/* <SideMenu />
           <ImageShaderComponent /> */}
-          <LaserCutShaderComponent />
+          {/* <LaserCutShaderComponent />
           <WireframeCubeShaderComponent />
           <LaserBorderShaderComponent />
+          <LaserLoadingShaderComponent /> */}
         </div>
       </ContentLayout>
     </motion.div>
