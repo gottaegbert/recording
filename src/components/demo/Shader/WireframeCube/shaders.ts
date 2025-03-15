@@ -42,14 +42,14 @@ export const fragmentShaderSource = `
       vec2 proj[8]; 
       
       // 定义完全展开时的立方体顶点
-      baseVerts[0] = vec3(-5.0, -5.0, -5.0);
-      baseVerts[1] = vec3(+5.0, -5.0, -5.0);
-      baseVerts[2] = vec3(+5.0, +5.0, -5.0);
-      baseVerts[3] = vec3(-5.0, +5.0, -5.0);
-      baseVerts[4] = vec3(-5.0, -5.0, +5.0);
-      baseVerts[5] = vec3(+5.0, -5.0, +5.0);
-      baseVerts[6] = vec3(+5.0, +5.0, +5.0);
-      baseVerts[7] = vec3(-5.0, +5.0, +5.0);
+      baseVerts[0] = vec3(-5.0, -5.0, -15.0);
+      baseVerts[1] = vec3(+5.0, -5.0, -15.0);
+      baseVerts[2] = vec3(+5.0, +5.0, -15.0);
+      baseVerts[3] = vec3(-5.0, +5.0, -15.0);
+      baseVerts[4] = vec3(-5.0, -5.0, +15.0);
+      baseVerts[5] = vec3(+5.0, -5.0, +15.0);
+      baseVerts[6] = vec3(+5.0, +5.0, +15.0);
+      baseVerts[7] = vec3(-5.0, +5.0, +15.0);
       
       // 定义收起时的直线顶点（将所有点放在一条 y 轴上）
       vec3 lineVerts[8];
@@ -64,8 +64,8 @@ export const fragmentShaderSource = `
           // 添加旋转（只有当展开时才完全旋转）
           float rotFactor = uExpand;
           verts[i] = rotatey(verts[i], 0.1 * time * rotFactor);
-          verts[i] = rotatex(verts[i], 0.2 * time * rotFactor);
-          verts[i] = rotatez(verts[i], 0.3 * time * rotFactor);
+          verts[i] = rotatex(verts[i], 0.1 * time * rotFactor);
+          verts[i] = rotatez(verts[i], 0.1 * time * rotFactor);
           
           // 计算投影
           float dist = -100.0;
@@ -75,7 +75,7 @@ export const fragmentShaderSource = `
       }
       
       // 使用明亮的蓝色
-      vec3 lineColor = vec3(0.3, 0.6, 1.0);
+      vec3 lineColor = vec3(0.6, 0.4, 1.0);
       
       // 从直线状态到立方体，控制线段的可见性
       float edgeVisibility = uExpand;
