@@ -1,4 +1,17 @@
 {
   "prettier.singleQuote": false,
-  "prettier.trailingComma": "none"
+  "prettier.trailingComma": "none",
+  "workbench.panel.defaultLocation": "bottom",
+  "workbench.sideBar.location": "right",
+  "workbench.editor.labelFormat": "short",
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "editor.fontWeight": "normal",
+  "editor.fontFamily": "Fira Code",
+  "editor.lineHeight": 20,
+  "editor.letterSpacing": 0.5,
+  "editor.wordWrap": "on"
 }

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "server-name": {
+      "command": "npx @agentdeskai/browser-tools-mcp@1.2.0",
+      "args": ["-y", "mcp-server"],
+      "env": {
+        "API_KEY": "value"
+      }
+    }
+  }
+}
