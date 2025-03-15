@@ -4,10 +4,12 @@ import { ArrowRightIcon } from '@radix-ui/react-icons';
 
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/mode-toggle';
+import BackgroundShaderComponent from '@/components/demo/Shader/BackgroundShader';
 
 export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <BackgroundShaderComponent />
       <header className="sticky top-0 z-[50] w-full border-b border-border/40 bg-background/95 backdrop-blur-sm dark:bg-black/[0.6]">
         <div className="container flex h-14 items-center">
           <Link

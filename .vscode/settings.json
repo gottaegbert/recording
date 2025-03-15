@@ -10,8 +10,8 @@
     "source.fixAll": "explicit"
   },
   "editor.fontWeight": "normal",
-  "editor.fontFamily": "Fira Code",
-  "editor.lineHeight": 20,
-  "editor.letterSpacing": 0.5,
+  // "editor.fontFamily": "Fira Code",
+  // "editor.lineHeight": 20,
+  // "editor.letterSpacing": 0.5,
   "editor.wordWrap": "on"
 }
