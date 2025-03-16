@@ -157,7 +157,6 @@ export const fragmentShaderSource = `
     vec3 lightColor = vec3(0.4, 0.9, 0.2);  // 亮色主题颜色
     vec3 themeColor = mix(lightColor, darkColor, isDark);
     
-    // 计算最终颜色（考虑高度和距离衰减）
     return max(themeColor * 7.0 * pow(pos.y, 4.0) * smoothstep(0.0, -1.0, length(pos.xz) - 5.0), vec3(0.0));
   }
 
@@ -214,21 +213,29 @@ export const fragmentShaderSource = `
 
     // 设置体积光颜色
     vec3 darkVolumeColor = vec3(0.3, 0.8, 1.0);
-    vec3 lightVolumeColor = vec3(1.0, 0.8, 0.3);
+    vec3 lightVolumeColor = vec3(0.4, 0.8, 0.3);
     vec3 volumeColor = mix(lightVolumeColor, darkVolumeColor, isDark);
-    col += 1.6 * volumeColor * vol;
+    
+    float volIntensity = 1.4;
+    if (t < 2.0) {
+      volIntensity = 2.0 + sin(t * PI) * 1.5;
+    } else if (t < 3.0) {
+      volIntensity = 2.0 + sin((3.0 - t) * PI) * 1.5;
+    } else {
+      volIntensity += sin(t * 0.3) * 0.2;
+    }
+    
+    col += volIntensity * volumeColor * vol;
 
-    // 后期处理
     col = acesFilm(col * 0.5);           // 色调映射
     col = pow(col, vec3(1.0/2.2));       // gamma校正
 
-    // 背景颜色混合
-    vec3 darkBg = vec3(0.0);
-    vec3 lightBg = vec3(1.0);
+    // 背景颜色混合 - 调整为更柔和的色调
+    vec3 darkBg = vec3(0.02);            // 暗色背景
+    vec3 lightBg = vec3(0.98, 0.97, 0.95); // 亮色背景：略微温暖的白色
     vec3 bgColor = mix(lightBg, darkBg, isDark);
     col = mix(bgColor, col, col);
 
-    // 输出最终颜色
     gl_FragColor = vec4(col, 1.0);
   }
 `;

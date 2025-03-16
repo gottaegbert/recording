@@ -12,11 +12,12 @@ import {
 
 import SideMenu from '@/components/demo/SideMenu';
 import { motion } from 'motion/react';
-// import ImageShaderComponent from '@/components/demo/Shader/DynamicImagetransition';
+import ImageShaderComponent from '@/components/demo/Shader/DynamicImagetransition';
 import LaserCutShaderComponent from '@/components/demo/Shader/LaserCut';
 import WireframeCubeShaderComponent from '@/components/demo/Shader/WireframeCube';
 import LaserBorderShaderComponent from '@/components/demo/Shader/LaserBorder';
 import LaserLoadingShaderComponent from '@/components/demo/Shader/LaserLoading';
+import { ScrollIndicator } from '@/components/scroll-indicator';
 
 export default function WorkingOnPage() {
   return (
@@ -30,6 +31,7 @@ export default function WorkingOnPage() {
         scale: { duration: 0.4 },
         x: { duration: 0.5 },
       }}
+      className="relative"
     >
       <ContentLayout title="WorkingOn">
         <Breadcrumb>
@@ -47,14 +49,18 @@ export default function WorkingOnPage() {
         </Breadcrumb>
 
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {/* <SideMenu />
-          <ImageShaderComponent /> */}
-          {/* <LaserCutShaderComponent />
+          <SideMenu />
+          <ImageShaderComponent />
+          <LaserCutShaderComponent />
           <WireframeCubeShaderComponent />
           <LaserBorderShaderComponent />
-          <LaserLoadingShaderComponent /> */}
+          <LaserLoadingShaderComponent />
         </div>
       </ContentLayout>
+
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2">
+        <ScrollIndicator />
+      </div>
     </motion.div>
   );
 }
