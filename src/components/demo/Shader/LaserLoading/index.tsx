@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -9,6 +8,12 @@ import { vertexShaderSource, fragmentShaderSource } from './shaders';
 import { useShaderHotReload } from '@/utils/shaderHotReload';
 import { ShaderDevTools } from '../ShaderDevTools';
 import { FullscreenButton } from '../FullscreenButton';
+import {
+  ShaderCard,
+  ShaderCanvas,
+  ShaderControls,
+  ShaderControlPanel,
+} from '../ShaderStyles';
 
 class LaserLoadingShader {
   private canvas: HTMLCanvasElement | null;
@@ -191,6 +196,7 @@ export default function LaserLoadingShaderComponent({
   const [isAnimating, setIsAnimating] = useState(true);
   const [showControls, setShowControls] = useState(false);
   const containerId = 'laser-loading-container';
+  const canvasId = 'laser-loading-canvas';
 
   // 调整速度的函数
   const adjustSpeed = (amount: number) => {
@@ -201,9 +207,7 @@ export default function LaserLoadingShaderComponent({
   };
 
   useEffect(() => {
-    const canvas = document.getElementById(
-      'laser-loading-canvas',
-    ) as HTMLCanvasElement;
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     canvasRef.current = canvas;
 
     if (canvas) {
@@ -231,7 +235,11 @@ export default function LaserLoadingShaderComponent({
       }
 
       const handleResize = () => {
-        laserLoadingShader.resize();
+        if (canvas) {
+          canvas.width = canvas.offsetWidth;
+          canvas.height = canvas.offsetHeight;
+          laserLoadingShader.resize();
+        }
       };
 
       window.addEventListener('resize', handleResize);
@@ -269,88 +277,57 @@ export default function LaserLoadingShaderComponent({
   };
 
   return (
-    <Card
-      id={containerId}
-      className={`mt-6 overflow-hidden rounded-lg border-none ${className || ''}`}
-    >
-      <CardContent className="relative h-full w-full p-0">
-        <canvas
-          id="laser-loading-canvas"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0, 0, 0, 0.9)',
-          }}
-        />
+    <ShaderCard id={containerId} className={className}>
+      <ShaderCanvas id={canvasId} background="rgba(0, 0, 0, 0.9)" />
 
-        <div className="absolute bottom-4 left-4 flex items-center gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setShowControls(!showControls)}
-          >
-            {showControls ? '隐藏控制' : '显示控制'}
-          </Button>
-          <FullscreenButton targetId={containerId} />
-        </div>
+      <ShaderControls>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => setShowControls(!showControls)}
+        >
+          {showControls ? '隐藏控制' : '显示控制'}
+        </Button>
+        <FullscreenButton targetId={containerId} />
+      </ShaderControls>
 
-        {showControls && (
-          <div className="absolute left-4 right-4 top-4 rounded-lg bg-black/70 p-4 backdrop-blur-sm">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>动画速度: {speedFactor.toFixed(1)}x</Label>
-                  <div className="flex space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => adjustSpeed(-0.1)}
-                    >
-                      -
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => adjustSpeed(0.1)}
-                    >
-                      +
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="animation-toggle"
-                  checked={isAnimating}
-                  onCheckedChange={setIsAnimating}
-                />
-                <Label htmlFor="animation-toggle">动画开关</Label>
-              </div>
+      <ShaderControlPanel show={showControls}>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>动画速度: {speedFactor.toFixed(1)}x</Label>
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => adjustSpeed(-0.1)}
+              >
+                -
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => adjustSpeed(0.1)}
+              >
+                +
+              </Button>
             </div>
           </div>
-        )}
+        </div>
 
-        <ShaderDevTools
-          position="bottom-right"
-          onOpenEditor={openShaderInEditor}
-        />
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="animation-toggle"
+            checked={isAnimating}
+            onCheckedChange={setIsAnimating}
+          />
+          <Label htmlFor="animation-toggle">动画开关</Label>
+        </div>
+      </ShaderControlPanel>
 
-        <style jsx global>{`
-          #${containerId}:fullscreen {
-            width: 100vw;
-            height: 100vh;
-            background: black;
-          }
-          #${containerId}:fullscreen canvas {
-            width: 100vw !important;
-            height: 100vh !important;
-          }
-        `}</style>
-      </CardContent>
-    </Card>
+      <ShaderDevTools
+        position="bottom-right"
+        onOpenEditor={openShaderInEditor}
+      />
+    </ShaderCard>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Maximize2, Minimize2 } from 'lucide-react';
 
@@ -12,6 +13,19 @@ export function FullscreenButton({
   targetId,
   className,
 }: FullscreenButtonProps) {
+  // 监听全屏状态变化
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      // 触发 resize 事件，让 shader 组件能够重新调整尺寸
+      window.dispatchEvent(new Event('resize'));
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
   const toggleFullscreen = async () => {
     const element = document.getElementById(targetId);
     if (!element) return;
@@ -19,8 +33,12 @@ export function FullscreenButton({
     try {
       if (!document.fullscreenElement) {
         await element.requestFullscreen();
+        // 进入全屏后立即触发一次 resize 事件
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
       } else {
         await document.exitFullscreen();
+        // 退出全屏后立即触发一次 resize 事件
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
       }
     } catch (err) {
       console.error('Error toggling fullscreen:', err);

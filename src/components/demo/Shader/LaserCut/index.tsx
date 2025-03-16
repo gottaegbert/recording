@@ -8,6 +8,9 @@ import {
   triggerShaderReload,
 } from '@/utils/shaderHotReload';
 import { ShaderDevTools } from '../ShaderDevTools';
+import { Button } from '@/components/ui/button';
+import { FullscreenButton } from '../FullscreenButton';
+import { ShaderCard, ShaderCanvas, ShaderControls } from '../ShaderStyles';
 
 class LaserCutShader {
   private canvas: HTMLCanvasElement | null;
@@ -154,6 +157,8 @@ export default function LaserCutShaderComponent() {
   const shaderVersion = useShaderHotReload();
   const shaderInstanceRef = useRef<LaserCutShader | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerId = 'laser-cut-container';
+  const canvasId = 'laser-cut-canvas';
 
   // Initialize shader
   useEffect(() => {
@@ -228,23 +233,17 @@ export default function LaserCutShaderComponent() {
   };
 
   return (
-    <Card className="mt-6 overflow-hidden rounded-lg border-none">
-      <CardContent className="relative h-full w-full p-0">
-        <canvas
-          id="laser-cut-canvas"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-          }}
-        />
-        <ShaderDevTools
-          position="bottom-right"
-          onOpenEditor={openShaderInEditor}
-        />
-      </CardContent>
-    </Card>
+    <ShaderCard id={containerId}>
+      <ShaderCanvas id={canvasId} />
+
+      <ShaderControls>
+        <FullscreenButton targetId={containerId} />
+      </ShaderControls>
+
+      <ShaderDevTools
+        position="bottom-right"
+        onOpenEditor={openShaderInEditor}
+      />
+    </ShaderCard>
   );
 }

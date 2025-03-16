@@ -9,6 +9,12 @@ import { vertexShaderSource, fragmentShaderSource } from './shaders';
 import { useShaderHotReload } from '@/utils/shaderHotReload';
 import { ShaderDevTools } from '../ShaderDevTools';
 import { FullscreenButton } from '../FullscreenButton';
+import {
+  ShaderCard,
+  ShaderCanvas,
+  ShaderControls,
+  ShaderControlPanel,
+} from '../ShaderStyles';
 
 class LaserBorderShader {
   private canvas: HTMLCanvasElement | null;
@@ -266,88 +272,57 @@ export default function LaserBorderShaderComponent({
   };
 
   return (
-    <Card
-      id={containerId}
-      className={`mt-6 overflow-hidden rounded-lg border-none ${className || ''}`}
-    >
-      <CardContent className="relative h-full w-full p-0">
-        <canvas
-          id="laser-border-canvas"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0, 0, 0, 0.9)',
-          }}
-        />
+    <ShaderCard id={containerId} className={className}>
+      <ShaderCanvas id="laser-border-canvas" background="rgba(0, 0, 0, 0.9)" />
 
-        <div className="absolute bottom-4 left-4 flex items-center gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setShowControls(!showControls)}
-          >
-            {showControls ? '隐藏控制' : '显示控制'}
-          </Button>
-          <FullscreenButton targetId={containerId} />
-        </div>
+      <ShaderControls>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => setShowControls(!showControls)}
+        >
+          {showControls ? '隐藏控制' : '显示控制'}
+        </Button>
+        <FullscreenButton targetId={containerId} />
+      </ShaderControls>
 
-        {showControls && (
-          <div className="absolute left-4 right-4 top-4 rounded-lg bg-black/70 p-4 backdrop-blur-sm">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>动画速度: {speedFactor.toFixed(1)}x</Label>
-                  <div className="flex space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => adjustSpeed(-0.1)}
-                    >
-                      -
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => adjustSpeed(0.1)}
-                    >
-                      +
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="color-cycle"
-                  checked={colorCycle}
-                  onCheckedChange={setColorCycle}
-                />
-                <Label htmlFor="color-cycle">颜色循环</Label>
-              </div>
+      <ShaderControlPanel show={showControls}>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>动画速度: {speedFactor.toFixed(1)}x</Label>
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => adjustSpeed(-0.1)}
+              >
+                -
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => adjustSpeed(0.1)}
+              >
+                +
+              </Button>
             </div>
           </div>
-        )}
+        </div>
 
-        <ShaderDevTools
-          position="bottom-right"
-          onOpenEditor={openShaderInEditor}
-        />
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="color-cycle"
+            checked={colorCycle}
+            onCheckedChange={setColorCycle}
+          />
+          <Label htmlFor="color-cycle">颜色循环</Label>
+        </div>
+      </ShaderControlPanel>
 
-        <style jsx global>{`
-          #${containerId}:fullscreen {
-            width: 100vw;
-            height: 100vh;
-            background: black;
-          }
-          #${containerId}:fullscreen canvas {
-            width: 100vw !important;
-            height: 100vh !important;
-          }
-        `}</style>
-      </CardContent>
-    </Card>
+      <ShaderDevTools
+        position="bottom-right"
+        onOpenEditor={openShaderInEditor}
+      />
+    </ShaderCard>
   );
 }

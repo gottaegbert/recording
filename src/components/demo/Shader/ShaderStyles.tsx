@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 interface ShaderCardProps {
   id: string;
@@ -10,23 +10,51 @@ interface ShaderCardProps {
   height?: string;
 }
 
-export function ShaderCard({ id, className, children }: ShaderCardProps) {
+export function ShaderCard({
+  id,
+  className,
+  children,
+  height,
+}: ShaderCardProps) {
+  // 监听全屏状态变化
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      // 触发 resize 事件，让 shader 组件能够重新调整尺寸
+      window.dispatchEvent(new Event('resize'));
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
   return (
     <Card
       id={id}
       className={`relative mt-6 aspect-[9/16] overflow-hidden rounded-lg border-none ${className || ''}`}
+      style={{
+        aspectRatio: '9/16',
+        height: height || 'auto',
+      }}
     >
       <CardContent className="relative h-full w-full p-0">
         {children}
         <style jsx global>{`
           #${id}:fullscreen {
-            width: 100vw;
-            height: 100vh;
+            width: 100vw !important;
+            height: 100vh !important;
             background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: auto !important;
+            max-height: none !important;
           }
           #${id}:fullscreen canvas {
             width: 100vw !important;
             height: 100vh !important;
+            object-fit: contain;
           }
         `}</style>
       </CardContent>

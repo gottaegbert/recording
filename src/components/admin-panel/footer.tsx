@@ -14,7 +14,7 @@ export function Footer() {
           >
             Siyu’s work
           </Link>
-          . The source code is available on{' '}
+          {/* . The source code is available on{' '}
           <Link
             href="https://github.com/gottaegbert/recording"
             target="_blank"
@@ -23,7 +23,7 @@ export function Footer() {
           >
             GitHub
           </Link>
-          .
+          . */}
         </p>
       </div>
     </div>

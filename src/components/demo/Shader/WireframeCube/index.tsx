@@ -326,7 +326,7 @@ export default function WireframeCubeShaderComponent({
   };
 
   return (
-    <ShaderCard id={containerId} className={className} height="400px">
+    <ShaderCard id={containerId} className={className}>
       <ShaderCanvas id={canvasId} />
 
       <ShaderControls>
