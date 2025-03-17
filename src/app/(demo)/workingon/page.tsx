@@ -49,8 +49,8 @@ export default function WorkingOnPage() {
         </Breadcrumb>
 
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {/* <SideMenu />
-          <ImageShaderComponent /> */}
+          <SideMenu />
+          <ImageShaderComponent />
           <LaserCutShaderComponent />
           <WireframeCubeShaderComponent />
           <LaserBorderShaderComponent />
