@@ -259,7 +259,7 @@ export default function WireframeCubeShaderComponent({
         cancelAnimationFrame(expandAnimationRef.current);
       }
     };
-  }, [isExpanded]);
+  }, [expandValue, isExpanded]);
 
   useEffect(() => {
     const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -300,7 +300,7 @@ export default function WireframeCubeShaderComponent({
         wireframeCubeShader.cleanup();
       };
     }
-  }, [shaderVersion]); // Re-initialize when shader version changes
+  }, [expandValue, shaderVersion]); // Re-initialize when shader version changes
 
   // 切换展开/折叠状态
   const toggleExpand = () => {

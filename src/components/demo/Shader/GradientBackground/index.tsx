@@ -22,6 +22,7 @@ export default function GradientBackground({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Merge default config with props config
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const gradientConfig = {
     ...defaultGradientConfig,
     ...(config || {}),
