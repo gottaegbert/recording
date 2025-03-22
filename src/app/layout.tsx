@@ -5,6 +5,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { AnimationProvider } from '@/components/providers/animation-provider';
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -41,7 +42,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={GeistSans.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <AnimationProvider>{children}</AnimationProvider>
         </ThemeProvider>
         <Analytics />
       </body>
