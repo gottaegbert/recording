@@ -1,4 +1,11 @@
-import { SquarePen, LayoutGrid } from 'lucide-react';
+import {
+  SquarePen,
+  LayoutGrid,
+  Monitor,
+  Globe,
+  Bookmark,
+  LineChart,
+} from 'lucide-react';
 import { LightningBoltIcon, ShadowIcon } from '@radix-ui/react-icons';
 
 type Submenu = {
@@ -29,6 +36,24 @@ export function getMenuList(pathname: string): Group[] {
           href: '/workingon',
           label: 'WorkingOn',
           icon: LayoutGrid,
+          submenus: [],
+        },
+        {
+          href: '/mondrianmac',
+          label: "Mondrian's Mac",
+          icon: Monitor,
+          submenus: [],
+        },
+        {
+          href: '/ffandesign',
+          label: 'FFan Design',
+          icon: Globe,
+          submenus: [],
+        },
+        {
+          href: '/antioch',
+          label: 'Antioch',
+          icon: Bookmark,
           submenus: [],
         },
         {

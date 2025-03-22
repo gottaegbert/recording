@@ -1,8 +1,8 @@
 {
   "prettier.singleQuote": false,
   "prettier.trailingComma": "none",
-  "workbench.panel.defaultLocation": "bottom",
-  "workbench.sideBar.location": "right",
+  // "workbench.panel.defaultLocation": "bottom",
+  // "workbench.sideBar.location": "right",
   "workbench.editor.labelFormat": "short",
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
