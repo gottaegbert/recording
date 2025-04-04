@@ -57,6 +57,12 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
+          href: '/datavis',
+          label: 'Dashboard DataVis Demo',
+          icon: LineChart,
+          submenus: [],
+        },
+        {
           href: '/effect',
           label: 'Effect（3D/Shader）',
           icon: ShadowIcon,
