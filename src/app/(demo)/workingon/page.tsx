@@ -17,6 +17,7 @@ import LaserCutShaderComponent from '@/components/demo/Shader/LaserCut';
 import WireframeCubeShaderComponent from '@/components/demo/Shader/WireframeCube';
 import LaserBorderShaderComponent from '@/components/demo/Shader/LaserBorder';
 import LaserLoadingShaderComponent from '@/components/demo/Shader/LaserLoading';
+import TwistedBox from '@/components/demo/Shader/TwistedBox';
 import { ScrollIndicator } from '@/components/scroll-indicator';
 
 export default function WorkingOnPage() {
@@ -49,7 +50,8 @@ export default function WorkingOnPage() {
         </Breadcrumb>
 
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <SideMenu />
+          {/* <SideMenu /> */}
+          <TwistedBox />
           <ImageShaderComponent />
           <LaserCutShaderComponent />
           <WireframeCubeShaderComponent />
