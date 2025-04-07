@@ -281,7 +281,7 @@ export default function LaserBorderShaderComponent({
           size="sm"
           onClick={() => setShowControls(!showControls)}
         >
-          {showControls ? '隐藏控制' : '显示控制'}
+          {showControls ? 'Hide Control' : 'Show Control'}
         </Button>
         <FullscreenButton targetId={containerId} />
       </ShaderControls>

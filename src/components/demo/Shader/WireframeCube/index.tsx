@@ -335,10 +335,10 @@ export default function WireframeCubeShaderComponent({
           size="sm"
           onClick={() => setShowControls(!showControls)}
         >
-          {showControls ? '隐藏控制' : '显示控制'}
+          {showControls ? 'Hide Control' : 'Show Control'}
         </Button>
         <Button onClick={toggleExpand} variant="default" size="sm">
-          {isExpanded ? '折叠' : '展开'}
+          {isExpanded ? 'Collapse' : 'Expand'}
         </Button>
         <FullscreenButton targetId={containerId} />
       </ShaderControls>

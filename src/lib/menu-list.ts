@@ -1,17 +1,19 @@
+import { LayoutGrid } from 'lucide-react';
 import {
-  SquarePen,
-  LayoutGrid,
-  Monitor,
-  Globe,
-  Bookmark,
-  LineChart,
-} from 'lucide-react';
-import { LightningBoltIcon, ShadowIcon } from '@radix-ui/react-icons';
+  LightningBoltIcon,
+  ShadowIcon,
+  CrumpledPaperIcon,
+  NotionLogoIcon,
+  TransformIcon,
+  BarChartIcon,
+  DesktopIcon,
+} from '@radix-ui/react-icons';
 
 type Submenu = {
   href: string;
   label: string;
   active?: boolean;
+  icon?: any;
 };
 
 type Menu = {
@@ -35,31 +37,7 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: '/workingon',
           label: 'WorkingOn',
-          icon: LayoutGrid,
-          submenus: [],
-        },
-        {
-          href: '/mondrianmac',
-          label: "Mondrian's Mac",
-          icon: Monitor,
-          submenus: [],
-        },
-        {
-          href: '/ffandesign',
-          label: 'FFan Design',
-          icon: Globe,
-          submenus: [],
-        },
-        {
-          href: '/antioch',
-          label: 'Antioch',
-          icon: Bookmark,
-          submenus: [],
-        },
-        {
-          href: '/datavis',
-          label: 'Dashboard DataVis Demo',
-          icon: LineChart,
+          icon: CrumpledPaperIcon,
           submenus: [],
         },
         {
@@ -73,6 +51,33 @@ export function getMenuList(pathname: string): Group[] {
           label: 'Motion',
           icon: LightningBoltIcon,
           submenus: [],
+        },
+        {
+          href: '/',
+          label: 'WebProject',
+          icon: LayoutGrid,
+          submenus: [
+            {
+              href: '/mondrianmac',
+              label: "Mondrian's Mac",
+              icon: DesktopIcon,
+            },
+            {
+              href: '/ffandesign',
+              label: 'FFan Design',
+              icon: TransformIcon,
+            },
+            {
+              href: '/antioch',
+              label: 'Antioch',
+              icon: NotionLogoIcon,
+            },
+            {
+              href: '/datavis',
+              label: 'Dashboard DataVis Demo',
+              icon: BarChartIcon,
+            },
+          ],
         },
       ],
     },
