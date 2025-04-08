@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/ui/card';
 import MotionWrapper from '@/components/transition/motion-wrapper';
-import MetallicMaterialsDemo from './components/metalness';
+import MetallicMaterialsDemo from './metalness';
 import Link from 'next/link';
 import { ContentLayout } from '@/components/admin-panel/content-layout';
 import {
@@ -13,10 +13,12 @@ import {
   BreadcrumbList,
   BreadcrumbItem,
 } from '@/components/ui/breadcrumb';
-export default function ThreejsPage() {
+import { FullscreenButton } from '@/components/demo/Shader/FullscreenButton';
+
+export default function MetalnessPage() {
   return (
     <MotionWrapper>
-      <ContentLayout title="Effect(3D/Shader)">
+      <ContentLayout title="3D">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -26,12 +28,27 @@ export default function ThreejsPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Three.js</BreadcrumbPage>
+              <BreadcrumbLink asChild>
+                <Link href="/3d">3d</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>
+                <Link href="/3d/metalness">Metalness</Link>
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
         <div className="container mx-auto p-6">
-          <Card className="h-[calc(100vh-200px)] overflow-hidden">
+          <Card
+            id="metalness-container"
+            className="h-[calc(100vh-200px)] overflow-hidden"
+          >
+            <FullscreenButton
+              targetId="metalness-container"
+              className="flex items-center space-x-1 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur-sm hover:bg-white/20"
+            />
             <MetallicMaterialsDemo />
           </Card>
         </div>

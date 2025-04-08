@@ -48,17 +48,29 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: '/threejs',
-          label: 'Three.js',
-          icon: CubeIcon,
-          submenus: [],
-        },
-        {
           href: '/motion',
           label: 'Motion',
           icon: LightningBoltIcon,
           submenus: [],
         },
+        {
+          href: '/',
+          label: '3d',
+          icon: CubeIcon,
+          submenus: [
+            {
+              href: '/3d/metalness',
+              label: 'Metalness',
+              icon: CubeIcon,
+            },
+            {
+              href: '/3d/simulation',
+              label: 'Simulation',
+              icon: CubeIcon,
+            },
+          ],
+        },
+
         {
           href: '/',
           label: 'WebProject',

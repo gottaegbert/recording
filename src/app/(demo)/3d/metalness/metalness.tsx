@@ -14,7 +14,7 @@ import * as THREE from 'three';
 
 export default function MetallicMaterialsDemo() {
   return (
-    <div className="h-screen w-full">
+    <div className="h-screen w-screen">
       <Canvas shadows camera={{ position: [0, 2, 10], fov: 45 }}>
         <Scene />
         <OrbitControls makeDefault />
