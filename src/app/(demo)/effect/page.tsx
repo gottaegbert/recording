@@ -22,6 +22,7 @@ import LaserBorderShaderComponent from '@/components/demo/Shader/LaserBorder';
 import LaserLoadingShaderComponent from '@/components/demo/Shader/LaserLoading';
 import WireframeCubeShaderComponent from '@/components/demo/Shader/WireframeCube';
 import LaserCutShaderComponent from '@/components/demo/Shader/LaserCut';
+import TwistedBox from '@/components/demo/Shader/TwistedBox';
 export default function EffectPage() {
   const sidebar = useStore(useSidebar, (x) => x);
   if (!sidebar) return null;
@@ -49,6 +50,7 @@ export default function EffectPage() {
           <LaserBorderShaderComponent />
           <LaserLoadingShaderComponent />
           <DynamicImageTransition />
+          <TwistedBox />
           <GradientBackground />
           <FlowerShaderComponent />
           <CursorBall />

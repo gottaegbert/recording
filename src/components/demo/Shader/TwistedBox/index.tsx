@@ -63,8 +63,6 @@ const TwistedBoxScene = () => {
     <ShaderCard id="twisted-box-container" className="w-full">
       <div className="h-full w-full">
         <Canvas camera={{ position: [1.5, 1.5, 1.5] }}>
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[-1, 2, 2]} intensity={4} />
           <TwistedBox />
           <OrbitControls autoRotate />
         </Canvas>

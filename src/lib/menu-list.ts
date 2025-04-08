@@ -7,6 +7,7 @@ import {
   TransformIcon,
   BarChartIcon,
   DesktopIcon,
+  CubeIcon,
 } from '@radix-ui/react-icons';
 
 type Submenu = {
@@ -44,6 +45,12 @@ export function getMenuList(pathname: string): Group[] {
           href: '/effect',
           label: 'Effect（3D/Shader）',
           icon: ShadowIcon,
+          submenus: [],
+        },
+        {
+          href: '/threejs',
+          label: 'Three.js',
+          icon: CubeIcon,
           submenus: [],
         },
         {
