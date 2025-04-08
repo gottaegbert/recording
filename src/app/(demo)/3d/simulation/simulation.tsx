@@ -10,7 +10,7 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { Button } from '@/components/ui/button';
-import { EffectComposer, TiltShift2 } from '@react-three/postprocessing';
+import { Bloom, EffectComposer } from '@react-three/postprocessing';
 
 export default function Simulation() {
   return (
@@ -19,6 +19,13 @@ export default function Simulation() {
         <Scene />
         <OrbitControls makeDefault />
         <Environment preset="warehouse" />
+        <EffectComposer>
+          <Bloom
+            intensity={1.0}
+            luminanceThreshold={0.1}
+            luminanceSmoothing={0.9}
+          />
+        </EffectComposer>
       </Canvas>
     </div>
   );
