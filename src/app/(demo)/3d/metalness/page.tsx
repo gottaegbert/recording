@@ -43,13 +43,15 @@ export default function MetalnessPage() {
         <div className="container mx-auto p-6">
           <Card
             id="metalness-container"
-            className="h-[calc(100vh-200px)] overflow-hidden"
+            className="relative h-[calc(100vh-200px)] overflow-hidden"
           >
             <FullscreenButton
               targetId="metalness-container"
-              className="flex items-center space-x-1 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur-sm hover:bg-white/20"
+              className="absolute right-2 top-2 z-10 flex items-center space-x-1 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur-sm hover:bg-white/20"
             />
-            <MetallicMaterialsDemo />
+            <div className="h-full w-full">
+              <MetallicMaterialsDemo />
+            </div>
           </Card>
         </div>
       </ContentLayout>

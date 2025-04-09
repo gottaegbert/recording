@@ -43,13 +43,23 @@ export default function SimulationPage() {
         <div className="container mx-auto p-6">
           <Card
             id="simulation-container"
-            className="h-[calc(100vh-200px)] overflow-hidden"
+            className="relative overflow-hidden"
+            style={{
+              height: 'calc(100vh - 200px)',
+              width: '100%',
+              minHeight: '500px',
+            }}
           >
             <FullscreenButton
               targetId="simulation-container"
-              className="flex items-center space-x-1 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur-sm hover:bg-white/20"
+              className="absolute right-2 top-2 z-10 flex items-center space-x-1 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur-sm hover:bg-white/20"
             />
-            <Simulation />
+            <div
+              className="h-full w-full"
+              style={{ position: 'absolute', inset: 0 }}
+            >
+              <Simulation />
+            </div>
           </Card>
         </div>
       </ContentLayout>

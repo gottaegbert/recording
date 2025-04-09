@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   Environment,
@@ -9,12 +9,27 @@ import {
   Grid,
   Text,
   Html,
+  GizmoHelper,
+  GizmoViewport,
 } from '@react-three/drei';
 import * as THREE from 'three';
 
 export default function MetallicMaterialsDemo() {
+  useEffect(() => {
+    // 强制重新计算画布大小
+    const handleResize = () => {
+      window.dispatchEvent(new Event('resize'));
+    };
+
+    // 页面加载后延迟触发一次resize事件
+    const timeoutId = setTimeout(handleResize, 900);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
   return (
-    <div className="h-screen w-screen">
+    <div className="h-full w-full">
       <Canvas shadows camera={{ position: [0, 2, 10], fov: 45 }}>
         <Scene />
         <OrbitControls makeDefault />
@@ -245,6 +260,17 @@ function Scene() {
             </div>
           </Html>
         </group>
+        <GizmoHelper
+          alignment="bottom-right" // widget alignment within scene
+          margin={[80, 80]} // widget margins (X, Y)
+          renderPriority={1}
+        >
+          <GizmoViewport
+            axisColors={['red', 'green', 'blue']}
+            labelColor="black"
+          />
+          {/* alternative: <GizmoViewcube /> */}
+        </GizmoHelper>
       </group>
     </>
   );
