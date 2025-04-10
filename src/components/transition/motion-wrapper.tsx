@@ -20,25 +20,16 @@ export default function MotionWrapper({
     <motion.div
       key={pathname}
       className={`${className} w-full`}
-      initial={{ opacity: 0, scale: 0.8, y: '-100%' }}
+      initial={{ opacity: 0, scale: 1, y: '-100%' }}
       animate={{
         opacity: 1,
         y: 0,
         scale: 1,
         transition: {
-          duration: 0.8,
+          duration: 0.6,
+          type: 'spring',
+          bounce: 0.1,
         },
-      }}
-      exit={{
-        scale: 1,
-        opacity: 1,
-        position: 'absolute',
-        transition: {
-          y: { duration: 0.3, ease: [0.645, 0.045, 0.355, 1] },
-          scale: { duration: 0.2 },
-          opacity: { duration: 0.2 },
-        },
-        y: '100%',
       }}
       onAnimationStart={() => toggleCompleted(false)}
       onAnimationComplete={() => toggleCompleted(true)}

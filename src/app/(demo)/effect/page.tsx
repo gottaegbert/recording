@@ -28,22 +28,21 @@ export default function EffectPage() {
   if (!sidebar) return null;
 
   return (
-    <MotionWrapper>
-      <ContentLayout title="Effect(3D/Shader)">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Effect(3D/Shader)</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
+    <ContentLayout title="Effect(3D/Shader)">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Effect(3D/Shader)</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <MotionWrapper>
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <LaserCutShaderComponent />
           <WireframeCubeShaderComponent />
@@ -55,7 +54,7 @@ export default function EffectPage() {
           <FlowerShaderComponent />
           <CursorBall />
         </div>
-      </ContentLayout>
-    </MotionWrapper>
+      </MotionWrapper>
+    </ContentLayout>
   );
 }

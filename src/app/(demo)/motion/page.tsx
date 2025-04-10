@@ -21,22 +21,21 @@ import MotionWrapper from '@/components/transition/motion-wrapper';
 
 export default function MotionPage() {
   return (
-    <MotionWrapper>
-      <ContentLayout title="Motion">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Motion</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
+    <ContentLayout title="Motion">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Motion</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <MotionWrapper>
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <SideMenu />
           <ToolbarSwitch />
@@ -46,7 +45,7 @@ export default function MotionPage() {
           <MotionNumber />
           <MotionImageEntrance />
         </div>
-      </ContentLayout>
-    </MotionWrapper>
+      </MotionWrapper>
+    </ContentLayout>
   );
 }

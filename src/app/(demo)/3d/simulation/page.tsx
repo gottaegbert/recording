@@ -17,29 +17,29 @@ import { FullscreenButton } from '@/components/demo/Shader/FullscreenButton';
 
 export default function SimulationPage() {
   return (
-    <MotionWrapper>
-      <ContentLayout title="3D">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/3d">3d</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>
-                <Link href="/3d/simulation">Simulation</Link>
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+    <ContentLayout title="3D">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/3d">3d</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>
+              <Link href="/3d/simulation">Simulation</Link>
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <MotionWrapper>
         <div className="container mx-auto p-6">
           <Card
             id="simulation-container"
@@ -62,7 +62,7 @@ export default function SimulationPage() {
             </div>
           </Card>
         </div>
-      </ContentLayout>
-    </MotionWrapper>
+      </MotionWrapper>
+    </ContentLayout>
   );
 }

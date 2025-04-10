@@ -270,6 +270,18 @@ export default function Simulation() {
           position={[0, -4, 0]}
         /> */}
 
+        <GizmoHelper
+          alignment="bottom-right"
+          margin={[80, 80]}
+          renderPriority={1}
+        >
+          <GizmoViewport
+            axisColors={['red', 'green', 'blue']}
+            labelColor="black"
+          />
+          {/* alternative: <GizmoViewcube /> */}
+        </GizmoHelper>
+
         {debugSettings.showEffects && (
           <EffectComposer>
             <DepthOfField
@@ -286,18 +298,6 @@ export default function Simulation() {
             <Vignette eskil={false} offset={0.1} darkness={0.6} />
           </EffectComposer>
         )}
-
-        <GizmoHelper
-          alignment="bottom-right"
-          margin={[80, 80]}
-          renderPriority={1}
-        >
-          <GizmoViewport
-            axisColors={['red', 'green', 'blue']}
-            labelColor="black"
-          />
-          {/* alternative: <GizmoViewcube /> */}
-        </GizmoHelper>
       </Canvas>
     </div>
   );

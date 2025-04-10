@@ -19,36 +19,26 @@ import LaserBorderShaderComponent from '@/components/demo/Shader/LaserBorder';
 import LaserLoadingShaderComponent from '@/components/demo/Shader/LaserLoading';
 import TwistedBox from '@/components/demo/Shader/TwistedBox';
 import { ScrollIndicator } from '@/components/scroll-indicator';
+import MotionWrapper from '@/components/transition/motion-wrapper';
 
 export default function WorkingOnPage() {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8, x: -100 }}
-      animate={{ opacity: 1, scale: 1, x: 0 }}
-      exit={{ opacity: 0, scale: 0.8, x: 100 }}
-      transition={{
-        duration: 0.5,
-        ease: [0.43, 0.13, 0.23, 0.96],
-        scale: { duration: 0.4 },
-        x: { duration: 0.5 },
-      }}
-      className="relative"
-    >
-      <ContentLayout title="WorkingOn">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>WorkingOn</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+    <ContentLayout title="WorkingOn">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>WorkingOn</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
+      <MotionWrapper>
         <div className="mt-4 grid min-h-[calc(100vh-200px)] w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {/* <SideMenu /> */}
           <ImageShaderComponent />
@@ -58,11 +48,11 @@ export default function WorkingOnPage() {
           <LaserBorderShaderComponent />
           <LaserLoadingShaderComponent />
         </div>
-      </ContentLayout>
 
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2">
-        <ScrollIndicator />
-      </div>
-    </motion.div>
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2">
+          <ScrollIndicator />
+        </div>
+      </MotionWrapper>
+    </ContentLayout>
   );
 }
