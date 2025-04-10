@@ -52,7 +52,7 @@ export default function SimulationPage() {
           >
             <FullscreenButton
               targetId="simulation-container"
-              className="absolute right-2 top-2 z-10 flex items-center space-x-1 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur-sm hover:bg-white/20"
+              className="absolute right-2 top-2 z-10 flex items-center space-x-1 rounded-full px-3 py-1 text-xs backdrop-blur-sm"
             />
             <div
               className="h-full w-full"

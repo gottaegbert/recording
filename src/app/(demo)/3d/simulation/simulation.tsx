@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
   Environment,
   OrbitControls,
@@ -22,21 +22,24 @@ import {
   EffectComposer,
   Vignette,
 } from '@react-three/postprocessing';
-
+import { useControls, folder, Leva, button } from 'leva';
 import { useTheme } from 'next-themes';
 
-// 修改DebugSettings接口
+// 修改DebugSettings接口为可选，以便与Leva共存过渡期间
 interface DebugSettings {
-  showEffects: boolean;
-  zSpeed: number;
-  lightIntensity: number;
-  showWireframe: boolean;
-  cameraPosition: {
+  showEffects?: boolean;
+  zSpeed?: number;
+  lightIntensity?: number;
+  showWireframe?: boolean;
+  cameraPosition?: {
     x: number;
     y: number;
     z: number;
   };
-  zoom: number; // 添加正交相机的缩放控制
+  zoom?: number;
+  cameraMode?: string;
+  animationEnabled?: boolean;
+  animationSpeed?: number;
 }
 
 interface SceneProps {
@@ -46,14 +49,75 @@ interface SceneProps {
 export default function Simulation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
-  const [debugSettings, setDebugSettings] = useState<DebugSettings>({
-    showEffects: false,
-    zSpeed: 1,
-    lightIntensity: 0.6,
-    showWireframe: false,
-    cameraPosition: { x: 10, y: 20, z: 10 },
-    zoom: 50, // 初始缩放值
+  const cameraControlsRef = useRef(null);
+  const [animationState, setAnimationState] = useState({
+    time: 0,
+    lastTimestamp: 0,
   });
+
+  // 使用Leva替换调试UI
+  const debugControls = useControls({
+    'Post-Processing': folder({
+      showEffects: { value: false, label: 'Enable Effects' },
+    }),
+    Scene: folder({
+      lightIntensity: { value: 0.6, min: 0, max: 2, step: 0.1 },
+      wireframe: { value: false, label: 'Wireframe Mode' },
+    }),
+    Animation: folder({
+      zSpeed: {
+        value: 1,
+        min: 0,
+        max: 5,
+        step: 0.1,
+        label: 'Z Movement Speed',
+      },
+    }),
+    Camera: folder({
+      zoom: { value: 50, min: 10, max: 200, step: 1 },
+      position: {
+        value: { x: 10, y: 5, z: 10 },
+        step: 1,
+      },
+    }),
+    'Camera Animation': folder({
+      cameraMode: {
+        value: 'Orbit',
+        options: ['Orbit', 'FlyOver'],
+        label: 'Camera Path',
+      },
+      animationEnabled: { value: false, label: 'Enable Animation' },
+      animationSpeed: {
+        value: 0.5,
+        min: 0.1,
+        max: 2,
+        step: 0.1,
+        label: 'Speed',
+      },
+      resetCamera: button(() => {
+        if (cameraControlsRef.current) {
+          // 重置动画时间
+          setAnimationState({
+            time: 0,
+            lastTimestamp: Date.now(),
+          });
+        }
+      }),
+    }),
+  });
+
+  // 为了兼容，转换Leva控制值到DebugSettings格式
+  const debugSettings: DebugSettings = {
+    showEffects: debugControls.showEffects,
+    zSpeed: debugControls.zSpeed,
+    lightIntensity: debugControls.lightIntensity,
+    showWireframe: debugControls.wireframe,
+    cameraPosition: debugControls.position,
+    zoom: debugControls.zoom,
+    cameraMode: debugControls.cameraMode,
+    animationEnabled: debugControls.animationEnabled,
+    animationSpeed: debugControls.animationSpeed,
+  };
 
   useEffect(() => {
     // 强制重新计算画布大小
@@ -66,168 +130,133 @@ export default function Simulation() {
     };
   }, []);
 
+  // 计算相机轨迹位置
+  const calculateCameraPosition = (time: number, mode: string) => {
+    // 使用easeInOut缓动函数
+    const easeInOut = (t: number) => {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    };
+
+    if (mode === 'Orbit') {
+      // 轨道模式 - 环绕目标点旋转，但保持相同的视角和高度
+      const radius = 15;
+      const angle = time * 0.5; // 减慢旋转速度
+      const easedAngle = easeInOut(Math.sin(angle) * 0.5 + 0.5) * Math.PI * 2;
+
+      const x = Math.sin(easedAngle) * radius;
+      const z = Math.cos(easedAngle) * radius;
+      const y = 5; // 保持固定高度
+
+      return {
+        x,
+        y,
+        z,
+        rotation: [0, 0, 0], // 保持相机方向不变
+        zoom: debugSettings.zoom || 50, // 使用当前缩放级别
+      };
+    } else {
+      // 自由飞行模式 - 沿着水平路径移动，但保持相同的高度和视角
+      const t = time * 0.3; // 更慢的移动
+      const easedT = easeInOut(Math.sin(t) * 0.5 + 0.5);
+
+      // 做一个更柔和的往复运动
+      const x = easedT * 20 - 10; // -10 到 10 范围内移动
+      const z = 15 * Math.cos(t * 0.5); // 稍微的前后移动
+      const y = 5; // 保持固定高度
+
+      return {
+        x,
+        y,
+        z,
+        rotation: [0, 0, 0], // 保持相机方向不变
+        zoom: debugSettings.zoom || 50, // 使用当前缩放级别
+      };
+    }
+  };
+
+  // 处理相机动画
+  useEffect(() => {
+    if (debugSettings.animationEnabled) {
+      // 初始化动画时间
+      if (animationState.lastTimestamp === 0) {
+        setAnimationState({
+          time: 0,
+          lastTimestamp: Date.now(),
+        });
+      }
+
+      // 设置动画帧
+      const animationFrame = requestAnimationFrame(() => {
+        const now = Date.now();
+        const deltaTime = (now - animationState.lastTimestamp) / 1000;
+        const newTime =
+          animationState.time +
+          deltaTime * (debugSettings.animationSpeed || 0.5);
+
+        setAnimationState({
+          time: newTime,
+          lastTimestamp: now,
+        });
+      });
+
+      return () => cancelAnimationFrame(animationFrame);
+    }
+  }, [
+    debugSettings.animationEnabled,
+    animationState,
+    debugSettings.animationSpeed,
+    setAnimationState,
+  ]);
+
+  // 自定义正交相机动画组件
+  const AnimatedOrthographicCamera = () => {
+    const { camera, gl } = useThree();
+    const controls = useRef<any>();
+
+    useFrame(() => {
+      if (
+        debugSettings.animationEnabled &&
+        camera instanceof THREE.OrthographicCamera
+      ) {
+        const { x, y, z, rotation, zoom } = calculateCameraPosition(
+          animationState.time,
+          debugSettings.cameraMode || 'Orbit',
+        );
+
+        // 更新相机位置，但保持正交投影和方向
+        camera.position.set(x, y, z);
+
+        // 确保相机始终朝向原点
+        camera.lookAt(0, 0, 0);
+
+        // 保持相同的缩放
+        camera.zoom = zoom;
+        camera.updateProjectionMatrix();
+
+        // 更新控制器
+        if (controls.current?.update) {
+          controls.current.update();
+        }
+      }
+    });
+
+    return (
+      <OrbitControls
+        ref={controls}
+        makeDefault
+        enableDamping
+        dampingFactor={0.05}
+        minZoom={10}
+        maxZoom={200}
+        enabled={!debugSettings.animationEnabled}
+      />
+    );
+  };
+
   return (
     <div ref={containerRef} className="h-full w-full">
-      {/* 调试面板 */}
-      <div className="absolute left-2 top-2 z-10 w-64 rounded-lg bg-white/80 p-3 text-xs backdrop-blur-sm dark:bg-black/50 dark:text-white">
-        <h3 className="mb-2 font-bold">Debug Controls</h3>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label>Effects</label>
-            <input
-              type="checkbox"
-              checked={debugSettings.showEffects}
-              onChange={(e) =>
-                setDebugSettings({
-                  ...debugSettings,
-                  showEffects: e.target.checked,
-                })
-              }
-            />
-          </div>
-
-          <div>
-            <label>Z Speed: {debugSettings.zSpeed.toFixed(1)}</label>
-            <input
-              type="range"
-              min="0"
-              max="5"
-              step="0.1"
-              value={debugSettings.zSpeed}
-              onChange={(e) =>
-                setDebugSettings({
-                  ...debugSettings,
-                  zSpeed: parseFloat(e.target.value),
-                })
-              }
-              className="mt-1 w-full"
-            />
-          </div>
-
-          <div>
-            <label>
-              Light Intensity: {debugSettings.lightIntensity.toFixed(1)}
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="2"
-              step="0.1"
-              value={debugSettings.lightIntensity}
-              onChange={(e) =>
-                setDebugSettings({
-                  ...debugSettings,
-                  lightIntensity: parseFloat(e.target.value),
-                })
-              }
-              className="mt-1 w-full"
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <label>Wireframe</label>
-            <input
-              type="checkbox"
-              checked={debugSettings.showWireframe}
-              onChange={(e) =>
-                setDebugSettings({
-                  ...debugSettings,
-                  showWireframe: e.target.checked,
-                })
-              }
-            />
-          </div>
-
-          <Button
-            size="sm"
-            variant="outline"
-            className="mt-2 w-full text-xs"
-            onClick={() => {
-              // 重置所有调试设置
-              setDebugSettings({
-                ...debugSettings,
-                showWireframe: false,
-                lightIntensity: 0.6,
-                zSpeed: 1,
-              });
-            }}
-          >
-            Reset Materials
-          </Button>
-
-          <div>
-            <label>Camera Zoom: {debugSettings.zoom.toFixed(1)}</label>
-            <input
-              type="range"
-              min="10"
-              max="200"
-              step="1"
-              value={debugSettings.zoom}
-              onChange={(e) =>
-                setDebugSettings({
-                  ...debugSettings,
-                  zoom: parseFloat(e.target.value),
-                })
-              }
-              className="mt-1 w-full"
-            />
-          </div>
-
-          <div className="grid grid-cols-3 gap-1">
-            <div>
-              <label>Camera X</label>
-              <input
-                type="number"
-                value={debugSettings.cameraPosition.x}
-                onChange={(e) =>
-                  setDebugSettings({
-                    ...debugSettings,
-                    cameraPosition: {
-                      ...debugSettings.cameraPosition,
-                      x: parseFloat(e.target.value),
-                    },
-                  })
-                }
-                className="w-full rounded border px-1 dark:border-gray-700 dark:bg-gray-900"
-              />
-            </div>
-            <div>
-              <label>Camera Y</label>
-              <input
-                type="number"
-                value={debugSettings.cameraPosition.y}
-                onChange={(e) =>
-                  setDebugSettings({
-                    ...debugSettings,
-                    cameraPosition: {
-                      ...debugSettings.cameraPosition,
-                      y: parseFloat(e.target.value),
-                    },
-                  })
-                }
-                className="w-full rounded border px-1 dark:border-gray-700 dark:bg-gray-900"
-              />
-            </div>
-            <div>
-              <label>Camera Z</label>
-              <input
-                type="number"
-                value={debugSettings.cameraPosition.z}
-                onChange={(e) =>
-                  setDebugSettings({
-                    ...debugSettings,
-                    cameraPosition: {
-                      ...debugSettings.cameraPosition,
-                      z: parseFloat(e.target.value),
-                    },
-                  })
-                }
-                className="w-full rounded border px-1 dark:border-gray-700 dark:bg-gray-900"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Leva面板会自动添加到DOM中 */}
+      <Leva collapsed={false} titleBar={{ title: 'Debug Controls' }} />
 
       <Canvas
         shadows
@@ -237,6 +266,7 @@ export default function Simulation() {
         }}
         style={{ width: '100%', height: '100%' }}
         resize={{ scroll: true, debounce: { scroll: 50, resize: 0 } }}
+        orthographic // 确保使用正交相机
       >
         <color
           attach="background"
@@ -245,42 +275,21 @@ export default function Simulation() {
         <OrthographicCamera
           makeDefault
           position={[
-            debugSettings.cameraPosition.x,
-            debugSettings.cameraPosition.y,
-            debugSettings.cameraPosition.z,
+            debugSettings.cameraPosition?.x || 10,
+            debugSettings.cameraPosition?.y || 5,
+            debugSettings.cameraPosition?.z || 10,
           ]}
-          zoom={debugSettings.zoom}
+          zoom={debugSettings.zoom || 50}
           near={0.1}
           far={1000}
         />
         <Scene debugSettings={debugSettings} />
-        <OrbitControls
-          makeDefault
-          enableDamping
-          dampingFactor={0.05}
-          minZoom={10}
-          maxZoom={200}
-        />
+
+        {/* 使用自定义正交相机动画组件 */}
+        <AnimatedOrthographicCamera />
+
         <Environment files="/environment.hdr" background blur={0.5} />
         <axesHelper args={[5]} />
-
-        {/* <Plane
-          args={[100, 100]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, -4, 0]}
-        /> */}
-
-        <GizmoHelper
-          alignment="bottom-right"
-          margin={[80, 80]}
-          renderPriority={1}
-        >
-          <GizmoViewport
-            axisColors={['red', 'green', 'blue']}
-            labelColor="black"
-          />
-          {/* alternative: <GizmoViewcube /> */}
-        </GizmoHelper>
 
         {debugSettings.showEffects && (
           <EffectComposer>
@@ -298,12 +307,33 @@ export default function Simulation() {
             <Vignette eskil={false} offset={0.1} darkness={0.6} />
           </EffectComposer>
         )}
+
+        <GizmoHelper
+          alignment="bottom-right"
+          margin={[80, 80]}
+          renderPriority={1}
+        >
+          <GizmoViewport
+            axisColors={['red', 'green', 'blue']}
+            labelColor="black"
+          />
+        </GizmoHelper>
       </Canvas>
     </div>
   );
 }
 
 function Scene({ debugSettings }: SceneProps) {
+  // 场景中自己的控制参数也可以使用Leva
+  const materialControls = useControls('Material Properties', {
+    metalness: { value: 0.6, min: 0, max: 1, step: 0.01 },
+    roughness: { value: 0.2, min: 0, max: 1, step: 0.01 },
+    clearcoat: { value: 0.8, min: 0, max: 1, step: 0.01 },
+    clearcoatRoughness: { value: 0.2, min: 0, max: 1, step: 0.01 },
+    edgeThickness: { value: 0.003, min: 0.001, max: 0.01, step: 0.001 },
+    edgeColor: { value: '#00a0ff' },
+  });
+
   const directionalLightRef = useRef<THREE.DirectionalLight>(null!);
   const [isLaserActive, setIsLaserActive] = useState(false);
   const laserRef = useRef<THREE.Mesh | null>(null);
@@ -315,7 +345,7 @@ function Scene({ debugSettings }: SceneProps) {
 
   // 旋转动画
   useFrame((state) => {
-    setBoxMoving(state.clock.getElapsedTime() * debugSettings.zSpeed);
+    setBoxMoving(state.clock.getElapsedTime() * (debugSettings.zSpeed || 1));
   });
 
   // Load the tube model
@@ -323,7 +353,6 @@ function Scene({ debugSettings }: SceneProps) {
   const { nodes, materials } = useGLTF('/models/tube.glb');
 
   // 打印模型结构以便调试
-
   // console.log('Model nodes:', nodes);
   // console.log('Model materials:', materials);
 
@@ -386,7 +415,10 @@ function Scene({ debugSettings }: SceneProps) {
           // 添加边缘辅助线 (手动模拟Edges组件)
           const edges = new THREE.LineSegments(
             new THREE.EdgesGeometry(object.geometry, 15),
-            new THREE.LineBasicMaterial({ color: '#00a0ff', linewidth: 1 }),
+            new THREE.LineBasicMaterial({
+              color: materialControls.edgeColor,
+              linewidth: 1,
+            }),
           );
           edges.userData.isEdges = true;
           object.add(edges);
@@ -403,7 +435,7 @@ function Scene({ debugSettings }: SceneProps) {
         }
       });
     }
-  }, [scene, debugSettings.showWireframe]);
+  }, [scene, debugSettings.showWireframe, materialControls.edgeColor]);
 
   useEffect(() => {
     // 创建激光效果
@@ -493,14 +525,14 @@ function Scene({ debugSettings }: SceneProps) {
         shadow-mapSize-height={1024}
       />
       <ambientLight intensity={debugSettings.lightIntensity} />
-      {/* <Grid
+      <Grid
         args={[20, 20]}
-        cellSize={1}
-        cellThickness={0.6}
-        cellColor="#999999"
+        cellSize={10}
+        cellThickness={0.1}
+        sectionColor="#eeeeee"
         position={[0, -2, 0]}
         infiniteGrid
-      /> */}
+      />
 
       {/* 添加圆角盒子 */}
       <RoundedBox
@@ -519,10 +551,10 @@ function Scene({ debugSettings }: SceneProps) {
       >
         <meshPhysicalMaterial
           color={debugSettings.showWireframe ? '#1a3e78' : '#eeeeee'}
-          metalness={debugSettings.showWireframe ? 0.9 : 0.6}
-          roughness={debugSettings.showWireframe ? 0.1 : 0.2}
-          clearcoat={0.8}
-          clearcoatRoughness={0.2}
+          metalness={materialControls.metalness}
+          roughness={materialControls.roughness}
+          clearcoat={materialControls.clearcoat}
+          clearcoatRoughness={materialControls.clearcoatRoughness}
           transparent={debugSettings.showWireframe}
           opacity={debugSettings.showWireframe ? 0.2 : 1}
         />
@@ -530,13 +562,13 @@ function Scene({ debugSettings }: SceneProps) {
           <>
             <Edges
               threshold={15} // 边缘角度阈值，只显示大于这个角度的边缘
-              color={hovered ? '#00ffff' : '#00a0ff'}
+              color={hovered ? '#00ffff' : materialControls.edgeColor}
               scale={1.001} // 稍微放大以避免z-fighting
               lineWidth={1.5}
             />
             <Outlines
-              thickness={0.003}
-              color={hovered ? '#00ffff' : '#00a0ff'}
+              thickness={materialControls.edgeThickness}
+              color={hovered ? '#00ffff' : materialControls.edgeColor}
               transparent={true}
               opacity={0.8}
             />

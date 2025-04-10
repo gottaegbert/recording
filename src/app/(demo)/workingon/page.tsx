@@ -10,8 +10,6 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 
-import SideMenu from '@/components/demo/SideMenu';
-import { motion } from 'motion/react';
 import ImageShaderComponent from '@/components/demo/Shader/DynamicImagetransition';
 import LaserCutShaderComponent from '@/components/demo/Shader/LaserCut';
 import WireframeCubeShaderComponent from '@/components/demo/Shader/WireframeCube';
