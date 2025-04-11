@@ -7,6 +7,8 @@ import { Plane } from '@react-three/drei';
 export type CutterProps = {
   children: React.ReactNode;
   plane: THREE.Plane;
+  wireframeCap?: boolean;
+  hideCapPlanes?: boolean;
 };
 
 export type CutterRef = {
@@ -14,37 +16,53 @@ export type CutterRef = {
 };
 
 const Cutter = React.forwardRef<CutterRef, CutterProps>(
-  ({ children, plane }: CutterProps, fRef: CutterRef) => {
-    const rootGroupRef = React.useRef<THREE.Object3D>();
+  (
+    {
+      children,
+      plane,
+      wireframeCap = false,
+      hideCapPlanes = false,
+    }: CutterProps,
+    fRef,
+  ) => {
+    const rootGroupRef = React.useRef<THREE.Group>(null);
 
-    const [meshList, setMeshList] = React.useState([]);
-    const [capMaterialList, setCapMaterialList] = React.useState([]);
-    const [planeSize, setPlaneSize] = React.useState(10);
+    const [meshList, setMeshList] = React.useState<THREE.Mesh[]>([]);
+    const [capMaterialList, setCapMaterialList] = React.useState<
+      THREE.Material[]
+    >([]);
+    const [planeSize, setPlaneSize] = React.useState(2);
 
     const update: () => void = React.useCallback(() => {
-      const meshChildren: THREE.mesh[] = [];
-      const capMatList: THREE.material[] = [];
+      const meshChildren: THREE.Mesh[] = [];
+      const capMatList: THREE.Material[] = [];
       const rootGroup = rootGroupRef.current;
       if (rootGroup) {
         rootGroup.traverse((child: THREE.Object3D) => {
-          if (child.isMesh && child.material && !child.isBrush) {
-            child.matrixAutoUpdate = false;
-            child.geometry.computeBoundingBox();
+          const mesh = child as THREE.Mesh;
+          // 检查对象是否为Mesh并有材质
+          if (
+            mesh.isMesh &&
+            mesh.material &&
+            !('isBrush' in mesh && mesh.isBrush)
+          ) {
+            mesh.matrixAutoUpdate = false;
+            mesh.geometry.computeBoundingBox();
             //
             // Add clipping planes to each mesh and make sure that the material is
             // double sided. This is needed to create PlaneStencilGroup for the
             // mesh.
             //
-            if (Array.isArray(child.material)) {
-              child.material.forEach((mat: THREE.material) => {
-                mat.clippingPlanes = [plane];
+            if (Array.isArray(mesh.material)) {
+              mesh.material.forEach((mat: THREE.Material) => {
+                (mat as any).clippingPlanes = [plane];
                 mat.side = THREE.DoubleSide;
               });
             } else {
-              child.material.clippingPlanes = [plane];
-              child.material.side = THREE.DoubleSide;
+              (mesh.material as any).clippingPlanes = [plane];
+              mesh.material.side = THREE.DoubleSide;
             }
-            meshChildren.push(child);
+            meshChildren.push(mesh);
             //
             // Create material for the cap based on the stencil created by
             // PlaneStencilGroup for the mesh.
@@ -52,17 +70,27 @@ const Cutter = React.forwardRef<CutterRef, CutterProps>(
             // :TODO: This implementation does not work if the mesh uses and array
             // of materials. This needs to be fixed.
             //
-            const capMaterial = Array.isArray(child.material)
-              ? child.material[0].clone()
-              : child.material.clone();
-            capMaterial.clippingPlanes = null;
-            capMaterial.stencilWrite = true;
-            capMaterial.stencilRef = 0;
+            const capMaterial = Array.isArray(mesh.material)
+              ? mesh.material[0].clone()
+              : mesh.material.clone();
+            (capMaterial as any).clippingPlanes = null;
+            (capMaterial as any).stencilWrite = true;
+            (capMaterial as any).stencilRef = 0;
             capMaterial.side = THREE.DoubleSide;
-            capMaterial.stencilFunc = THREE.NotEqualStencilFunc;
-            capMaterial.stencilFail = THREE.ReplaceStencilOp;
-            capMaterial.stencilZFail = THREE.ReplaceStencilOp;
-            capMaterial.stencilZPass = THREE.ReplaceStencilOp;
+            (capMaterial as any).stencilFunc = THREE.NotEqualStencilFunc;
+            (capMaterial as any).stencilFail = THREE.ReplaceStencilOp;
+            (capMaterial as any).stencilZFail = THREE.ReplaceStencilOp;
+            (capMaterial as any).stencilZPass = THREE.ReplaceStencilOp;
+
+            // 如果wireframeCap为true，设置为线框模式
+            if (wireframeCap) {
+              (capMaterial as any).wireframe = true;
+              (capMaterial as any).transparent = true;
+              (capMaterial as any).opacity = 0.7;
+              // 可以设置线框颜色，使其更加明显
+              (capMaterial as any).color = new THREE.Color(0x00ffff);
+            }
+
             capMatList.push(capMaterial);
           }
         });
@@ -82,7 +110,7 @@ const Cutter = React.forwardRef<CutterRef, CutterProps>(
       //
       // Dispose old cap materials.
       //
-      capMaterialList.forEach((item: THREE.material) => item.dispose());
+      capMaterialList.forEach((item: THREE.Material) => item.dispose());
       //
       // Save the new cap material list.
       //
@@ -93,9 +121,9 @@ const Cutter = React.forwardRef<CutterRef, CutterProps>(
       // return () => {
       //   capMaterialList.forEach((item: THREE.material) => item.dispose());
       // };
-    }, [capMaterialList, plane]);
+    }, [capMaterialList, plane, wireframeCap, hideCapPlanes]);
 
-    const planeListRef = React.useRef(null);
+    const planeListRef = React.useRef<Map<number, any>>(new Map());
 
     // See
     // https://react.dev/learn/manipulating-the-dom-with-refs#how-to-manage-a-list-of-refs-using-a-ref-callback
@@ -108,7 +136,8 @@ const Cutter = React.forwardRef<CutterRef, CutterProps>(
     }
 
     useFrame(() => {
-      getPlaneListMap().forEach((planeObj: Plane) => {
+      const map = getPlaneListMap();
+      map.forEach((planeObj) => {
         if (planeObj) {
           plane.coplanarPoint(planeObj.position);
           planeObj.lookAt(
@@ -137,30 +166,41 @@ const Cutter = React.forwardRef<CutterRef, CutterProps>(
             />
           ))}
         </group>
-        {meshList.map((meshObj, index) => (
-          <group key={meshObj.id}>
-            <Plane
-              ref={(node) => {
-                const map = getPlaneListMap();
-                if (node) {
-                  map.set(index, node);
-                } else {
-                  map.delete(index);
-                }
-              }}
-              args={[planeSize, planeSize]}
-              renderOrder={index + 1.1}
-              onAfterRender={(gl) => gl.clearStencil()}
-              material={capMaterialList[index]}
-            />
-          </group>
-        ))}
+        {!hideCapPlanes &&
+          meshList.map((meshObj, index) => (
+            <group key={meshObj.id}>
+              <Plane
+                ref={(node) => {
+                  const map = getPlaneListMap();
+                  if (node) {
+                    map.set(index, node);
+                  } else {
+                    map.delete(index);
+                  }
+                }}
+                args={[planeSize, planeSize]}
+                renderOrder={index + 1.1}
+                onAfterRender={(gl) => gl.clearStencil()}
+                material={capMaterialList[index]}
+              />
+            </group>
+          ))}
       </group>
     );
   },
 );
 
-function PlaneStencilGroup({ meshObj, plane, renderOrder }) {
+type PlaneStencilGroupProps = {
+  meshObj: THREE.Mesh;
+  plane: THREE.Plane;
+  renderOrder: number;
+};
+
+function PlaneStencilGroup({
+  meshObj,
+  plane,
+  renderOrder,
+}: PlaneStencilGroupProps) {
   //
   meshObj.updateMatrix();
   meshObj.updateMatrixWorld();

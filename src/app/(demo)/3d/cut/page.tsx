@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import MotionWrapper from '@/components/transition/motion-wrapper';
-import MetallicMaterialsDemo from './metalness';
 import Link from 'next/link';
 import { ContentLayout } from '@/components/admin-panel/content-layout';
 import {
@@ -14,20 +13,9 @@ import {
   BreadcrumbList,
   BreadcrumbItem,
 } from '@/components/ui/breadcrumb';
-import { FullscreenButton } from '@/components/demo/Shader/FullscreenButton';
+import LoadingScene from './LoadingScene';
 
-// 加载动画组件
-const LoadingSpinner = () => (
-  <div className="flex h-full w-full flex-col items-center justify-center">
-    <div className="h-16 w-16 animate-spin rounded-full border-4 border-neutral-200 border-t-yellow-500"></div>
-    <p className="mt-4 text-lg font-medium text-neutral-300">加载中...</p>
-    <div className="mt-2 h-1 w-48 overflow-hidden rounded-full bg-neutral-700">
-      <div className="h-full w-1/2 animate-[pulse_1.5s_ease-in-out_infinite] rounded-full bg-gradient-to-r from-yellow-500 to-yellow-300"></div>
-    </div>
-  </div>
-);
-
-export default function MetalnessPage() {
+export default function CutPage() {
   // 添加加载状态
   const [isLoading, setIsLoading] = useState(true);
 
@@ -63,7 +51,7 @@ export default function MetalnessPage() {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              <Link href="/3d/metalness">Metalness</Link>
+              <Link href="/3d/cut">Cut</Link>
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -74,23 +62,7 @@ export default function MetalnessPage() {
             id="metalness-container"
             className="relative h-[calc(100vh-200px)] overflow-hidden"
           >
-            <FullscreenButton
-              targetId="metalness-container"
-              className="absolute right-2 top-2 z-10 flex items-center space-x-1 rounded-full bg-white/10 px-3 py-1 text-xs backdrop-blur-sm hover:bg-white/20"
-            />
-            <div className="h-full w-full">
-              {isLoading ? (
-                <div className="relative h-full w-full bg-neutral-900">
-                  <LoadingSpinner />
-                </div>
-              ) : null}
-
-              <div
-                className={`h-full w-full ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}
-              >
-                <MetallicMaterialsDemo onLoaded={handleLoaded} />
-              </div>
-            </div>
+            <LoadingScene onFinishLoading={handleLoaded} />
           </Card>
         </div>
       </MotionWrapper>

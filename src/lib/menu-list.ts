@@ -64,6 +64,11 @@ export function getMenuList(pathname: string): Group[] {
               icon: CubeIcon,
             },
             {
+              href: '/3d/cut',
+              label: 'Cut',
+              icon: CubeIcon,
+            },
+            {
               href: '/3d/simulation',
               label: 'Simulation',
               icon: CubeIcon,

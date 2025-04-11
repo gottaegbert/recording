@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
   Environment,
@@ -14,10 +14,42 @@ import {
 import * as THREE from 'three';
 import { Model as Datsun } from './datsun';
 
-export default function MetallicMaterialsDemo() {
+export interface MetallicMaterialsDemoProps {
+  onLoaded?: () => void;
+}
+
+export default function MetallicMaterialsDemo({
+  onLoaded,
+}: MetallicMaterialsDemoProps) {
   const [currentSection, setCurrentSection] = useState(0);
   const [scrollControls, setScrollControls] = useState<any>(null);
   const [activeMaterial, setActiveMaterial] = useState('');
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // 通知父组件已加载完成
+  useEffect(() => {
+    // 使用延迟确保场景完全渲染后再触发onLoaded
+    const timeoutId = setTimeout(() => {
+      if (onLoaded) onLoaded();
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [onLoaded]);
+
+  // 刷新场景的函数
+  const handleRefresh = useCallback(() => {
+    // 重置当前部分到第一部分
+    setCurrentSection(0);
+    setActiveMaterial('');
+
+    // 重置滚动位置
+    if (scrollControls && scrollControls.el) {
+      scrollControls.el.scrollTo(0, 0);
+    }
+
+    // 触发resize以确保Canvas重新计算尺寸
+    window.dispatchEvent(new Event('resize'));
+  }, [scrollControls]);
 
   useEffect(() => {
     // 强制重新计算画布大小
@@ -49,6 +81,11 @@ export default function MetallicMaterialsDemo() {
           (prevSection / 7) * scrollControls.el.scrollHeight,
         );
       }
+
+      // 添加R键刷新功能
+      if (e.key === 'r' || e.key === 'R') {
+        handleRefresh();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -57,7 +94,7 @@ export default function MetallicMaterialsDemo() {
       clearTimeout(timeoutId);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [currentSection, scrollControls]);
+  }, [currentSection, scrollControls, handleRefresh]);
 
   // 处理点击导航到特定部分
   const handleSectionClick = (index: number) => {
@@ -83,7 +120,11 @@ export default function MetallicMaterialsDemo() {
 
   return (
     <div className="h-full w-full">
-      <Canvas shadows camera={{ position: [0, -2, 8], fov: 45 }}>
+      <Canvas
+        shadows
+        camera={{ position: [0, -2, 8], fov: 45 }}
+        ref={canvasRef}
+      >
         <ScrollControls
           pages={7}
           damping={0.2}
@@ -99,8 +140,35 @@ export default function MetallicMaterialsDemo() {
           <Environment preset="warehouse" />
         </ScrollControls>
       </Canvas>
-      <div className="absolute right-8 top-8 rounded-md bg-black/70 p-3 text-white">
-        <p>Scroll/Keyboard⬇️⬆️ to navigate</p>
+
+      {/* 控制面板 */}
+      <div className="absolute right-8 top-8 space-y-2 text-white">
+        {/* 导航提示 */}
+        <div className="rounded-md bg-black/70 p-3">
+          <p>Scroll/Keyboard⬇️⬆️ to navigate</p>
+        </div>
+
+        {/* 刷新按钮 */}
+        <button
+          className="flex w-full items-center justify-center rounded-md bg-black/70 p-3 hover:bg-black/90"
+          onClick={handleRefresh}
+          title="Reset scene (R)"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="h-5 w-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+            />
+          </svg>
+        </button>
       </div>
 
       {/* 材质信息 - 只保留2D界面版本 */}
@@ -443,7 +511,7 @@ function Scene({
       </group>
 
       {/* Metallic Materials Showcase */}
-      <group position={[0, 3, -4]}>
+      <group position={[0, 4, -4]}>
         {/* Chrome-like material */}
         <MetallicObject
           position={[-4, 0, 0]}
