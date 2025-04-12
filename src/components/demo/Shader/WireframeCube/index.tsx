@@ -259,6 +259,7 @@ export default function WireframeCubeShaderComponent({
         cancelAnimationFrame(expandAnimationRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded]);
 
   useEffect(() => {
@@ -300,6 +301,7 @@ export default function WireframeCubeShaderComponent({
         wireframeCubeShader.cleanup();
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shaderVersion]); // Re-initialize when shader version changes
 
   // 切换展开/折叠状态

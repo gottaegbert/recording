@@ -121,7 +121,7 @@ const Cutter = React.forwardRef<CutterRef, CutterProps>(
       // return () => {
       //   capMaterialList.forEach((item: THREE.material) => item.dispose());
       // };
-    }, [capMaterialList, plane, wireframeCap, hideCapPlanes]);
+    }, [capMaterialList, plane, wireframeCap]);
 
     const planeListRef = React.useRef<Map<number, any>>(new Map());
 

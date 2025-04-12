@@ -137,7 +137,7 @@ export default function MetallicMaterialsDemo({
             setScrollControls={setScrollControls}
             setActiveMaterial={setActiveMaterial}
           />
-          <Environment preset="warehouse" />
+          <Environment files="/adamsbridge.hdr" />
         </ScrollControls>
       </Canvas>
 

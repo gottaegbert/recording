@@ -438,7 +438,12 @@ function Scene({ debugSettings }: SceneProps) {
   }, [scene, debugSettings.showWireframe, materialControls.edgeColor]);
 
   useEffect(() => {
-    // 创建激光效果
+    // Capture refs within the effect to use in cleanup
+    const currentCubeRef = cubeRef.current;
+    const currentLaserRef = laserRef.current;
+    const currentLaserLightRef = laserLightRef.current;
+
+    // Create laser beam
     const laserGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.02, 32);
     const laserMaterial = new THREE.MeshBasicMaterial({
       color: 0x00ffff,
@@ -467,27 +472,26 @@ function Scene({ debugSettings }: SceneProps) {
     scene.add(laserLight);
     laserLightRef.current = laserLight;
 
-    // 清理函数
     return () => {
-      if (laserRef.current) {
-        scene.remove(laserRef.current);
-        laserRef.current.geometry.dispose();
-        if (Array.isArray(laserRef.current.material)) {
-          laserRef.current.material.forEach((material) => material.dispose());
+      if (currentLaserRef) {
+        scene.remove(currentLaserRef);
+        currentLaserRef.geometry.dispose();
+        if (Array.isArray(currentLaserRef.material)) {
+          currentLaserRef.material.forEach((material) => material.dispose());
         } else {
-          laserRef.current.material.dispose();
+          currentLaserRef.material.dispose();
         }
       }
-      if (laserLightRef.current) {
-        scene.remove(laserLightRef.current);
+      if (currentLaserLightRef) {
+        scene.remove(currentLaserLightRef);
       }
-      if (cubeRef.current) {
-        scene.remove(cubeRef.current);
-        cubeRef.current.geometry.dispose();
-        if (Array.isArray(cubeRef.current.material)) {
-          cubeRef.current.material.forEach((material) => material.dispose());
+      if (currentCubeRef) {
+        scene.remove(currentCubeRef);
+        currentCubeRef.geometry.dispose();
+        if (Array.isArray(currentCubeRef.material)) {
+          currentCubeRef.material.forEach((material) => material.dispose());
         } else {
-          cubeRef.current.material.dispose();
+          currentCubeRef.material.dispose();
         }
       }
     };

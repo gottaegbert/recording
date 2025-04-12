@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import MotionWrapper from '@/components/transition/motion-wrapper';
 import Link from 'next/link';
@@ -12,12 +13,28 @@ import {
   BreadcrumbList,
   BreadcrumbItem,
 } from '@/components/ui/breadcrumb';
-import Simulation from './simulation';
-import { FullscreenButton } from '@/components/demo/Shader/FullscreenButton';
+import LoadingScene from './LoadingScene';
 
-export default function SimulationPage() {
+export default function CutPage() {
+  // 添加加载状态
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 处理加载完成的回调
+  const handleLoaded = () => {
+    setIsLoading(false);
+  };
+
+  // 使用useEffect确保即使加载速度很快也至少显示一小段时间的加载动画
+  useEffect(() => {
+    const minLoadingTime = setTimeout(() => {
+      setIsLoading(false);
+    }, 2500);
+
+    return () => clearTimeout(minLoadingTime);
+  }, []);
+
   return (
-    <ContentLayout title="3D">
+    <ContentLayout title="3D Cut">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -28,13 +45,13 @@ export default function SimulationPage() {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/3d">3d</Link>
+              <Link href="/3dpages">3d Pages</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              <Link href="/3d/simulation">Simulation</Link>
+              <Link href="/3dpages/cut">Cut</Link>
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -42,24 +59,10 @@ export default function SimulationPage() {
       <MotionWrapper>
         <div className="container mx-auto p-6">
           <Card
-            id="simulation-container"
-            className="relative overflow-hidden"
-            style={{
-              height: 'calc(100vh - 200px)',
-              width: '100%',
-              minHeight: '500px',
-            }}
+            id="metalness-container"
+            className="relative h-[calc(100vh-200px)] overflow-hidden"
           >
-            <FullscreenButton
-              targetId="simulation-container"
-              className="absolute right-2 top-2 z-10 flex items-center space-x-1 rounded-full px-3 py-1 text-xs backdrop-blur-sm"
-            />
-            <div
-              className="h-full w-full"
-              style={{ position: 'absolute', inset: 0 }}
-            >
-              <Simulation />
-            </div>
+            <LoadingScene onFinishLoading={handleLoaded} />
           </Card>
         </div>
       </MotionWrapper>

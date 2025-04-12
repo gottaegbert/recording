@@ -54,22 +54,22 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: '/',
-          label: '3d',
+          href: '/3dpages',
+          label: '3d Pages',
           icon: CubeIcon,
           submenus: [
             {
-              href: '/3d/metalness',
+              href: '/3dpages/metalness',
               label: 'Metalness',
               icon: CubeIcon,
             },
             {
-              href: '/3d/cut',
+              href: '/3dpages/cut',
               label: 'Cut',
               icon: CubeIcon,
             },
             {
-              href: '/3d/simulation',
+              href: '/3dpages/simulation',
               label: 'Simulation',
               icon: CubeIcon,
             },

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Grid } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
 import Cutter from './cutter';
@@ -249,10 +249,7 @@ export default function LoadingScene({
         shadows
         camera={{
           position: [-30, 20, -10],
-          // left: -5,
-          // right: 5,
-          // top: 5,
-          // bottom: -5,
+
           near: 0.1,
           far: 100,
           zoom: 40,

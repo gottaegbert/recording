@@ -7,10 +7,12 @@ import { ShaderCard } from '../ShaderStyles';
 const TwistedBox = () => {
   // This reference gives us direct access to the mesh
   const mesh = useRef<Mesh>(null);
-  const quaternion = new Quaternion();
 
   useEffect(() => {
     if (!mesh.current) return;
+
+    // Create quaternion inside the effect
+    const quaternion = new Quaternion();
 
     // Get the current attributes of the geometry
     const currentPositions = mesh.current.geometry.attributes.position;
