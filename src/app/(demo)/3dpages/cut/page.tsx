@@ -13,7 +13,7 @@ import {
   BreadcrumbList,
   BreadcrumbItem,
 } from '@/components/ui/breadcrumb';
-import LoadingScene from './LoadingScene';
+import CutScene from './CutScene';
 
 export default function CutPage() {
   // 添加加载状态
@@ -62,7 +62,7 @@ export default function CutPage() {
             id="metalness-container"
             className="relative h-[calc(100vh-200px)] overflow-hidden"
           >
-            <LoadingScene onFinishLoading={handleLoaded} />
+            <CutScene onFinishLoading={handleLoaded} />
           </Card>
         </div>
       </MotionWrapper>
