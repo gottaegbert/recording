@@ -3,11 +3,13 @@ import { PanelsTopLeft } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
 // import BackgroundShaderComponent from '@/components/demo/Shader/BackgroundShader';
 import { ScrollIndicator } from '@/components/scroll-indicator';
+import ComputersPage from '../app/(demo)/3dpages/computers';
 
 export default function HomePage() {
   return (
     <div className="relative flex min-h-[200vh] flex-col">
       {/* <BackgroundShaderComponent /> */}
+      <ComputersPage />
       <header className="sticky top-0 z-[50] border-b border-border/40 bg-background/30 backdrop-blur-xl dark:bg-black/[0.2]">
         <div className="container flex h-14 items-center">
           <Link
@@ -35,7 +37,7 @@ export default function HomePage() {
                   Daily Practice
                 </span>
               </div>
-              <ScrollIndicator />
+              {/* <ScrollIndicator /> */}
             </div>
           </section>
         </div>

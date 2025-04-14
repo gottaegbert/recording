@@ -13,7 +13,7 @@ import {
   BreadcrumbList,
   BreadcrumbItem,
 } from '@/components/ui/breadcrumb';
-import CutScene from './CutScene';
+import CutScene from './cutscene';
 
 export default function CutPage() {
   // 添加加载状态

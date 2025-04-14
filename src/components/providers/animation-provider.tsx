@@ -1,8 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
-import OpeningAnimation from '@/components/animations/opening-animation';
+import { Suspense, useState } from 'react';
 import { AnimationProviderContent } from './animation-provider-content';
 
 interface AnimationProviderProps {
@@ -29,7 +28,7 @@ export const AnimationProvider = ({ children }: AnimationProviderProps) => {
 
       {/* 在动画结束前隐藏内容 */}
       <div
-        className={`transition-opacity duration-500 ${isPageReady ? 'opacity-100' : 'opacity-0'}`}
+        className={`transition-opacity duration-1000 ${isPageReady ? 'opacity-100' : 'opacity-0'}`}
         aria-hidden={!isPageReady}
       >
         {children}
