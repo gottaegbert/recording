@@ -5,7 +5,7 @@
  *   commented out for now.
  *   https://kevinhufnagl.com
  */
-
+'use client';
 //Converting colors to proper format
 function normalizeColor(hexCode) {
   return [

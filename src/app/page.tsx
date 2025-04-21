@@ -3,7 +3,7 @@ import { PanelsTopLeft } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
 // import BackgroundShaderComponent from '@/components/demo/Shader/BackgroundShader';
 import { ScrollIndicator } from '@/components/scroll-indicator';
-import ComputersPage from '../app/(demo)/3dpages/computers';
+import ComputersPage from './(demo)/3dpages/computers';
 
 export default function HomePage() {
   return (
@@ -37,7 +37,7 @@ export default function HomePage() {
                   Daily Practice
                 </span>
               </div>
-              {/* <ScrollIndicator /> */}
+              <ScrollIndicator />
             </div>
           </section>
         </div>

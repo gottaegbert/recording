@@ -1,5 +1,5 @@
 'use client';
-
+//problem
 import { useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import { vertexShaderSource, fragmentShaderSource } from './shaders';
@@ -13,7 +13,14 @@ class BackgroundShader {
   private isDark: boolean = false;
 
   initShader(canvas: HTMLCanvasElement) {
-    const gl = canvas.getContext('webgl');
+    if (!canvas) {
+      console.error('Canvas element is not available');
+      return;
+    }
+
+    const gl = canvas.getContext('webgl', {
+      antialias: true,
+    });
     if (!gl) return;
     this.gl = gl;
 

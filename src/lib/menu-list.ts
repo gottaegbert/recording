@@ -1,4 +1,4 @@
-import { LayoutGrid } from 'lucide-react';
+import { CameraIcon, LayoutGrid } from 'lucide-react';
 import {
   LightningBoltIcon,
   ShadowIcon,
@@ -102,6 +102,12 @@ export function getMenuList(pathname: string): Group[] {
               icon: BarChartIcon,
             },
           ],
+        },
+        {
+          href: '/photography',
+          label: 'Photography',
+          icon: CameraIcon,
+          submenus: [],
         },
       ],
     },

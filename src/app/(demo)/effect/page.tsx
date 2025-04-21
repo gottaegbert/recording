@@ -54,7 +54,7 @@ export default function EffectPage() {
           <GradientBackground />
           <FlowerShaderComponent />
           <CursorBall />
-          <BackgroundShaderComponent />
+          {/* <BackgroundShaderComponent /> */}
         </div>
       </MotionWrapper>
     </ContentLayout>
