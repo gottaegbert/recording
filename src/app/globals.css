@@ -1,9 +1,20 @@
+@font-face {
+  font-family: 'Optician Sans';
+  src: url('/Optician-Sans.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+ 
+  
   :root {
+    
     --tmain: #2a2a2a;
     --tsecondary: #aaaaaa;
     --treverse: #e9e9e9;
@@ -85,6 +96,9 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  html {
+    font-family: 'Optician Sans', sans-serif;
   }
 }
 

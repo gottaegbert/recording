@@ -18,6 +18,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Optician Sans', 'sans-serif'],
+        optician: ['Optician Sans', 'sans-serif'],
+      },
       colors: {
         ball: 'var(--ball)',
         main: 'var(--main)',

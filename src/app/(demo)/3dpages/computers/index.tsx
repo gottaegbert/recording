@@ -1,10 +1,17 @@
 'use client';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, MeshReflectorMaterial, BakeShadows } from '@react-three/drei';
+import {
+  useGLTF,
+  MeshReflectorMaterial,
+  BakeShadows,
+  useHelper,
+} from '@react-three/drei';
 import {
   EffectComposer,
   Bloom,
   DepthOfField,
+  DotScreen,
+  TiltShift2,
 } from '@react-three/postprocessing';
 import { easing } from 'maath';
 import { Instances, Computers } from './computers';
@@ -24,6 +31,7 @@ export default function ComputersPage() {
         <color attach="background" args={['black']} />
         <hemisphereLight intensity={0.45} groundColor="black" />
         <spotLight
+          decay={0}
           position={[10, 20, 10]}
           angle={0.12}
           penumbra={1}
@@ -56,7 +64,12 @@ export default function ComputersPage() {
           </mesh>
           {/* Bunny and a light give it more realism */}
           {/* <Bun scale={0.4} position={[0, 0.3, 0.5]} rotation={[0, -Math.PI * 0.85, 0]} /> */}
-          {/* <pointLight distance={1.5} intensity={1} position={[-0.15, 0.7, 0]} color="orange" /> */}
+          <pointLight
+            distance={1.5}
+            intensity={1}
+            position={[-0.15, 0.7, 0]}
+            color="green"
+          />
         </group>
         {/* Postprocessing */}
         <EffectComposer>
@@ -64,14 +77,16 @@ export default function ComputersPage() {
             luminanceThreshold={0}
             mipmapBlur
             luminanceSmoothing={0.0}
-            intensity={1}
+            intensity={5}
           />
-          {/* <DepthOfField
-            target={[0, 0, 13]}
-            focalLength={0.3}
+          <DepthOfField
+            target={[0, 1, -2]}
+            focalLength={0.5}
             bokehScale={15}
             height={700}
-          /> */}
+          />
+          <TiltShift2 blur={0.1} />
+          {/* <DotScreen scale={10} /> */}
         </EffectComposer>
         {/* Camera movements */}
         <CameraRig />
@@ -101,10 +116,10 @@ function CameraRig() {
         (2 - state.pointer.y) / 2,
         0.7,
       ],
-      5,
+      1,
       delta,
     );
-    state.camera.lookAt(0 - 1, 1, 0);
+    state.camera.lookAt(-3.15, 0.75, -10);
   });
 
   return null;

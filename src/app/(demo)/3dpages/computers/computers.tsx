@@ -2,7 +2,7 @@
 'use client';
 
 import * as THREE from 'three';
-import { useMemo, useContext, createContext, useRef } from 'react';
+import { useMemo, useContext, createContext, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import {
   useGLTF,
@@ -10,9 +10,10 @@ import {
   RenderTexture,
   PerspectiveCamera,
   Text,
+  useCursor,
 } from '@react-three/drei';
 THREE.ColorManagement.legacyMode = false;
-
+// import { SpinningBox } from './spiningbox';
 // import { PivotControls } from './pivotControls/index';
 
 // import TwistedBox from '@/components/demo/Shader/TwistedBox';
@@ -25,6 +26,47 @@ License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 Source: https://sketchfab.com/3d-models/old-computers-7bb6e720499a467b8e0427451d180063
 Title: Old Computers
 */
+
+// 整合SpinningBox组件到当前文件
+function SpinningBox({ scale = 1, position, ...props }) {
+  // This reference gives us direct access to the THREE.Mesh object
+  const ref = useRef();
+  // Hold state for hovered and clicked events
+  const [hovered, hover] = useState(false);
+  const [clicked, click] = useState(false);
+  useCursor(hovered);
+
+  // Subscribe this component to the render-loop, rotate the mesh every frame
+  useFrame((state, delta) => {
+    if (ref.current) {
+      ref.current.rotation.x = ref.current.rotation.y += delta;
+    }
+  });
+
+  // Return the view, these are regular Threejs elements expressed in JSX
+  return (
+    <mesh
+      {...props}
+      ref={ref}
+      scale={clicked ? scale * 1.4 : scale}
+      onClick={(event) => {
+        // 阻止事件冒泡以避免重复触发
+        event.stopPropagation();
+        click(!clicked);
+      }}
+      onPointerOver={(event) => hover(true)}
+      onPointerOut={(event) => hover(false)}
+      position={position}
+    >
+      <boxGeometry />
+
+      <meshStandardMaterial
+        wireframe={true}
+        color={hovered ? 'hotpink' : 'indianred'}
+      />
+    </mesh>
+  );
+}
 
 const context = createContext<any>(null);
 export function Instances({
@@ -680,7 +722,7 @@ export function Computers(props: any) {
         rotation={[-Math.PI, 0.56, 0]}
         scale={-1}
       />
-      <ScreenInteractive
+      <ScreenInteractive //blue screen
         frame="Object_206"
         panel="Object_207"
         position={[0.27, 1.53, -2.61]}
@@ -783,23 +825,13 @@ function Screen({
 }
 
 /* Renders a monitor with some text */
-function ScreenText({
-  invert,
-  x = 0,
-  y = 1.2,
-  ...props
-}: {
-  invert: boolean;
-  x?: number;
-  y?: number;
-  props: any;
-}) {
+function ScreenText({ invert, x = 0, y = 1.3, ...props }) {
   const textRef = useRef();
   const rand = Math.random() * 10000;
   useFrame(
     (state) =>
       (textRef.current.position.x =
-        x + Math.sin(rand + state.clock.elapsedTime / 4) * 8),
+        x + Math.sin(rand + state.clock.elapsedTime / 4) * 12),
   );
   return (
     <Screen {...props}>
@@ -809,39 +841,28 @@ function ScreenText({
         aspect={1 / 1}
         position={[0, 0, 15]}
       />
-
-      <color attach="background" args={[invert ? 'black' : '#33ff33']} />
+      <color attach="background" args={[invert ? 'black' : '#35cc00']} />
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} />
-      <mesh ref={textRef} position={[x, y, 0]}>
-        <planeGeometry args={[4, 2]} />
-        <meshBasicMaterial color={!invert ? 'black' : '#33ff33'} />
-      </mesh>
+      <Text
+        position={[x, y, 0]}
+        ref={textRef}
+        font="/Optician-Sans.woff"
+        fontSize={3}
+        letterSpacing={0}
+        color={!invert ? 'black' : '#35cc00'}
+      >
+        ?WHO3
+      </Text>
     </Screen>
-  );
-}
-
-/* Simple spinning box component for screen */
-function SimpleSpinningBox({ position = [0, 0, 0], scale = 1 }) {
-  const meshRef = useRef<THREE.Mesh>();
-
-  useFrame((state, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.5;
-      meshRef.current.rotation.y += delta * 0.2;
-    }
-  });
-
-  return (
-    <mesh ref={meshRef} position={position} scale={scale}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="hotpink" />
-    </mesh>
   );
 }
 
 /* Renders a monitor with a spinning box */
 function ScreenInteractive(props: any) {
+  // 添加状态以跟踪点击
+  const [clicked, setClicked] = useState(false);
+
   return (
     <Screen {...props}>
       <PerspectiveCamera
@@ -850,11 +871,21 @@ function ScreenInteractive(props: any) {
         aspect={1 / 1}
         position={[0, 0, 10]}
       />
-      <color attach="background" args={['orange']} />
+      <color attach="background" args={['green']} />
       <ambientLight intensity={Math.PI / 2} />
       <pointLight decay={0} position={[10, 10, 10]} intensity={Math.PI} />
       <pointLight decay={0} position={[-10, -10, -10]} />
-      {/* <SimpleSpinningBox position={[0, 0, 0]} scale={2} /> */}
+      <SpinningBox position={[-3.15, 0.75, 0]} scale={0.5} />
+      <Text
+        position={[-3.15, 0.75, 0]}
+        fontSize={1}
+        letterSpacing={-0.1}
+        color={'#35cc00'}
+        font="/Optician-Sans.woff"
+      >
+        WHO3
+      </Text>
+      {/* 直接放置SpinningBox，无需额外处理点击位置 */}
     </Screen>
   );
 }

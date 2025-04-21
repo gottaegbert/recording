@@ -26,7 +26,6 @@ export const AnimationProvider = ({ children }: AnimationProviderProps) => {
         />
       </Suspense>
 
-      {/* 在动画结束前隐藏内容 */}
       <div
         className={`transition-opacity duration-1000 ${isPageReady ? 'opacity-100' : 'opacity-0'}`}
         aria-hidden={!isPageReady}
