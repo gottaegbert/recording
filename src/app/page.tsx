@@ -3,11 +3,11 @@ import { PanelsTopLeft } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
 // import BackgroundShaderComponent from '@/components/demo/Shader/BackgroundShader';
 import { ScrollIndicator } from '@/components/scroll-indicator';
-import ComputersPage from './(demo)/3dpages/computers';
+import { ComputersPage } from './(demo)/3dpages/computers/page';
 
 export default function HomePage() {
   return (
-    <div className="relative flex min-h-[200vh] flex-col">
+    <div className="relative flex min-h-[400vh] flex-col">
       {/* <BackgroundShaderComponent /> */}
       <ComputersPage />
       <header className="sticky top-0 z-[50] border-b border-border/40 bg-background/30 backdrop-blur-xl dark:bg-black/[0.2]">
@@ -26,6 +26,7 @@ export default function HomePage() {
         </div>
       </header>
       <main className="flex-1">
+        {/* 第一屏内容 - 正常显示 */}
         <div className="container relative h-screen">
           <section className="mx-auto flex h-full max-w-[980px] flex-col items-center justify-center gap-2">
             <div className="flex flex-col items-center gap-8">
@@ -37,8 +38,34 @@ export default function HomePage() {
                   Daily Practice
                 </span>
               </div>
-              <ScrollIndicator />
+              {/* <ScrollIndicator /> */}
             </div>
+          </section>
+        </div>
+
+        {/* 第二屏内容 */}
+        <div className="container relative h-screen">
+          <section className="mx-auto flex h-full max-w-[980px] flex-col items-center justify-center gap-2">
+            <h2 className="text-center text-2xl font-bold">
+              Data Visualization
+            </h2>
+            <p className="text-center text-lg">Data Visualization</p>
+          </section>
+        </div>
+
+        {/* 第三屏内容 */}
+        <div className="container relative h-screen">
+          <section className="mx-auto flex h-full max-w-[980px] flex-col items-center justify-center gap-2">
+            <h2 className="text-center text-2xl font-bold">3D</h2>
+            <p className="text-center text-lg">shows the key</p>
+          </section>
+        </div>
+
+        {/* 第四屏内容 */}
+        <div className="container relative h-screen">
+          <section className="mx-auto flex h-full max-w-[980px] flex-col items-center justify-center gap-2">
+            <h2 className="text-center text-2xl font-bold">Animation</h2>
+            <p className="text-center text-lg">UX experience </p>
           </section>
         </div>
       </main>
