@@ -41,7 +41,12 @@ export default function LenisProvider({
     wheelMultiplier: 1,
     orientation: 'vertical',
   },
-  disabledPaths = ['/3dpages/simulation', '/3dpages/metalness', '/3dpages/cut'], // 默认在3D仿真页面上禁用
+  disabledPaths = [
+    '/3dpages/simulation',
+    '/3dpages/metalness',
+    '/3dpages/cut',
+    '/',
+  ], // 默认在3D仿真页面上禁用
 }: LenisProviderProps) {
   const lenisRef = useRef<Lenis | null>(null);
   const pathname = usePathname();

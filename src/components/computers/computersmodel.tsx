@@ -76,7 +76,7 @@ export function Instances({
   children: React.ReactNode;
   [key: string]: any;
 }) {
-  const { nodes } = useGLTF('./models/computers_1-transformed.glb');
+  const { nodes } = useGLTF('/models/computers_1-transformed.glb');
   const instances = useMemo(
     () => ({
       Object: nodes.Object_4,
@@ -107,7 +107,7 @@ export function Instances({
 
 export function Computers(props: any) {
   const { nodes: n, materials: m } = useGLTF(
-    './models/computers_1-transformed.glb',
+    '/models/computers_1-transformed.glb',
   );
   const instances = useContext(context);
   return (
@@ -804,7 +804,7 @@ function Screen({
   children: React.ReactNode;
   [key: string]: any;
 }) {
-  const { nodes, materials } = useGLTF('./models/computers_1-transformed.glb');
+  const { nodes, materials } = useGLTF('/models/computers_1-transformed.glb');
   return (
     <group {...props}>
       <mesh
@@ -893,7 +893,7 @@ function ScreenInteractive(props: any) {
 // Renders flashing LED's
 function Leds({ instances }) {
   const ref = useRef();
-  const { nodes } = useGLTF('./models/computers_1-transformed.glb');
+  const { nodes } = useGLTF('/models/computers_1-transformed.glb');
   useMemo(() => {
     nodes.Sphere.material = new THREE.MeshBasicMaterial();
     nodes.Sphere.material.toneMapped = false;

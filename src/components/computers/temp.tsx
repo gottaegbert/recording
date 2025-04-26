@@ -14,7 +14,7 @@ import {
   // TiltShift2,
 } from '@react-three/postprocessing';
 import { easing } from 'maath';
-import { Instances, Computers } from './computers';
+import { Instances, Computers } from './computersmodel';
 import { useRef, useState, useEffect } from 'react';
 import { useControls, folder, Leva } from 'leva';
 import * as THREE from 'three';
