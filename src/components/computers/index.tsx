@@ -1,12 +1,11 @@
 'use client';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import {
   MeshReflectorMaterial,
   BakeShadows,
   ScrollControls,
   Scroll,
   useScroll,
-  PerspectiveCamera,
 } from '@react-three/drei';
 import {
   EffectComposer,
@@ -15,15 +14,7 @@ import {
 } from '@react-three/postprocessing';
 import { easing } from 'maath';
 import { Instances, Computers } from './computersmodel';
-import * as THREE from 'three';
-import {
-  Suspense,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  memo,
-} from 'react';
+import { Suspense, useState } from 'react';
 import { MailIcon, ArrowDownIcon } from 'lucide-react';
 
 // const suzi = import('@pmndrs/assets/models/bunny.glb')
@@ -199,7 +190,7 @@ export default function ComputersPage() {
                       className="mt-4 flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2 font-medium transition-all hover:bg-opacity-90"
                     >
                       <ArrowDownIcon className="h-4 w-4" />
-                      Showcasing
+                      Showcases
                     </button>
                     <button
                       onClick={() => {

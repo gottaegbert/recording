@@ -19,6 +19,7 @@ import {
   Text,
   useCursor,
   useScroll,
+  useTexture,
 } from '@react-three/drei';
 THREE.ColorManagement.legacyMode = false;
 // import { SpinningBox } from './spiningbox';
@@ -869,22 +870,170 @@ function ScreenText({ invert, x = 0, y = 1.3, ...props }) {
 /* Renders a monitor with different content based on scroll position */
 function ScreenInteractive(props: any) {
   const [content, setContent] = useState(0);
+  const [prevContent, setPrevContent] = useState(0);
+  const [isChanging, setIsChanging] = useState(false);
   const scroll = useScroll();
+  const noiseRef = useRef();
+  const audioRef = useRef(null);
+  const transitionTimeoutRef = useRef(null);
+
+  // 创建音频元素
+  useEffect(() => {
+    // 创建音频元素并预加载
+    const audio = new Audio('/sounds/tvsound.mp3'); // 使用已下载的音频文件
+    audio.load(); // 预加载音频
+    audio.volume = 0.2; // 设置音量
+    audioRef.current = audio;
+
+    return () => {
+      // 清理
+      if (audioRef.current) {
+        // 确保音频停止播放并移除引用
+        try {
+          audioRef.current.pause();
+          audioRef.current.src = '';
+        } catch (e) {
+          console.log('Audio cleanup error:', e);
+        }
+        audioRef.current = null;
+      }
+
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+        transitionTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  // 播放切换动画
+  const startChannelChangeAnimation = (newContent) => {
+    if (prevContent === newContent) return;
+    
+    setIsChanging(true);
+    playChannelChangeSound();
+    
+    // 清除之前的定时器（如果存在）
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+    }
+    
+    // 动画持续时间
+    transitionTimeoutRef.current = setTimeout(() => {
+      setPrevContent(newContent);
+      setIsChanging(false);
+      transitionTimeoutRef.current = null;
+    }, 700); // 缩短切换动画时间为700ms
+  };
+  
+  // 电视噪点材质
+  const noiseMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 0 }
+      },
+      transparent: true,
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec2 vUv;
+        uniform float time;
+        
+        float random(vec2 st) {
+          return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+        }
+        
+        void main() {
+          vec2 st = vUv;
+          
+          // 复古CRT效果 - 扭曲uv坐标
+          float distortion = 0.2;
+          vec2 cc = st - 0.5;
+          float dist = dot(cc, cc) * distortion;
+          st = st + cc * (1.0 + dist) * dist;
+          
+          // 淡绿色调
+          vec3 baseColor = vec3(0.1, 0.2, 0.1);
+          
+          // 降低整体亮度的噪点
+          float r = random(st + time * 0.1);
+          vec3 color = baseColor + vec3(r) * 0.5;
+          
+          // 暗化边缘 (复古电视的晕影效果)
+          float vignette = smoothstep(0.8, 0.2, length(st - 0.5)) * 0.5;
+          color = mix(color, vec3(0.0, 0.01, 0.0), vignette);
+          
+          // 添加水平扫描线
+          float scanline1 = sin(st.y * 120.0) * 0.03 + 1.0;
+          // 添加垂直扫描线 (较弱)
+          float scanline2 = sin(st.x * 30.0) * 0.01 + 1.0;
+          color *= scanline1 * scanline2;
+          
+          // 随机亮白点 (电视噪点)
+          if (random(st + time) > 0.992) {
+            color = vec3(0.3, 0.7, 0.3);
+          }
+          
+          // 使用较高的不透明度但使整体效果更暗
+          gl_FragColor = vec4(color, 0.90);
+        }
+      `
+    });
+  }, []);
+
+  // 安全播放切换声音
+  const playChannelChangeSound = () => {
+    if (audioRef.current) {
+      try {
+        // 重置音频并播放
+        audioRef.current.currentTime = 0;
+
+        // 使用Promise捕获播放错误，但不阻止程序执行
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            // 忽略AbortError，因为它通常是由于组件卸载引起的
+            if (error.name !== 'AbortError') {
+              console.log('Audio play failed:', error);
+            }
+          });
+        }
+      } catch (e) {
+        console.log('Audio play error:', e);
+      }
+    }
+  };
 
   // 监听滚动位置并更新内容
-  useFrame(() => {
+  useFrame(({ clock }) => {
     const offset = scroll.offset;
+    // 更新噪点时间
+    if (noiseRef.current && isChanging) {
+      noiseRef.current.material.uniforms.time.value = clock.getElapsedTime();
+    }
+
     // 根据滚动位置设置不同内容
+    let newContent = 0;
     if (offset < 0.2) {
-      setContent(0); // 首页 - WHO3 介绍
+      newContent = 0; // 首页 - WHO3 介绍
     } else if (offset < 0.4) {
-      setContent(1); // 动画和着色器效果
+      newContent = 1; // 动画和着色器效果
     } else if (offset < 0.6) {
-      setContent(2); // 数据可视化
+      newContent = 2; // 数据可视化
     } else if (offset < 0.8) {
-      setContent(3); // 3D互动体验
+      newContent = 3; // 3D互动体验
     } else {
-      setContent(4); // 联系我
+      newContent = 4; // 联系我
+    }
+
+    // 检测内容变化
+    if (content !== newContent) {
+      startChannelChangeAnimation(newContent);
+      setContent(newContent);
     }
   });
 
@@ -896,7 +1045,9 @@ function ScreenInteractive(props: any) {
         aspect={1 / 1}
         position={[0, 0, 10]}
       />
-      {content === 0 && (
+
+      {/* 显示实际内容 - 不在切换状态时 */}
+      {!isChanging && content === 0 && (
         // 首页内容 - WHO3介绍
         <>
           <color attach="background" args={['green']} />
@@ -921,7 +1072,7 @@ function ScreenInteractive(props: any) {
         </>
       )}
 
-      {content === 1 && (
+      {!isChanging && content === 1 && (
         // 动画和着色器效果
         <>
           <color attach="background" args={['#ff8888']} />
@@ -940,7 +1091,7 @@ function ScreenInteractive(props: any) {
         </>
       )}
 
-      {content === 2 && (
+      {!isChanging && content === 2 && (
         // 数据可视化
         <>
           <color attach="background" args={['#001133']} />
@@ -959,7 +1110,7 @@ function ScreenInteractive(props: any) {
         </>
       )}
 
-      {content === 3 && (
+      {!isChanging && content === 3 && (
         // 3D互动体验
         <>
           <color attach="background" args={['#220033']} />
@@ -978,7 +1129,7 @@ function ScreenInteractive(props: any) {
         </>
       )}
 
-      {content === 4 && (
+      {!isChanging && content === 4 && (
         // 联系我
         <>
           <color attach="background" args={['#003322']} />
@@ -996,7 +1147,58 @@ function ScreenInteractive(props: any) {
           </Text>
         </>
       )}
+
+      {/* 电视切换效果动画层 */}
+      {isChanging && (
+        <>
+          <color attach="background" args={['#000000']} />
+          <mesh ref={noiseRef} position={[-3.15, 0.75, 0]}>
+            <planeGeometry args={[2.5, 2]} />
+            <primitive object={noiseMaterial} attach="material" />
+          </mesh>
+
+          {/* 添加随机扫描线效果 */}
+          <TVScanEffect />
+
+          {/* 添加通道切换指示 */}
+          <Text
+            position={[-3.15, 0.35, 0]}
+            fontSize={0.08}
+            letterSpacing={0}
+            color={'#5aff5a'} 
+            font="/Optician-Sans.woff"
+            textAlign="center"
+          >
+            {`CHANNEL ${content + 1}`}
+          </Text>
+        </>
+      )}
     </Screen>
+  );
+}
+
+// 电视扫描线效果组件
+function TVScanEffect() {
+  const scanRef = useRef();
+
+  useFrame(({ clock }) => {
+    if (scanRef.current) {
+      // 移动扫描线
+      const time = clock.getElapsedTime();
+      scanRef.current.position.y = 0.75 + Math.sin(time * 2) * 0.8;
+      
+      // 调整扫描线的不透明度
+      if (scanRef.current.material) {
+        scanRef.current.material.opacity = 0.1 + Math.sin(time * 5) * 0.05;
+      }
+    }
+  });
+
+  return (
+    <mesh ref={scanRef} position={[-3.15, 0.75, 0.01]} rotation={[0, 0, 0]}>
+      <planeGeometry args={[2.5, 0.05]} />
+      <meshBasicMaterial color="#5aff5a" opacity={0.15} transparent={true} />
+    </mesh>
   );
 }
 
