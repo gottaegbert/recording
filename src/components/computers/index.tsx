@@ -24,52 +24,9 @@ import {
   useState,
   memo,
 } from 'react';
+import { MailIcon, ArrowDownIcon } from 'lucide-react';
+
 // const suzi = import('@pmndrs/assets/models/bunny.glb')
-
-// // 定义相机位置和视角
-// const cameraPositions = [
-//   {
-//     position: [0, 1, 5], // 初始俯视角度
-//     lookAt: [-3.15, 0.75, -10],
-//     fov: 45,
-//   },
-//   {
-//     position: [-4, 3, 3], // 左侧俯视角度
-//     lookAt: [1, 0, -2],
-//     fov: 50,
-//   },
-//   {
-//     position: [8, 2, 40], // 右侧侧视角度
-//     lookAt: [-1, 10, -10],
-//     fov: 70,
-//   },
-//   {
-//     position: [6, 2, 40], // 背面俯视
-//     lookAt: [-1, 10, -10],
-//     fov: 70,
-//   },
-// ];
-
-// // 添加用于调试的滚动指示器
-// function ScrollIndicators() {
-//   return (
-//     <div className="fixed right-4 top-1/2 z-50 flex -translate-y-1/2 flex-col gap-2">
-//       {cameraPositions.map((_, index) => (
-//         <div
-//           key={index}
-//           className="h-3 w-3 cursor-pointer rounded-full bg-white/50 hover:bg-white"
-//           onClick={() => {
-//             // 点击滚动到对应位置
-//             window.scrollTo({
-//               top: window.innerHeight * index,
-//               behavior: 'smooth',
-//             });
-//           }}
-//         />
-//       ))}
-//     </div>
-//   );
-// }
 
 // 使用memo来避免不必要的重新渲染
 const ComputerScene = () => {
@@ -113,9 +70,9 @@ function CombinedCameraRig() {
     const offset = scroll.offset;
 
     // 调整相机位置计算
-    const scrollX = Math.sin(offset * Math.PI * 2) * 0.1;
-    const scrollY = 1.8;
-    const scrollZ = offset * Math.PI * 4 - 11;
+    const scrollX = Math.sin(offset * Math.PI * 2) * 0.1 + 1;
+    const scrollY = 1.8 + Math.sin(offset * Math.PI * 2);
+    const scrollZ = offset * Math.PI * 4 - 12.5;
 
     const mouseX = (state.pointer.x * state.viewport.width) / 3;
     const mouseY = state.pointer.y / 5;
@@ -132,17 +89,22 @@ function CombinedCameraRig() {
       delta,
     );
 
-    const lookX = 3;
-    const lookY = 0.4;
-    const lookZ = -10;
+    const lookX = -offset * Math.sin(offset * Math.PI * 2) * 4;
+    const lookY = 1;
+    const lookZ = -5;
     state.camera.lookAt(lookX, lookY, lookZ);
   });
 
   return null;
 }
 
+// 滚动到工作页面
+function scrollToWorkingPage() {
+  window.location.href = '/workingon';
+}
+
 // 主页面组件使用export default以确保只被实例化一次
-export function ComputersPage() {
+export default function ComputersPage() {
   return (
     <div className="h-screen w-full">
       <Canvas
@@ -164,48 +126,95 @@ export function ComputersPage() {
         />
         {/* Main scene */}
         <Suspense fallback={null}>
-          <ScrollControls pages={4} damping={0.25} distance={1}>
+          <ScrollControls pages={5} damping={0.25} distance={1}>
             <ComputerScene />
             <CombinedCameraRig />
             {/* HTML content that will be scrolled in sync with 3D content */}
             <Scroll html>
-              {/* 添加滚动内容 */}
+              {/* 第一屏：欢迎和标题 */}
               <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
-                <h1 className="mb-4 text-6xl font-bold">3D Computers</h1>
-                <p className="text-xl">
-                  Scroll to explore and move your mouse to look around
+                <h1 className="mb-4 text-6xl font-bold">ShowCasing</h1>
+                <p className="max-w-2xl text-center text-xl">
+                  WHO3 labs is{' '}
+                  <span
+                    className="underline"
+                    onClick={() => {
+                      window.open('https://egbert.eu.org', '_blank');
+                    }}
+                  >
+                    Siyu&apos;s
+                  </span>{' '}
+                  personal playground. <br />
+                  Just show what he can do in blending creativity and
+                  technology.
                 </p>
               </div>
 
+              {/* 第二屏：动画和着色器效果 */}
               <div className="pointer-events-auto flex h-screen w-screen flex-col items-start justify-center pl-20 text-white">
-                <div className="max-w-md rounded-lg bg-black/50 p-6">
+                <div className="max-w-md rounded-lg bg-black/50 p-6 backdrop-blur-sm">
                   <h2 className="mb-4 text-4xl font-bold">
-                    Vintage Technology
+                    Animation and Shader Effects
                   </h2>
                   <p className="mb-4">
-                    Explore the evolution of computing machines through this
-                    interactive 3D experience.
+                    Focusing on creating smooth animation experiences and unique
+                    visual effects. From simple UI transitions to complex
+                    particle systems and shader effects, I pursue the perfect
+                    pixel presentation.
                   </p>
                 </div>
               </div>
 
+              {/* 第三屏：数据可视化 */}
               <div className="pointer-events-auto flex h-screen w-screen flex-col items-end justify-center pr-20 text-white">
-                <div className="max-w-md rounded-lg bg-black/50 p-6">
-                  <h2 className="mb-4 text-4xl font-bold">Hardware Details</h2>
+                <div className="max-w-md rounded-lg bg-black/50 p-6 backdrop-blur-sm">
+                  <h2 className="mb-4 text-4xl font-bold">
+                    Data Visualization
+                  </h2>
                   <p className="mb-4">
-                    Notice the intricate details of these historical computing
-                    devices.
+                    Transforming complex data into intuitive, interactive visual
+                    storytelling.
                   </p>
                 </div>
               </div>
 
+              {/* 第四屏：3D内容和工作页面链接 */}
               <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
-                <div className="max-w-md rounded-lg bg-black/50 p-6">
-                  <h2 className="mb-4 text-4xl font-bold">Digital Heritage</h2>
+                <div className="max-w-md rounded-lg bg-black/50 p-6 backdrop-blur-sm">
+                  <h2 className="mb-4 text-4xl font-bold">
+                    3D Interactive Experiences
+                  </h2>
                   <p className="mb-4">
-                    These machines represent an important part of our digital
-                    heritage.
+                    Creating immersive 3D worlds and interactive stories,
+                    blending WebGL and Three.js technologies to create your
+                    digital space.
                   </p>
+                </div>
+              </div>
+              <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
+                <div className="max-w-md rounded-lg bg-black/50 p-6 backdrop-blur-sm">
+                  <h2 className="mb-4 text-4xl font-bold">Chat?</h2>
+                  <p className="mb-4">
+                    I am open to anyone who wants to have a coffee chat with me.
+                  </p>
+                  <div className="flex justify-between">
+                    <button
+                      onClick={scrollToWorkingPage}
+                      className="mt-4 flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2 font-medium transition-all hover:bg-opacity-90"
+                    >
+                      <ArrowDownIcon className="h-4 w-4" />
+                      Showcasing
+                    </button>
+                    <button
+                      onClick={() => {
+                        window.location.href = 'mailto:gottaegbert@gmail.com';
+                      }}
+                      className="mt-4 flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2 font-medium transition-all hover:bg-opacity-90"
+                    >
+                      <MailIcon className="h-4 w-4" />
+                      Contact
+                    </button>
+                  </div>
                 </div>
               </div>
             </Scroll>
