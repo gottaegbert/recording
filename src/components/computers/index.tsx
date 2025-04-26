@@ -72,7 +72,7 @@ import {
 // }
 
 // 使用memo来避免不必要的重新渲染
-const ComputerScene = memo(() => {
+const ComputerScene = () => {
   return (
     <group position={[0, -1, 0]}>
       <Instances>
@@ -102,24 +102,24 @@ const ComputerScene = memo(() => {
       />
     </group>
   );
-});
+};
 
 // 联合相机控制系统，同时响应鼠标和滚动
 function CombinedCameraRig() {
   const scroll = useScroll();
-  const [mouseInfluence, setMouseInfluence] = useState(0.7);
-
+  const [mouseInfluence, setMouseInfluence] = useState(0.4);
+  console.log(scroll.offset);
   useFrame((state, delta) => {
     const offset = scroll.offset;
 
     // 调整相机位置计算
-    const scrollX = Math.sin(offset * Math.PI * 2) * 4;
-    const scrollY = -offset * 8 + 3;
-    const scrollZ = Math.cos(offset * Math.PI * 2) * 4 + 5;
+    const scrollX = Math.sin(offset * Math.PI * 2) * 0.1;
+    const scrollY = 1.8;
+    const scrollZ = offset * Math.PI * 4 - 11;
 
-    const mouseX = -1 - (state.pointer.x * state.viewport.width) / 3;
-    const mouseY = (2 - state.pointer.y) / 2;
-    const mouseZ = 5; // 增加基础Z距离
+    const mouseX = (state.pointer.x * state.viewport.width) / 3;
+    const mouseY = state.pointer.y / 5;
+    const mouseZ = 14; // 增加基础Z距离
 
     const targetX = scrollX * (1 - mouseInfluence) + mouseX * mouseInfluence;
     const targetY = scrollY * (1 - mouseInfluence) + mouseY * mouseInfluence;
@@ -132,17 +132,14 @@ function CombinedCameraRig() {
       delta,
     );
 
-    const lookX = 0;
-    const lookY = 0;
-    const lookZ = 0;
+    const lookX = 3;
+    const lookY = 0.4;
+    const lookZ = -10;
     state.camera.lookAt(lookX, lookY, lookZ);
   });
 
   return null;
 }
-
-// 给组件一个displayName以便于调试
-ComputerScene.displayName = 'ComputerScene';
 
 // 主页面组件使用export default以确保只被实例化一次
 export function ComputersPage() {
@@ -151,21 +148,21 @@ export function ComputersPage() {
       <Canvas
         shadows
         dpr={[1, 1.5]}
-        camera={{ position: [0, 2, 8], fov: 75, near: 0.1, far: 2000 }}
+        camera={{ position: [0, 0, 0], fov: 75, near: 0.1, far: 2000 }}
         eventPrefix="client"
       >
         <color attach="background" args={['black']} />
-        <ambientLight intensity={0.5} />
-        <hemisphereLight intensity={0.45} groundColor="black" />
+        <hemisphereLight intensity={0.15} groundColor="black" />
         <spotLight
           decay={0}
           position={[10, 20, 10]}
           angle={0.12}
           penumbra={1}
-          intensity={1}
+          intensity={1.5}
           castShadow
           shadow-mapSize={1024}
         />
+        {/* Main scene */}
         <Suspense fallback={null}>
           <ScrollControls pages={4} damping={0.25} distance={1}>
             <ComputerScene />

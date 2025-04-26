@@ -842,7 +842,7 @@ function ScreenText({ invert, x = 0, y = 1.3, ...props }) {
         position={[0, 0, 15]}
       />
       <color attach="background" args={[invert ? 'black' : '#35cc00']} />
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={2.5} />
       <directionalLight position={[10, 10, 5]} />
       <Text
         position={[x, y, 0]}
@@ -874,7 +874,7 @@ function ScreenInteractive(props: any) {
       <color attach="background" args={['green']} />
       <ambientLight intensity={Math.PI / 2} />
       <pointLight decay={0} position={[10, 10, 10]} intensity={Math.PI} />
-      <pointLight decay={0} position={[-10, -10, -10]} />
+      <pointLight decay={0} position={[-10, -10, -10]} intensity={Math.PI} />
       <SpinningBox position={[-3.15, 0.75, 0]} scale={0.5} />
       <Text
         position={[-3.15, 0.75, 0]}
