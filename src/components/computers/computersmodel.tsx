@@ -908,15 +908,15 @@ function ScreenInteractive(props: any) {
   // 播放切换动画
   const startChannelChangeAnimation = (newContent) => {
     if (prevContent === newContent) return;
-    
+
     setIsChanging(true);
     playChannelChangeSound();
-    
+
     // 清除之前的定时器（如果存在）
     if (transitionTimeoutRef.current) {
       clearTimeout(transitionTimeoutRef.current);
     }
-    
+
     // 动画持续时间
     transitionTimeoutRef.current = setTimeout(() => {
       setPrevContent(newContent);
@@ -924,12 +924,12 @@ function ScreenInteractive(props: any) {
       transitionTimeoutRef.current = null;
     }, 700); // 缩短切换动画时间为700ms
   };
-  
+
   // 电视噪点材质
   const noiseMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
       uniforms: {
-        time: { value: 0 }
+        time: { value: 0 },
       },
       transparent: true,
       vertexShader: `
@@ -981,7 +981,7 @@ function ScreenInteractive(props: any) {
           // 使用较高的不透明度但使整体效果更暗
           gl_FragColor = vec4(color, 0.90);
         }
-      `
+      `,
     });
   }, []);
 
@@ -1165,7 +1165,7 @@ function ScreenInteractive(props: any) {
             position={[-3.15, 0.35, 0]}
             fontSize={0.08}
             letterSpacing={0}
-            color={'#5aff5a'} 
+            color={'#5aff5a'}
             font="/Optician-Sans.woff"
             textAlign="center"
           >
@@ -1186,7 +1186,7 @@ function TVScanEffect() {
       // 移动扫描线
       const time = clock.getElapsedTime();
       scanRef.current.position.y = 0.75 + Math.sin(time * 2) * 0.8;
-      
+
       // 调整扫描线的不透明度
       if (scanRef.current.material) {
         scanRef.current.material.opacity = 0.1 + Math.sin(time * 5) * 0.05;

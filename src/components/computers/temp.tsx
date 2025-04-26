@@ -70,11 +70,13 @@ function CameraDebug() {
       camera instanceof THREE.PerspectiveCamera
     ) {
       const helper = new THREE.CameraHelper(camera);
-      helperRef.current.add(helper);
+      const currentHelperRef = helperRef.current; // 捕获当前的ref值
+      currentHelperRef.add(helper);
 
       return () => {
-        if (helperRef.current) {
-          helperRef.current.remove(helper);
+        // 使用捕获的ref值而不是helperRef.current
+        if (currentHelperRef) {
+          currentHelperRef.remove(helper);
           helper.dispose();
         }
       };

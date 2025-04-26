@@ -11,14 +11,11 @@ import {
   EffectComposer,
   Bloom,
   DepthOfField,
-  ToneMapping,
 } from '@react-three/postprocessing';
 import { easing } from 'maath';
 import { Instances, Computers } from './computersmodel';
 import { Suspense, useState } from 'react';
 import { MailIcon, ArrowDownIcon } from 'lucide-react';
-import { BlendFunction } from 'postprocessing';
-
 
 // const suzi = import('@pmndrs/assets/models/bunny.glb')
 
@@ -225,15 +222,6 @@ export default function ComputersPage() {
             bokehScale={15}
             height={700}
           />
-          <ToneMapping
-    blendFunction={BlendFunction.SCREEN} // blend mode
-    adaptive={true} // toggle adaptive luminance map usage
-    resolution={256} // texture resolution of the luminance map
-    middleGrey={1} // middle grey factor
-    maxLuminance={32.0} // maximum luminance
-    averageLuminance={3.0} // average luminance
-    adaptationRate={1.0} // luminance adaptation rate
-  />
         </EffectComposer>
         <BakeShadows />
       </Canvas>
