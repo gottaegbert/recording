@@ -1082,7 +1082,7 @@ function ScreenInteractive(props: any) {
             position={[-3.15, 0.75, 0]}
             fontSize={0.3}
             letterSpacing={-0.05}
-            color={'#ff3366'}
+            color={'#ff0066'}
             font="/Optician-Sans.woff"
             textAlign="center"
           >
@@ -1220,8 +1220,8 @@ function ShaderContent() {
     <mesh ref={mesh} position={[-3.15, 0.75, 0]}>
       <torusKnotGeometry args={[0.5, 0.15, 64, 16]} />
       <meshStandardMaterial
-        color="#ff3366"
-        emissive="#ff0066"
+        color="#e33344"
+        emissive="#dd0011"
         wireframe={true}
       />
     </mesh>
