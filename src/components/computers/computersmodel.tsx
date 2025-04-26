@@ -2,7 +2,14 @@
 'use client';
 
 import * as THREE from 'three';
-import { useMemo, useContext, createContext, useRef, useState } from 'react';
+import {
+  useMemo,
+  useContext,
+  createContext,
+  useRef,
+  useState,
+  useEffect,
+} from 'react';
 import { useFrame } from '@react-three/fiber';
 import {
   useGLTF,
@@ -11,6 +18,7 @@ import {
   PerspectiveCamera,
   Text,
   useCursor,
+  useScroll,
 } from '@react-three/drei';
 THREE.ColorManagement.legacyMode = false;
 // import { SpinningBox } from './spiningbox';
@@ -858,10 +866,27 @@ function ScreenText({ invert, x = 0, y = 1.3, ...props }) {
   );
 }
 
-/* Renders a monitor with a spinning box */
+/* Renders a monitor with different content based on scroll position */
 function ScreenInteractive(props: any) {
-  // 添加状态以跟踪点击
-  const [clicked, setClicked] = useState(false);
+  const [content, setContent] = useState(0);
+  const scroll = useScroll();
+
+  // 监听滚动位置并更新内容
+  useFrame(() => {
+    const offset = scroll.offset;
+    // 根据滚动位置设置不同内容
+    if (offset < 0.2) {
+      setContent(0); // 首页 - WHO3 介绍
+    } else if (offset < 0.4) {
+      setContent(1); // 动画和着色器效果
+    } else if (offset < 0.6) {
+      setContent(2); // 数据可视化
+    } else if (offset < 0.8) {
+      setContent(3); // 3D互动体验
+    } else {
+      setContent(4); // 联系我
+    }
+  });
 
   return (
     <Screen {...props}>
@@ -871,22 +896,232 @@ function ScreenInteractive(props: any) {
         aspect={1 / 1}
         position={[0, 0, 10]}
       />
-      <color attach="background" args={['green']} />
-      <ambientLight intensity={Math.PI / 2} />
-      <pointLight decay={0} position={[10, 10, 10]} intensity={Math.PI} />
-      <pointLight decay={0} position={[-10, -10, -10]} intensity={Math.PI} />
-      <SpinningBox position={[-3.15, 0.75, 0]} scale={0.5} />
-      <Text
-        position={[-3.15, 0.75, 0]}
-        fontSize={1}
-        letterSpacing={-0.1}
-        color={'#35cc00'}
-        font="/Optician-Sans.woff"
-      >
-        WHO3
-      </Text>
-      {/* 直接放置SpinningBox，无需额外处理点击位置 */}
+      {content === 0 && (
+        // 首页内容 - WHO3介绍
+        <>
+          <color attach="background" args={['green']} />
+          <ambientLight intensity={Math.PI / 2} />
+          <pointLight decay={0} position={[10, 10, 10]} intensity={Math.PI} />
+          <pointLight
+            decay={0}
+            position={[-10, -10, -10]}
+            intensity={Math.PI}
+          />
+          <SpinningBox position={[-3.15, 0.75, 0]} scale={0.5} />
+          <Text
+            position={[-3.15, 0.75, 0]}
+            fontSize={1}
+            letterSpacing={-0.1}
+            color={'#35cc00'}
+            font="/Optician-Sans.woff"
+            textAlign="center"
+          >
+            WHO3
+          </Text>
+        </>
+      )}
+
+      {content === 1 && (
+        // 动画和着色器效果
+        <>
+          <color attach="background" args={['#ff8888']} />
+          <ambientLight intensity={Math.PI / 2} />
+          <ShaderContent />
+          <Text
+            position={[-3.15, 0.75, 0]}
+            fontSize={0.3}
+            letterSpacing={-0.05}
+            color={'#ff3366'}
+            font="/Optician-Sans.woff"
+            textAlign="center"
+          >
+            SHADER EFFECTS
+          </Text>
+        </>
+      )}
+
+      {content === 2 && (
+        // 数据可视化
+        <>
+          <color attach="background" args={['#001133']} />
+          <ambientLight intensity={Math.PI / 2} />
+          <DataVisualization />
+          <Text
+            position={[-3.15, 0.95, 0]}
+            fontSize={0.2}
+            letterSpacing={-0.05}
+            color={'#00ffcc'}
+            font="/Optician-Sans.woff"
+            textAlign="center"
+          >
+            DATA VISUALIZATION
+          </Text>
+        </>
+      )}
+
+      {content === 3 && (
+        // 3D互动体验
+        <>
+          <color attach="background" args={['#220033']} />
+          <ambientLight intensity={Math.PI / 2} />
+          <Interactive3D />
+          <Text
+            position={[-3.15, 0.75, 0]}
+            fontSize={0.2}
+            letterSpacing={-0.1}
+            color={'#ffaa00'}
+            font="/Optician-Sans.woff"
+            textAlign="center"
+          >
+            3D EXPERIENCE
+          </Text>
+        </>
+      )}
+
+      {content === 4 && (
+        // 联系我
+        <>
+          <color attach="background" args={['#003322']} />
+          <ambientLight intensity={Math.PI / 2} />
+          <ContactVisual />
+          <Text
+            position={[-3.15, 0.75, 0]}
+            fontSize={0.3}
+            letterSpacing={-0.05}
+            color={'white'}
+            font="/Optician-Sans.woff"
+            textAlign="center"
+          >
+            CONTACT ME
+          </Text>
+        </>
+      )}
     </Screen>
+  );
+}
+
+// 着色器效果视觉组件
+function ShaderContent() {
+  const mesh = useRef();
+
+  // 使用时间来动画化网格变形
+  useFrame(({ clock }) => {
+    if (mesh.current) {
+      mesh.current.rotation.x = Math.sin(clock.getElapsedTime()) * 0.3;
+      mesh.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.8) * 0.5;
+      mesh.current.scale.x = 1 + Math.sin(clock.getElapsedTime()) * 0.2;
+      mesh.current.scale.y = 1 + Math.cos(clock.getElapsedTime()) * 0.2;
+    }
+  });
+
+  return (
+    <mesh ref={mesh} position={[-3.15, 0.75, 0]}>
+      <torusKnotGeometry args={[0.5, 0.15, 64, 16]} />
+      <meshStandardMaterial
+        color="#ff3366"
+        emissive="#ff0066"
+        wireframe={true}
+      />
+    </mesh>
+  );
+}
+
+// 数据可视化组件
+function DataVisualization() {
+  const bars = useRef([]);
+  const barCount = 12;
+
+  // 创建柱状图的动画
+  useFrame(({ clock }) => {
+    const time = clock.getElapsedTime();
+    bars.current.forEach((bar, i) => {
+      if (bar) {
+        const height = Math.abs(Math.sin(time * 0.5 + i * 0.2) * 2 + 0.5);
+        bar.scale.y = height;
+        bar.position.y = height / 2 - 1;
+      }
+    });
+  });
+
+  return (
+    <group position={[-3.15, 0.75, 0]}>
+      {Array.from({ length: barCount }).map((_, i) => (
+        <mesh
+          key={i}
+          ref={(el) => (bars.current[i] = el)}
+          position={[(i - barCount / 2) * 0.25, 0, 0]}
+        >
+          <boxGeometry args={[0.1, 1, 0.3]} />
+          <meshStandardMaterial
+            color={`hsl(${i * 40 + 200}, 100%, 70%)`}
+            emissive={`hsl(${i * 40 + 150}, 100%, 30%)`}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// 3D互动体验视觉组件
+function Interactive3D() {
+  const group = useRef();
+
+  useFrame(({ clock }) => {
+    if (group.current) {
+      group.current.rotation.y = clock.getElapsedTime() * 0.2;
+    }
+  });
+
+  return (
+    <group ref={group} position={[-3.15, 0.75, 0]}>
+      {Array.from({ length: 8 }).map((_, i) => (
+        <mesh
+          key={i}
+          position={[
+            Math.sin((i / 8) * Math.PI * 2) * 0.9,
+            Math.cos((i / 8) * Math.PI * 2) * 0.9,
+            0,
+          ]}
+          scale={0.4}
+        >
+          <icosahedronGeometry />
+          <meshStandardMaterial
+            color={`hsl(${i * 15}, 100%, 70%)`}
+            emissive={`hsl(${i * 45}, 75%, 20%)`}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// 联系我视觉组件
+function ContactVisual() {
+  const group = useRef();
+
+  useFrame(({ clock }) => {
+    if (group.current) {
+      group.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.5) * 0.5;
+      group.current.rotation.x = Math.cos(clock.getElapsedTime() * 0.3) * 0.2;
+    }
+  });
+
+  return (
+    <group ref={group}>
+      <mesh>
+        <sphereGeometry args={[1.2, 32, 32]} />
+        <meshStandardMaterial
+          color="#003322"
+          wireframe={true}
+          emissive="#00ffaa"
+          emissiveIntensity={0.5}
+        />
+      </mesh>
+      <mesh scale={0.3} position={[0, 0, 1.2]}>
+        <boxGeometry />
+        <meshStandardMaterial color="#00ffaa" />
+      </mesh>
+    </group>
   );
 }
 

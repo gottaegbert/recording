@@ -72,7 +72,7 @@ function CombinedCameraRig() {
     // 调整相机位置计算
     const scrollX = Math.sin(offset * Math.PI * 2) * 0.1 + 1;
     const scrollY = 1.8 + Math.sin(offset * Math.PI * 2);
-    const scrollZ = offset * Math.PI * 4 - 12.5;
+    const scrollZ = offset * Math.PI * 2 - 12.5;
 
     const mouseX = (state.pointer.x * state.viewport.width) / 3;
     const mouseY = state.pointer.y / 5;
@@ -153,14 +153,11 @@ export default function ComputersPage() {
               {/* 第二屏：动画和着色器效果 */}
               <div className="pointer-events-auto flex h-screen w-screen flex-col items-start justify-center pl-20 text-white">
                 <div className="max-w-md rounded-lg bg-black/50 p-6 backdrop-blur-sm">
-                  <h2 className="mb-4 text-4xl font-bold">
-                    Animation and Shader Effects
-                  </h2>
+                  <h2 className="mb-4 text-4xl font-bold">Shader Effect</h2>
                   <p className="mb-4">
-                    Focusing on creating smooth animation experiences and unique
-                    visual effects. From simple UI transitions to complex
-                    particle systems and shader effects, I pursue the perfect
-                    pixel presentation.
+                    Focusing on unique visual effects. From particle systems and
+                    cool shaders, to 3D models and animations, a toast for
+                    computer graphics!
                   </p>
                 </div>
               </div>
@@ -172,8 +169,9 @@ export default function ComputersPage() {
                     Data Visualization
                   </h2>
                   <p className="mb-4">
-                    Transforming complex data into intuitive, interactive visual
-                    storytelling.
+                    I believe transforming complex data into intuitive,
+                    interactive visual storytelling is a future media type.
+                    Let&apos;s make data exploration a pleasant journey!
                   </p>
                 </div>
               </div>
@@ -181,13 +179,11 @@ export default function ComputersPage() {
               {/* 第四屏：3D内容和工作页面链接 */}
               <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
                 <div className="max-w-md rounded-lg bg-black/50 p-6 backdrop-blur-sm">
-                  <h2 className="mb-4 text-4xl font-bold">
-                    3D Interactive Experiences
-                  </h2>
+                  <h2 className="mb-4 text-4xl font-bold">3D Interactive</h2>
                   <p className="mb-4">
-                    Creating immersive 3D worlds and interactive stories,
-                    blending WebGL and Three.js technologies to create your
-                    digital space.
+                    Future is always high-dimensional. Need for immersive 3D
+                    worlds and interactive stories will expand from the game
+                    industry to the real world.
                   </p>
                 </div>
               </div>
