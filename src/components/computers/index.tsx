@@ -11,10 +11,12 @@ import {
   EffectComposer,
   Bloom,
   DepthOfField,
+  ToneMapping,
 } from '@react-three/postprocessing';
 import { easing } from 'maath';
 import { Instances, Computers } from './computersmodel';
 import { Suspense, useState } from 'react';
+import { BlendFunction } from 'postprocessing';
 import { MailIcon, ArrowDownIcon } from 'lucide-react';
 
 // const suzi = import('@pmndrs/assets/models/bunny.glb')
@@ -222,6 +224,7 @@ export default function ComputersPage() {
             bokehScale={15}
             height={700}
           />
+          <ToneMapping />
         </EffectComposer>
         <BakeShadows />
       </Canvas>
