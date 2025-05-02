@@ -13,12 +13,9 @@ import {
   DepthOfField,
   ToneMapping,
 } from '@react-three/postprocessing';
-import { easing } from 'maath';
 import { Instances, Computers } from './computersmodel';
-import React, { Suspense, useRef, useState } from 'react';
+import React, { Suspense } from 'react';
 import { MailIcon, ArrowDownIcon } from 'lucide-react';
-import * as THREE from 'three';
-import { createRoot } from 'react-dom/client';
 import { getProject } from '@theatre/core';
 import { editable as e, SheetProvider } from '@theatre/r3f';
 import studio from '@theatre/studio';
@@ -28,10 +25,10 @@ import { PerspectiveCamera } from '@theatre/r3f';
 const demoSheet = getProject('Demo Project').sheet('Demo Sheet');
 
 // create-react-app
-// if (process.env.NODE_ENV === 'development') {
-studio.initialize();
-studio.extend(extension);
-// }
+if (process.env.NODE_ENV === 'development') {
+  studio.initialize();
+  studio.extend(extension);
+}
 
 // const suzi = import('@pmndrs/assets/models/bunny.glb')
 
@@ -68,43 +65,6 @@ const ComputerScene = () => {
     </group>
   );
 };
-
-// 联合相机控制系统，同时响应鼠标和滚动
-function CombinedCameraRig() {
-  const scroll = useScroll();
-  const [mouseInfluence, setMouseInfluence] = useState(0.4);
-  console.log(scroll.offset);
-  // useFrame((state, delta) => {
-  //   const offset = scroll.offset;
-
-  //   // 调整相机位置计算
-  //   const scrollX = Math.sin(offset * Math.PI * 2) * 0.1 + 1;
-  //   const scrollY = 1.8 + Math.sin(offset * Math.PI * 2);
-  //   const scrollZ = offset * Math.PI * 2 - 12.5;
-
-  //   const mouseX = (state.pointer.x * state.viewport.width) / 3;
-  //   const mouseY = state.pointer.y / 5;
-  //   const mouseZ = 14; // 增加基础Z距离
-
-  //   const targetX = scrollX * (1 - mouseInfluence) + mouseX * mouseInfluence;
-  //   const targetY = scrollY * (1 - mouseInfluence) + mouseY * mouseInfluence;
-  //   const targetZ = scrollZ * (1 - mouseInfluence) + mouseZ * mouseInfluence;
-
-  //   easing.damp3(
-  //     state.camera.position,
-  //     [targetX, targetY, targetZ],
-  //     0.5, // 减小阻尼使相机移动更快
-  //     delta,
-  //   );
-
-  //   const lookX = -offset * Math.sin(offset * Math.PI * 2) * 4;
-  //   const lookY = 1;
-  //   const lookZ = -5;
-  //   state.camera.lookAt(lookX, lookY, lookZ);
-  // });
-
-  // return null;
-}
 
 // 滚动到工作页面
 function scrollToWorkingPage() {

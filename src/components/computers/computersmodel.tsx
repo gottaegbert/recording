@@ -825,10 +825,7 @@ function Screen({
             width={1920}
             height={1080}
             attach="map"
-            // anisotropy={16}
-            generateMipmaps={true}
-            minFilter={THREE.LinearMipmapLinearFilter}
-            magFilter={THREE.LinearFilter}
+            anisotropy={16}
           >
             {children}
           </RenderTexture>
@@ -857,7 +854,7 @@ function ScreenText({ invert, x = 0, y = 1.3, ...props }) {
       />
       <color attach="background" args={[invert ? 'black' : '#35cc00']} />
       <ambientLight intensity={2.5} />
-      <directionalLight position={[10, 10, 5]} />
+      <directionalLight position={[10, 10, 5]} intensity={1} />
       <Text
         position={[x, y, 0]}
         ref={textRef}
