@@ -17,7 +17,6 @@ import { easing } from 'maath';
 import { Instances, Computers } from './computersmodel';
 import React, { Suspense, useRef, useState } from 'react';
 import { MailIcon, ArrowDownIcon } from 'lucide-react';
-
 import * as THREE from 'three';
 import { createRoot } from 'react-dom/client';
 import { getProject } from '@theatre/core';
@@ -29,10 +28,10 @@ import { PerspectiveCamera } from '@theatre/r3f';
 const demoSheet = getProject('Demo Project').sheet('Demo Sheet');
 
 // create-react-app
-if (process.env.NODE_ENV === 'development') {
-  studio.initialize();
-  studio.extend(extension);
-}
+// if (process.env.NODE_ENV === 'development') {
+studio.initialize();
+studio.extend(extension);
+// }
 
 // const suzi = import('@pmndrs/assets/models/bunny.glb')
 
@@ -104,7 +103,7 @@ function CombinedCameraRig() {
   //   state.camera.lookAt(lookX, lookY, lookZ);
   // });
 
-  return null;
+  // return null;
 }
 
 // 滚动到工作页面
@@ -139,7 +138,7 @@ export default function ComputersPage() {
           <Suspense fallback={null}>
             <ScrollControls pages={5} damping={0.25} distance={1}>
               <ComputerScene />
-              <CombinedCameraRig />
+              {/* <CombinedCameraRig /> */}
               {/* HTML content that will be scrolled in sync with 3D content */}
               <Scroll html>
                 {/* 第一屏：欢迎和标题 */}

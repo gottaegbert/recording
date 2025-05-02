@@ -2,7 +2,7 @@
 
 Fork From [shadcn/ui sidebar](https://shadcn-ui-sidebar.salimi.my)
 
-Here are my collections and practice of 3d/motion/UI
+Here are my collections and practice of shaders/3d/motion/UI/datavis
 
 ## >
 
@@ -17,25 +17,13 @@ Here are my collections and practice of 3d/motion/UI
 
 ## Tech/framework used
 
-- Next.js 14
+- Next.js 15
 - Shadcn/ui
 - Tailwind CSS
 - TypeScript
 - Zustand
 
 ## Installation
-
-### Custom registry
-
-If you are using @shadcn/ui 2.0.0 or later, you can install the component directly from the registry.
-
-```bash
-npx shadcn@latest add https://raw.githubusercontent.com/salimi-my/shadcn-ui-sidebar/refs/heads/master/public/registry/shadcn-sidebar.json
-
-or
-
-npx shadcn@latest add https://shadcn-ui-sidebar.salimi.my/registry/shadcn-sidebar.json
-```
 
 ### Usage example for Nextjs
 
@@ -61,49 +49,3 @@ export default function Page() {
     </ContentLayout>
   );
 }
-```
-
-## Starting the project locally
-
-1. Clone the repository
-
-   ```bash
-   git clone https://github.com/salimi-my/shadcn-ui-sidebar
-   ```
-
-2. Install dependencies
-
-   ```bash
-   cd shadcn-ui-sidebar
-   npm install
-   ```
-
-3. Run the development server
-
-   ```bash
-   npm run dev
-   ```
-
-## Demo
-
-The app is hosted on Vercel. [Click here](https://shadcn-ui-sidebar.salimi.my) to visit.
-`<br>`
-Direct demo link: `https://shadcn-ui-sidebar.salimi.my`
-
-## Screenshots
-
-#### Light mode
-
-![Light mode](/screenshots/screenshot-1.png)
-
-#### Dark mode
-
-![Dark mode](/screenshots/screenshot-2.png)
-
-#### Mini sidebar
-
-![Mini sidebar](/screenshots/screenshot-3.png)
-
-#### Sheet menu
-
-<img src="/screenshots/screenshot-4.png" width="300">
