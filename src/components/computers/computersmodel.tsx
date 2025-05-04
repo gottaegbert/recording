@@ -20,6 +20,7 @@ import {
   useCursor,
   useScroll,
   useTexture,
+  Html,
 } from '@react-three/drei';
 THREE.ColorManagement.legacyMode = false;
 // import TwistedBox from '@/components/demo/Shader/TwistedBox';
@@ -728,11 +729,13 @@ export function Computers(props: any) {
         rotation={[-Math.PI, 0.56, 0]}
         scale={-1}
       />
+
       <ScreenInteractive //blue screen
         frame="Object_206"
         panel="Object_207"
         position={[0.27, 1.53, -2.61]}
       />
+
       <ScreenText
         frame="Object_209"
         panel="Object_210"
@@ -1052,7 +1055,7 @@ function ScreenInteractive(props: any) {
       {!isChanging && content === 0 && (
         // 首页内容 - WHO3介绍
         <>
-          <color attach="background" args={['green']} />
+          <color attach="background" args={['black']} />
           <ambientLight intensity={Math.PI / 2} />
           <pointLight decay={0} position={[10, 10, 10]} intensity={Math.PI} />
           <pointLight
@@ -1060,10 +1063,12 @@ function ScreenInteractive(props: any) {
             position={[-10, -10, -10]}
             intensity={Math.PI}
           />
-          <SpinningBox position={[-3.15, 0.75, 0]} scale={0.5} />
+
+          <SpinningBox position={[-3.15, 1, 0]} scale={0.5} />
+
           <Text
-            position={[-3.15, 0.75, 0]}
-            fontSize={1}
+            position={[-3.15, 1, 0]}
+            fontSize={0.3}
             letterSpacing={-0.1}
             color={'#35cc00'}
             font="/Optician-Sans.woff"
@@ -1082,9 +1087,9 @@ function ScreenInteractive(props: any) {
           <ShaderContent />
           <Text
             position={[-3.15, 0.75, 0]}
-            fontSize={0.3}
+            fontSize={0.2}
             letterSpacing={-0.05}
-            color={'#ff0066'}
+            color={'#ff0'}
             font="/Optician-Sans.woff"
             textAlign="center"
           >
@@ -1170,8 +1175,13 @@ function ScreenInteractive(props: any) {
             color={'#5aff5a'}
             font="/Optician-Sans.woff"
             textAlign="center"
+            maxWidth={2}
+            lineHeight={1}
+            anchorX="center"
+            anchorY="middle"
             outlineWidth={0.02}
             outlineColor={'#003300'}
+            overflowWrap="normal"
           >
             {`CHANNEL ${content + 1}`}
           </Text>
