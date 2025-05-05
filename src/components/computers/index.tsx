@@ -15,11 +15,14 @@ import {
 } from '@react-three/postprocessing';
 import { easing } from 'maath';
 import { Instances, Computers } from './computersmodel';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { MailIcon, ArrowDownIcon } from 'lucide-react';
 import { GeistSans } from 'geist/font/sans';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ScrollHint } from '../scroll-hint';
 
 // const suzi = import('@pmndrs/assets/models/bunny.glb')
 
@@ -59,8 +62,32 @@ const ComputerScene = () => {
 // 联合相机控制系统，同时响应鼠标和滚动
 function CombinedCameraRig() {
   const scroll = useScroll();
+  const router = useRouter();
   const [mouseInfluence, setMouseInfluence] = useState(0.35);
-  console.log(scroll.offset);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      if (scroll.offset >= 1.1 && !isTransitioning) {
+        setIsTransitioning(true);
+        // 添加转场动画
+        document.body.style.overflow = 'hidden';
+        timeoutId = setTimeout(() => {
+          router.push('/workingon');
+        }, 1000);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [scroll, router, isTransitioning]);
+
   useFrame((state, delta) => {
     const offset = scroll.offset;
 
@@ -71,7 +98,7 @@ function CombinedCameraRig() {
 
     const mouseX = (state.pointer.x * state.viewport.width) / 3;
     const mouseY = state.pointer.y / 5;
-    const mouseZ = 15; // 增加基础Z距离
+    const mouseZ = 15;
 
     const targetX = scrollX * (1 - mouseInfluence) + mouseX * mouseInfluence;
     const targetY = scrollY * (1 - mouseInfluence) + mouseY * mouseInfluence;
@@ -80,7 +107,7 @@ function CombinedCameraRig() {
     easing.damp3(
       state.camera.position,
       [targetX, targetY, targetZ],
-      0.5, // 减小阻尼使相机移动更快
+      0.5,
       delta,
     );
 
@@ -88,158 +115,188 @@ function CombinedCameraRig() {
     const lookY = 1;
     const lookZ = -5;
     state.camera.lookAt(lookX, lookY, lookZ);
+
+    // 检查是否到达最后一页
+    if (offset >= 1 && !isTransitioning) {
+      setIsTransitioning(true);
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        router.push('/workingon');
+      }, 1000);
+    }
   });
 
   return null;
 }
 
-// 滚动到工作页面
-function scrollToWorkingPage() {
-  window.location.href = '/workingon';
-}
-
-// 主页面组件使用export default以确保只被实例化一次
+// 主页面组件
 export default function ComputersPage() {
+  const router = useRouter();
+  const [isExiting, setIsExiting] = useState(false);
+
   return (
-    <div className="h-screen w-full">
-      <Canvas
-        shadows
-        dpr={[1, 1.5]}
-        camera={{ position: [0, 0, 0], fov: 75, near: 0.1, far: 2000 }}
-        eventPrefix="client"
+    <AnimatePresence mode="wait">
+      <motion.div
+        className="relative h-screen w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
       >
-        <color attach="background" args={['black']} />
-        <hemisphereLight intensity={0.15} groundColor="black" />
-        <spotLight
-          decay={0}
-          position={[10, 20, 10]}
-          angle={0.12}
-          penumbra={1}
-          intensity={1.5}
-          castShadow
-          shadow-mapSize={1024}
-        />
-        {/* Main scene */}
-        <Suspense fallback={null}>
-          <ScrollControls pages={5} damping={0.25} distance={1}>
-            <ComputerScene />
-            <CombinedCameraRig />
-            {/* HTML content that will be scrolled in sync with 3D content */}
-            <Scroll html>
-              {/* 第一屏：欢迎和标题 */}
-              <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
-                <h1 className="mb-4 text-6xl font-bold">ShowCasing</h1>
-                <p
-                  className={`max-w-2xl text-center text-xl ${GeistSans.className}`}
-                >
-                  WHO3 labs is{' '}
-                  <span
-                    className="cursor-pointer underline"
-                    onClick={() => {
-                      window.open('https://egbert.eu.org', '_blank');
-                    }}
+        <Canvas
+          shadows
+          dpr={[1, 1.5]}
+          camera={{ position: [0, 0, 0], fov: 75, near: 0.1, far: 2000 }}
+          eventPrefix="client"
+        >
+          <color attach="background" args={['black']} />
+          <hemisphereLight intensity={0.15} groundColor="black" />
+          <spotLight
+            decay={0}
+            position={[10, 20, 10]}
+            angle={0.12}
+            penumbra={1}
+            intensity={1.5}
+            castShadow
+            shadow-mapSize={1024}
+          />
+          <Suspense fallback={null}>
+            <ScrollControls pages={5} damping={0.25} distance={1}>
+              <ComputerScene />
+              <CombinedCameraRig />
+              <Scroll html>
+                {/* 第一屏：欢迎和标题 */}
+                <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
+                  <h1 className="mb-4 text-6xl font-bold">ShowCasing</h1>
+                  <p
+                    className={`max-w-2xl text-center text-xl ${GeistSans.className}`}
                   >
-                    Siyu&apos;s
-                  </span>{' '}
-                  personal playground. <br />
-                  Just show what he can do in blending creativity and
-                  technology.
-                </p>
-              </div>
+                    WHO3 labs is{' '}
+                    <span
+                      className="cursor-pointer underline"
+                      onClick={() => {
+                        window.open('https://egbert.eu.org', '_blank');
+                      }}
+                    >
+                      Siyu&apos;s
+                    </span>{' '}
+                    personal playground. <br />
+                    Just show what he can do in blending creativity and
+                    technology.
+                  </p>
+                </div>
 
-              {/* 第二屏：动画和着色器效果 */}
-              <div className="pointer-events-auto flex h-screen w-screen flex-col items-start justify-center pl-40 text-white">
-                <Card className="max-w-md border-none bg-black/50 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-4xl">Shader Effect</CardTitle>
-                  </CardHeader>
-                  <CardContent className={GeistSans.className}>
-                    Focusing on unique visual effects. From particle systems and
-                    cool shaders, to 3D models and animations, a toast for
-                    computer graphics!
-                  </CardContent>
-                </Card>
-              </div>
+                {/* 第二屏：动画和着色器效果 */}
+                <div className="pointer-events-auto flex h-screen w-screen flex-col items-start justify-center pl-40 text-white">
+                  <Card className="max-w-md border-none bg-black/50 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle className="text-4xl">Shader Effect</CardTitle>
+                    </CardHeader>
+                    <CardContent className={GeistSans.className}>
+                      Focusing on unique visual effects. From particle systems
+                      and cool shaders, to 3D models and animations, a toast for
+                      computer graphics!
+                    </CardContent>
+                  </Card>
+                </div>
 
-              {/* 第三屏：数据可视化 */}
-              <div className="pointer-events-auto flex h-screen w-screen flex-col items-end justify-center pr-40 text-white">
-                <Card className="max-w-md border-none bg-black/50 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-4xl">
-                      Data Visualization
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className={GeistSans.className}>
-                    I believe transforming complex data into intuitive,
-                    interactive visual storytelling is a future media type.
-                    Let&apos;s make data exploration a pleasant journey!
-                  </CardContent>
-                </Card>
-              </div>
+                {/* 第三屏：数据可视化 */}
+                <div className="pointer-events-auto flex h-screen w-screen flex-col items-end justify-center pr-40 text-white">
+                  <Card className="max-w-md border-none bg-black/50 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle className="text-4xl">
+                        Data Visualization
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className={GeistSans.className}>
+                      I believe transforming complex data into intuitive,
+                      interactive visual storytelling is a future media type.
+                      Let&apos;s make data exploration a pleasant journey!
+                    </CardContent>
+                  </Card>
+                </div>
 
-              {/* 第四屏：3D内容和工作页面链接 */}
-              <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
-                <Card className="max-w-md border-none bg-black/50 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-4xl">3D Interactive</CardTitle>
-                  </CardHeader>
-                  <CardContent className={GeistSans.className}>
-                    Future is always high-dimensional. Need for immersive 3D
-                    worlds and interactive stories will expand from the game
-                    industry to the real world.
-                  </CardContent>
-                </Card>
-              </div>
-              <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
-                <Card className="max-w-md border-none bg-black/50 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-4xl">Chat?</CardTitle>
-                  </CardHeader>
-                  <CardContent className={GeistSans.className}>
-                    I am open to anyone who wants to have a coffee chat with me.
-                    <div className="mt-4 flex justify-between">
-                      <Button
-                        onClick={scrollToWorkingPage}
-                        className="flex items-center gap-2"
-                      >
-                        <ArrowDownIcon className="h-4 w-4" />
-                        Showcases
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          window.location.href = 'mailto:gottaegbert@gmail.com';
-                        }}
-                        className="flex items-center gap-2"
-                      >
-                        <MailIcon className="h-4 w-4" />
-                        Contact
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </Scroll>
-          </ScrollControls>
-        </Suspense>
+                {/* 第四屏：3D内容和工作页面链接 */}
+                <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
+                  <Card className="max-w-md border-none bg-black/50 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle className="text-4xl">3D Interactive</CardTitle>
+                    </CardHeader>
+                    <CardContent className={GeistSans.className}>
+                      Future is always high-dimensional. Need for immersive 3D
+                      worlds and interactive stories will expand from the game
+                      industry to the real world.
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="pointer-events-auto flex h-screen w-screen flex-col items-center justify-center text-white">
+                  <Card className="max-w-md border-none bg-black/50 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle className="text-4xl">Chat?</CardTitle>
+                    </CardHeader>
+                    <CardContent className={GeistSans.className}>
+                      I am open to anyone who wants to have a coffee chat with
+                      me.
+                      <div className="mt-4 flex justify-between">
+                        <Button
+                          onClick={() => router.push('/workingon')}
+                          className="flex items-center gap-2"
+                        >
+                          <ArrowDownIcon className="h-4 w-4" />
+                          Showcases
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            window.location.href =
+                              'mailto:gottaegbert@gmail.com';
+                          }}
+                          className="flex items-center gap-2"
+                        >
+                          <MailIcon className="h-4 w-4" />
+                          Contact
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </Scroll>
+            </ScrollControls>
+          </Suspense>
 
-        {/* Postprocessing */}
-        <EffectComposer>
-          <Bloom
-            luminanceThreshold={0}
-            mipmapBlur
-            luminanceSmoothing={0.0}
-            intensity={5}
-          />
-          <DepthOfField
-            target={[0, 1, -2]}
-            focalLength={0.5}
-            bokehScale={15}
-            height={700}
-          />
-          <ToneMapping />
-        </EffectComposer>
-        <BakeShadows />
-      </Canvas>
-    </div>
+          <EffectComposer>
+            <Bloom
+              luminanceThreshold={0}
+              mipmapBlur
+              luminanceSmoothing={0.0}
+              intensity={5}
+            />
+            <DepthOfField
+              target={[0, 1, -2]}
+              focalLength={0.5}
+              bokehScale={15}
+              height={700}
+            />
+            <ToneMapping />
+          </EffectComposer>
+          <BakeShadows />
+        </Canvas>
+
+        {/* 滚动提示 */}
+        <ScrollHint />
+
+        {/* 转场遮罩 */}
+        <AnimatePresence>
+          {isExiting && (
+            <motion.div
+              className="fixed inset-0 z-50 bg-black"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            />
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </AnimatePresence>
   );
 }
