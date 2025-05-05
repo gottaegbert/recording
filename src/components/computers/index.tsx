@@ -72,8 +72,6 @@ function CombinedCameraRig() {
     const handleScroll = () => {
       if (scroll.offset >= 1.1 && !isTransitioning) {
         setIsTransitioning(true);
-        // 添加转场动画
-        document.body.style.overflow = 'hidden';
         timeoutId = setTimeout(() => {
           router.push('/workingon');
         }, 1000);
@@ -119,7 +117,6 @@ function CombinedCameraRig() {
     // 检查是否到达最后一页
     if (offset >= 1 && !isTransitioning) {
       setIsTransitioning(true);
-      document.body.style.overflow = 'hidden';
       setTimeout(() => {
         router.push('/workingon');
       }, 1000);
@@ -134,14 +131,36 @@ export default function ComputersPage() {
   const router = useRouter();
   const [isExiting, setIsExiting] = useState(false);
 
+  // 处理转场效果
+  useEffect(() => {
+    return () => {
+      // 组件卸载时恢复滚动
+      document.body.style.removeProperty('overflow');
+    };
+  }, []);
+
+  const handleTransitionStart = () => {
+    setIsExiting(true);
+    // 只在实际转场时禁用滚动
+    document.body.style.overflow = 'hidden';
+  };
+
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence
+      mode="wait"
+      onExitComplete={() => document.body.style.removeProperty('overflow')}
+    >
       <motion.div
         className="relative h-screen w-full"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
+        onAnimationStart={() => {
+          if (isExiting) {
+            handleTransitionStart();
+          }
+        }}
       >
         <Canvas
           shadows
