@@ -825,8 +825,8 @@ function Screen({
       <mesh geometry={nodes[panel].geometry}>
         <meshBasicMaterial toneMapped={false}>
           <RenderTexture
-            width={2560}
-            height={2560}
+            width={1080}
+            height={1080}
             attach="map"
             anisotropy={16}
           >
