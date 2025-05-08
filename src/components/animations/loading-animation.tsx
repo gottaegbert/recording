@@ -41,7 +41,7 @@ export function LoadingAnimation({
       },
     },
     move: {
-      left: '-50%',
+      left: '-1%',
       transition: doorAnimationConfig,
     },
   };
@@ -58,7 +58,7 @@ export function LoadingAnimation({
       },
     },
     move: {
-      left: '150%',
+      left: '101%',
       transition: doorAnimationConfig,
     },
   };
@@ -139,7 +139,7 @@ export function LoadingAnimation({
               initial={{ opacity: 1 }}
               animate={{
                 opacity: 1, // 保持可见，跟随门移动
-                transition: { duration: 0.5 },
+                transition: { duration: 0.3 },
               }}
             >
               WHO3
@@ -162,7 +162,7 @@ export function LoadingAnimation({
               initial={{ opacity: 1 }}
               animate={{
                 opacity: 1, // 保持可见，跟随门移动
-                transition: { duration: 0.5 },
+                transition: { duration: 0.3 },
               }}
             >
               Labs
