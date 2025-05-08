@@ -171,20 +171,20 @@ const OpeningAnimation = ({ onLoadComplete }: OpeningAnimationProps) => {
                 className="absolute z-10 h-[2px]"
                 style={{
                   width: `${progress * 100}%`,
-                  background: 'white',
+                  background: ' rgba(0, 255, 55, 0.8)',
                   top: '50%',
                   left: 0,
                   transform: 'translateY(-50%)',
-                  boxShadow: '0 0 8px rgba(255, 255, 255, 0.8)',
+                  boxShadow: '0 0 8px rgba(0, 255, 55, 0.8)',
                 }}
               />
-              <div className="absolute left-4 top-[calc(50%+15px)] text-sm text-white opacity-70">
+              <div className="absolute left-4 top-[calc(50%+15px)] text-xl text-white opacity-70">
                 {Math.round(progress * 100)}%
               </div>
 
               {/* Preloader文字 */}
-              <div className="absolute left-4 top-[calc(50%-30px)] text-sm font-light tracking-wider text-white opacity-50">
-                LOADING WEBSITE
+              <div className="absolute left-4 top-[calc(50%-30px)] text-xl font-light tracking-wider text-white opacity-50">
+                LOADING
               </div>
             </>
           )}
