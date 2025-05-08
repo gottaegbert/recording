@@ -3,32 +3,34 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface LoadingAnimationProps {
+interface CardLoadingAnimationProps {
   onAnimationComplete?: () => void;
+  cardText?: string;
 }
 
-export function LoadingAnimation({
+export function CardLoadingAnimation({
   onAnimationComplete,
-}: LoadingAnimationProps) {
+  cardText = 'Loading',
+}: CardLoadingAnimationProps) {
   const [isVisible, setIsVisible] = useState(true);
   const leftHalfRef = useRef<HTMLDivElement>(null);
   const rightHalfRef = useRef<HTMLDivElement>(null);
   const leftLineRef = useRef<HTMLDivElement>(null);
   const rightLineRef = useRef<HTMLDivElement>(null);
 
-  // 最短动画时间
+  // Animation duration and timing
   const MIN_ANIMATION_DURATION = 2500;
   const startTimeRef = useRef(Date.now());
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 动画配置
+  // Door animation config
   const doorAnimationConfig = {
-    delay: 0.8,
+    delay: 0.5,
     duration: 1.2,
     ease: 'easeInOut' as const,
   };
 
-  // 线条动画变体
+  // Line animation variants
   const leftLineVariants = {
     initial: { height: 0, opacity: 0, left: '50%' },
     show: {
@@ -64,18 +66,12 @@ export function LoadingAnimation({
   };
 
   useEffect(() => {
-    // 一旦组件挂载，开始加载动画
-    document.body.style.overflow = 'hidden';
-
-    // 确保至少显示动画一段最短时间
+    // Ensure the animation runs for at least the minimum duration
     const timeElapsed = Date.now() - startTimeRef.current;
     const remainingTime = Math.max(0, MIN_ANIMATION_DURATION - timeElapsed);
 
     animationTimeoutRef.current = setTimeout(() => {
-      // 动画结束后恢复滚动
-      document.body.style.removeProperty('overflow');
       setIsVisible(false);
-
       if (onAnimationComplete) {
         onAnimationComplete();
       }
@@ -85,7 +81,6 @@ export function LoadingAnimation({
       if (animationTimeoutRef.current) {
         clearTimeout(animationTimeoutRef.current);
       }
-      document.body.style.removeProperty('overflow');
     };
   }, [onAnimationComplete]);
 
@@ -93,37 +88,45 @@ export function LoadingAnimation({
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="pointer-events-none fixed inset-0 z-[9999] flex items-center justify-center"
+          className="pointer-events-none absolute inset-0 z-10 overflow-hidden"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {/* 左侧切割线 */}
+          {/* Background blur overlay */}
+          <motion.div
+            className="absolute inset-0 bg-background/40 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          />
+
+          {/* Left line */}
           <motion.div
             ref={leftLineRef}
             variants={leftLineVariants}
             initial="initial"
             animate={['show', 'move']}
-            className="absolute top-0 z-30 w-[1px] -translate-x-1/2 transform bg-green-500 shadow-[0_0_15px_rgba(74,222,128,0.8)]"
+            className="absolute top-0 z-30 w-[1px] -translate-x-1/2 transform bg-green-500 shadow-[0_0_10px_rgba(74,222,128,0.8)]"
             style={{
               height: '100%',
               transformOrigin: 'top center',
             }}
           />
 
-          {/* 右侧切割线 */}
+          {/* Right line */}
           <motion.div
             ref={rightLineRef}
             variants={rightLineVariants}
             initial="initial"
             animate={['show', 'move']}
-            className="absolute top-0 z-30 w-[1px] -translate-x-1/2 transform bg-green-500 shadow-[0_0_15px_rgba(74,222,128,0.8)]"
+            className="absolute top-0 z-30 w-[1px] -translate-x-1/2 transform bg-green-500 shadow-[0_0_10px_rgba(74,222,128,0.8)]"
             style={{
               height: '100%',
               transformOrigin: 'top center',
             }}
           />
 
-          {/* 左半边 */}
+          {/* Left half */}
           <motion.div
             ref={leftHalfRef}
             className="absolute left-0 top-0 z-20 flex h-full w-1/2 items-center justify-end overflow-hidden bg-black pr-2"
@@ -133,12 +136,12 @@ export function LoadingAnimation({
               transition: doorAnimationConfig,
             }}
           >
-            {/* 左侧文字 */}
+            {/* Left side text */}
             <motion.div
-              className="text-4xl font-bold text-white"
+              className="text-2xl font-bold text-white"
               initial={{ opacity: 1 }}
               animate={{
-                opacity: 1, // 保持可见，跟随门移动
+                opacity: 1, // Keep visible, moving with the door
                 transition: { duration: 0.3 },
                 x: '-101%',
               }}
@@ -147,7 +150,7 @@ export function LoadingAnimation({
             </motion.div>
           </motion.div>
 
-          {/* 右半边 */}
+          {/* Right half */}
           <motion.div
             ref={rightHalfRef}
             className="absolute right-0 top-0 z-20 flex h-full w-1/2 items-center justify-start overflow-hidden bg-black pl-2"
@@ -157,18 +160,51 @@ export function LoadingAnimation({
               transition: doorAnimationConfig,
             }}
           >
-            {/* 右侧文字 */}
+            {/* Right side text */}
             <motion.div
-              className="text-4xl font-bold text-white"
+              className="text-2xl font-bold text-white"
               initial={{ opacity: 1 }}
               animate={{
-                opacity: 1, // 保持可见，跟随门移动
+                opacity: 1, // Keep visible, moving with the door
                 transition: { duration: 0.3 },
                 x: '101%',
               }}
             >
               Labs
             </motion.div>
+          </motion.div>
+
+          {/* Loading spinner (appears after doors open) */}
+          <motion.div
+            className="absolute left-1/2 top-1/2 z-30 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4"
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: 1,
+              transition: {
+                delay: doorAnimationConfig.delay + doorAnimationConfig.duration,
+                duration: 0.4,
+              },
+            }}
+          >
+            <div className="relative h-10 w-10">
+              <motion.div
+                className="absolute inset-0 h-full w-full rounded-full border-[3px] border-green-500 border-t-transparent"
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 1.2,
+                  repeat: Infinity,
+                  ease: 'linear',
+                }}
+              />
+            </div>
+            <motion.p
+              className="text-lg font-medium text-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              {cardText}
+            </motion.p>
           </motion.div>
         </motion.div>
       )}
