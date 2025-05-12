@@ -113,5 +113,11 @@
 
 .custom-scrollbar {
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: var(--tsecondary) transparent; /* Firefox */
+  scrollbar-color: #171b2346 transparent; /* Firefox */
+}
+
+
+.clip-path-trapezoid {
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+
 }

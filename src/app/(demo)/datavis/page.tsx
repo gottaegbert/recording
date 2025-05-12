@@ -10,13 +10,7 @@ import { MetricCards } from './components/metric-cards';
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FullscreenButton } from '@/components/demo/Shader/FullscreenButton';
-import {
-  RefreshCw,
-  PauseCircle,
-  PlayCircle,
-  LayoutGrid,
-  LayoutList,
-} from 'lucide-react';
+import { PauseCircle, PlayCircle, LayoutGrid, LayoutList } from 'lucide-react';
 
 export default function DataVisPage() {
   const [refreshPaused, setRefreshPaused] = useState(false);
