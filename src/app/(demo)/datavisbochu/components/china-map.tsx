@@ -142,7 +142,7 @@ export function ChinaMap({ paused }: ChinaMapProps) {
     // 改进的投影设置，更好地展示完整的中国地图
     const projection = d3
       .geoMercator()
-      .center([102, 30]) // 调整中心位置
+      .center([100, 35]) // 调整中心位置
       .scale(width * 0.75) // 调整缩放以显示完整的中国地图
       .translate([width / 2, height / 2]); // 调整位置
 
@@ -408,7 +408,7 @@ export function ChinaMap({ paused }: ChinaMapProps) {
   }, [chinaGeoJson, connections, dimensions]);
 
   return (
-    <div className="relative h-full w-full rounded-lg bg-[#171B23]">
+    <div className="relative h-full w-full rounded-lg">
       {loading ? (
         <div className="flex h-full w-full items-center justify-center">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-t-4 border-blue-500 border-t-transparent"></div>
@@ -519,10 +519,6 @@ export function ChinaMap({ paused }: ChinaMapProps) {
               <div className="flex items-center">
                 <div className="mr-2 h-3 w-3 animate-pulse rounded-full bg-cyan-400"></div>
                 <span className="text-gray-300">实时活动</span>
-              </div>
-              <div className="flex items-center">
-                <div className="mr-2 h-1 w-6 bg-blue-400/60"></div>
-                <span className="text-gray-300">数据连接</span>
               </div>
             </div>
           </div>

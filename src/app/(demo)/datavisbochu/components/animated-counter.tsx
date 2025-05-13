@@ -1,77 +1,83 @@
-import { MotionValue, motion, useSpring, useTransform } from 'framer-motion';
-import { useEffect } from 'react';
+'use client';
 
-const fontSize = 30;
-const padding = 15;
-const height = fontSize + padding;
+import React, { useEffect, useState } from 'react';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 
-function Counter({ value }: { value: number }) {
-  return (
-    <div
-      style={{ fontSize }}
-      className="flex space-x-3 overflow-hidden rounded bg-white px-2 leading-none text-gray-900"
-    >
-      <Digit place={100} value={value} />
-      <Digit place={10} value={value} />
-      <Digit place={1} value={value} />
-    </div>
-  );
+interface AnimatedCounterProps {
+  from: number;
+  to: number;
+  duration?: number;
+  delay?: number;
+  formatter?: (value: number) => string;
+  className?: string;
 }
 
-function Digit({ place, value }: { place: number; value: number }) {
-  let valueRoundedToPlace = Math.floor(value / place);
-  let animatedValue = useSpring(valueRoundedToPlace);
+export function AnimatedCounter({
+  from,
+  to,
+  duration = 2,
+  delay = 0,
+  formatter = (value: number) => value.toLocaleString(),
+  className = '',
+}: AnimatedCounterProps) {
+  const count = useMotionValue(from);
+  const rounded = useTransform(count, (latest) =>
+    formatter(Math.round(latest)),
+  );
+  const [displayValue, setDisplayValue] = useState(formatter(from));
 
   useEffect(() => {
-    animatedValue.set(valueRoundedToPlace);
-  }, [animatedValue, valueRoundedToPlace]);
+    const animation = animate(count, to, { duration, delay });
 
+    const unsubscribe = rounded.on('change', (latest) => {
+      setDisplayValue(latest);
+    });
+
+    return () => {
+      animation.stop();
+      unsubscribe();
+    };
+  }, [count, rounded, to, duration, delay]);
+
+  return <span className={className}>{displayValue}</span>;
+}
+
+interface StatsCardProps {
+  title: string;
+  value: number;
+  unit?: string;
+  icon?: React.ReactNode;
+  delay?: number;
+}
+
+export function StatsCard({
+  title,
+  value,
+  unit = '',
+  icon,
+  delay = 0,
+}: StatsCardProps) {
   return (
-    <div style={{ height }} className="relative w-[1ch] tabular-nums">
-      {[...Array(10).keys()].map((i) => (
-        <Number key={i} mv={animatedValue} number={i} />
-      ))}
+    <div className="rounded-lg bg-[#1e293b] p-4 shadow-lg">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-medium text-gray-400">{title}</h3>
+        {icon && <div className="text-blue-400">{icon}</div>}
+      </div>
+      <div className="mt-2 flex items-baseline">
+        <div className="text-2xl font-bold text-white">
+          <AnimatedCounter from={0} to={value} delay={delay} />
+        </div>
+        {unit && <span className="ml-1 text-sm text-gray-400">{unit}</span>}
+      </div>
     </div>
   );
 }
 
-function Number({ mv, number }: { mv: MotionValue; number: number }) {
-  let y = useTransform(mv, (latest) => {
-    let placeValue = latest % 10;
-    let offset = (10 + number - placeValue) % 10;
-
-    let memo = offset * height;
-
-    if (offset > 5) {
-      memo -= 10 * height;
-    }
-
-    return memo;
-  });
-
+export function StatsGrid() {
   return (
-    <motion.span
-      style={{ y }}
-      className="absolute inset-0 flex items-center justify-center"
-    >
-      {number}
-    </motion.span>
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <StatsCard title="客户总数" value={37846} delay={0.2} />
+      <StatsCard title="制造产能" value={215876} unit="吨" delay={0.4} />
+    </div>
   );
 }
-
-//usage
-// export default function Component() {
-//   let [count, setCount] = useState(0);
-//   return (
-//     <div>
-//       <p>Choose a number:</p>
-//       <input
-//         type="number"
-//         value={count}
-//         min={0}
-//         onChange={(e) => setCount(+e.target.value)}
-//       />
-//       <Counter value={count} />
-//     </div>
-//   );
-// }
