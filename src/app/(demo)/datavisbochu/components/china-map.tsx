@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-// @ts-ignore - Add module declaration to fix type issues
 import * as d3 from 'd3';
-// @ts-ignore
-import { FeatureCollection } from 'geojson';
+import { Feature, FeatureCollection } from 'geojson';
 
 interface CityData {
   name: string;
@@ -42,14 +40,10 @@ const CITIES_DATA: CityData[] = [
   { name: '苏州', value: 498, lng: 120.6, lat: 31.3 },
 ];
 
-// Simplified connection data - just store relationships without animations
 interface Connection {
   fromName: string;
   toName: string;
-  fromLng: number;
-  fromLat: number;
-  toLng: number;
-  toLat: number;
+  coords: [number, number][];
   value: number;
 }
 
@@ -70,10 +64,10 @@ function generateConnectionData(): Connection[] {
       connections.push({
         fromName: mainCity.name,
         toName: target.name,
-        fromLng: mainCity.lng,
-        fromLat: mainCity.lat,
-        toLng: target.lng,
-        toLat: target.lat,
+        coords: [
+          [mainCity.lng, mainCity.lat],
+          [target.lng, target.lat],
+        ],
         value: Math.floor(Math.random() * 100) + 20,
       });
     }
@@ -92,14 +86,14 @@ export function ChinaMap({ paused }: ChinaMapProps) {
   );
   const [loading, setLoading] = useState(true);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
-  const [activeCity, setActiveCity] = useState<string | null>(null);
 
   // Fetch GeoJSON data
   useEffect(() => {
-    fetch('../china.json')
+    // 使用本地的GeoJSON文件
+    // 导入在同一目录下的chinaGeoJson.json
+    fetch('/datavisbochu/chinaGeoJson.json')
       .then((response) => response.json())
       .then((data) => {
-        console.log('Map data loaded:', data.features.length, 'features');
         setChinaGeoJson(data);
         setLoading(false);
       })
@@ -145,182 +139,280 @@ export function ChinaMap({ paused }: ChinaMapProps) {
 
     const { width, height } = dimensions;
 
-    // Improved projection to show complete China map
-    // First calculate bounds of the GeoJSON to properly fit the map
-    const path = d3.geoPath();
-    const bounds = path.bounds(chinaGeoJson as any);
-    const [[x0, y0], [x1, y1]] = bounds;
-
-    // Calculate scale to fit the map properly
-    const scale = 0.8 * Math.min(width / (x1 - x0), height / (y1 - y0));
-
-    // Calculate center point of the map
-    const centroid = d3.geoCentroid(chinaGeoJson as any);
+    // 改进的投影设置，更好地展示完整的中国地图
     const projection = d3
       .geoMercator()
-      .center(centroid)
-      .scale(scale)
-      .translate([width / 2, height / 2]);
+      .center([102, 30]) // 调整中心位置
+      .scale(width * 0.75) // 调整缩放以显示完整的中国地图
+      .translate([width / 2, height / 2]); // 调整位置
 
-    // Create path generator with the calculated projection
+    // Create path generator
     const pathGenerator = d3.geoPath().projection(projection);
 
     // Create container groups
-    const mapGroup = svg.append('g');
-    const connectionGroup = svg.append('g');
-    const cityGroup = svg.append('g');
+    const containerGroup = svg.append('g'); // Main container for zooming
+    const mapGroup = containerGroup.append('g');
+    const connectionGroup = containerGroup.append('g');
+    const cityGroup = containerGroup.append('g');
 
-    // Create tooltip
+    // Add zoom behavior
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.5, 8])
+      .on('zoom', (event) => {
+        containerGroup.attr('transform', event.transform);
+      });
+
+    svg.call(zoom);
+
+    // Optional: Set initial zoom for better view
+    svg.call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(1));
+
+    // 创建省份悬停提示
     const tooltip = d3
       .select(svgRef.current.parentElement)
       .append('div')
-      .attr('class', 'absolute z-10 pointer-events-none')
+      .attr('class', 'absolute z-20 pointer-events-none')
       .style('display', 'none');
 
-    // Add filter for glow effect
-    const defs = svg.append('defs');
-    const filter = defs.append('filter').attr('id', 'glow');
-    filter
-      .append('feGaussianBlur')
-      .attr('stdDeviation', '3.5')
-      .attr('result', 'coloredBlur');
-    const feMerge = filter.append('feMerge');
-    feMerge.append('feMergeNode').attr('in', 'coloredBlur');
-    feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
-
-    // Calculate value ranges for color scaling
-    const valueExtent = d3.extent(CITIES_DATA, (d: CityData) => d.value) as [
-      number,
-      number,
-    ];
-    const colorScale = d3
-      .scaleLinear<string>()
-      .domain(valueExtent)
-      .range(['#90cdf4', '#3182ce']);
-
-    const sizeScale = d3.scaleLog().domain(valueExtent).range([3, 12]);
-
-    // Render map with improved style
+    // Render map with improved styling
     mapGroup
       .selectAll('path')
       .data(chinaGeoJson.features)
       .enter()
       .append('path')
       .attr('d', pathGenerator)
-      .attr('fill', '#162a47')
       .attr('stroke', '#276ecf')
-      .attr('stroke-width', 0.8)
-      .attr('opacity', 0.7)
-      .on('mouseover', function (this: SVGPathElement) {
+      .attr('fill', '#1e293b')
+      .attr('stroke-width', 1) // Thinner borders for cleaner look
+      .attr('opacity', 1)
+      .attr('cursor', 'pointer')
+      .on('mouseover', function (event, d: any) {
+        // 高亮当前省份
         d3.select(this)
           .transition()
           .duration(300)
-          .attr('fill', '#276ecf')
-          .attr('opacity', 0.5);
+          .attr('fill', '#2a4d79')
+          .attr('opacity', 0.9);
+
+        // 显示省份名称提示
+        const province = d.properties?.name || '';
+        const [x, y] = d3.pointer(event, svg.node());
+
+        tooltip
+          .style('display', 'block')
+          .html(
+            `
+            <div class="p-2 text-xs bg-slate-800/90 rounded-md backdrop-blur-sm">
+              <p class="font-bold text-blue-300">${province}</p>
+            </div>
+          `,
+          )
+          .style('left', x + 15 + 'px')
+          .style('top', y - 15 + 'px');
       })
-      .on('mouseout', function (this: SVGPathElement) {
+      .on('mouseout', function () {
         d3.select(this)
           .transition()
           .duration(300)
-          .attr('fill', '#162a47')
-          .attr('opacity', 0.7);
+          .attr('fill', '#1e293b')
+          .attr('opacity', 1);
+
+        tooltip.style('display', 'none');
       });
 
-    // Draw simple connection lines (less emphasis)
-    connectionGroup
-      .selectAll('line')
-      .data(connections)
-      .enter()
-      .append('line')
-      .attr('x1', (d: Connection) => projection([d.fromLng, d.fromLat])![0])
-      .attr('y1', (d: Connection) => projection([d.fromLng, d.fromLat])![1])
-      .attr('x2', (d: Connection) => projection([d.toLng, d.toLat])![0])
-      .attr('y2', (d: Connection) => projection([d.toLng, d.toLat])![1])
-      .attr('stroke', 'rgba(79, 195, 247, 0.3)')
-      .attr('stroke-width', 0.8)
-      .attr('stroke-dasharray', '3,3');
+    // 添加主要省份名称标签
+    chinaGeoJson.features.forEach((feature) => {
+      const province = feature.properties?.name || '';
+      // 计算省份中心点
+      const centroid = pathGenerator.centroid(feature);
 
-    // Add cities with improved visual clarity
-    cityGroup
-      .selectAll('circle')
-      .data(CITIES_DATA)
-      .enter()
-      .append('circle')
-      .attr('cx', (d: CityData) => projection([d.lng, d.lat])![0])
-      .attr('cy', (d: CityData) => projection([d.lng, d.lat])![1])
-      .attr('r', (d: CityData) => sizeScale(d.value))
-      .attr('fill', (d: CityData) => colorScale(d.value))
-      .attr('stroke', '#ffffff')
-      .attr('stroke-width', 1)
-      .attr('opacity', 0.9)
-      .attr('cursor', 'pointer')
-      .on(
-        'mouseover',
-        function (this: SVGCircleElement, event: MouseEvent, d: CityData) {
-          // Highlight
-          d3.select(this)
-            .transition()
-            .duration(200)
-            .attr('r', sizeScale(d.value) * 1.3)
-            .attr('fill', '#5df1ff');
+      // 只为较大的省份添加标签，避免拥挤
+      const majorProvinces = [
+        '新疆',
+        '西藏',
+        '内蒙古',
+        '青海',
+        '四川',
+        '黑龙江',
+        '甘肃',
+        '云南',
+        '广西',
+        '湖南',
+      ];
 
-          setActiveCity(d.name);
+      if (majorProvinces.includes(province)) {
+        mapGroup
+          .append('text')
+          .attr('x', centroid[0])
+          .attr('y', centroid[1])
+          .attr('text-anchor', 'middle')
+          .attr('font-size', '10px')
+          .attr('fill', '#9ca3af')
+          .attr('pointer-events', 'none')
+          .text(province);
+      }
+    });
 
-          // Show tooltip
-          const [x, y] = projection([d.lng, d.lat])!;
+    // Add cities with improved sizing
+    CITIES_DATA.forEach((city) => {
+      const [x, y] = projection([city.lng, city.lat]) || [0, 0];
+      const size = Math.log(city.value) * 1.3; // Slightly adjusted sizing
+
+      // City outer glow
+      cityGroup
+        .append('circle')
+        .attr('cx', x)
+        .attr('cy', y)
+        .attr('r', size * 2.2)
+        .attr('fill', 'rgba(49, 130, 206, 0.25)')
+        .attr('class', 'city-glow')
+        .attr('filter', 'url(#glow)');
+
+      // City dot
+      const cityDot = cityGroup
+        .append('circle')
+        .attr('cx', x)
+        .attr('cy', y)
+        .attr('r', size)
+        .attr('fill', '#3182CE')
+        .attr('stroke', '#90CDF4')
+        .attr('stroke-width', 1)
+        .attr('cursor', 'pointer')
+        .on('mouseover', function () {
+          // Show tooltip with improved positioning
           tooltip
             .style('display', 'block')
             .html(
               `
-            <div class="p-2 text-xs bg-slate-800/90 rounded-md backdrop-blur-sm">
-              <p class="font-bold text-blue-300">${d.name}</p>
-              <p class="text-gray-300">客户数量: ${d.value}</p>
-              <p class="text-gray-400">活跃: ${Math.floor(d.value * 0.7)}家</p>
-            </div>
-          `,
+              <div class="p-2 text-xs bg-slate-800/90 rounded-md backdrop-blur-sm">
+                <p class="font-bold text-blue-300">${city.name}</p>
+                <p class="text-gray-300">客户数量: ${city.value}</p>
+                <p class="text-gray-400">活跃: ${Math.floor(city.value * 0.7)}</p>
+              </div>
+            `,
             )
-            .style('left', `${x + 15}px`)
-            .style('top', `${y - 15}px`);
-        },
-      )
-      .on('mouseout', function (this: SVGCircleElement) {
-        const d = d3.select(this).datum() as CityData;
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr('r', sizeScale(d.value))
-          .attr('fill', colorScale(d.value));
+            .style('left', x + 15 + 'px')
+            .style('top', y - 15 + 'px');
 
-        setActiveCity(null);
-        tooltip.style('display', 'none');
-      });
+          d3.select(this).transition().duration(300).attr('fill', '#5df1ff');
+        })
+        .on('mouseout', function () {
+          tooltip.style('display', 'none');
+          d3.select(this).transition().duration(300).attr('fill', '#3182CE');
+        });
 
-    // Add city labels for all cities, with better visibility
-    cityGroup
-      .selectAll('text')
-      .data(CITIES_DATA)
-      .enter()
-      .append('text')
-      .attr(
-        'x',
-        (d: CityData) =>
-          projection([d.lng, d.lat])![0] + sizeScale(d.value) + 3,
-      )
-      .attr('y', (d: CityData) => projection([d.lng, d.lat])![1] + 4)
-      .attr('font-size', (d: CityData) => (d.value > 500 ? '12px' : '10px'))
-      .attr('fill', '#CBD5E0')
-      .text((d: CityData) => d.name)
-      .attr('opacity', (d: CityData) => (d.value > 400 ? 1 : 0.7));
-  }, [chinaGeoJson, connections, dimensions, activeCity]);
+      // Add pulsing animation to major cities
+      if (city.value > 700) {
+        cityDot.classed('animate-pulse', true);
+      }
+
+      // Add city name for major cities with better visibility
+      if (city.value > 500) {
+        cityGroup
+          .append('text')
+          .attr('x', x + size + 4)
+          .attr('y', y + 4)
+          .attr('font-size', '12px')
+          .attr('fill', '#CBD5E0')
+          .attr('paint-order', 'stroke') // Add text border for better readability
+          .attr('stroke', '#111827')
+          .attr('stroke-width', '3px')
+          .attr('stroke-opacity', '0.6')
+          .text(city.name);
+      }
+    });
+
+    // Add filter for glow effect
+    const defs = svg.append('defs');
+    const filter = defs.append('filter').attr('id', 'glow');
+
+    filter
+      .append('feGaussianBlur')
+      .attr('stdDeviation', '3.5')
+      .attr('result', 'coloredBlur');
+
+    const feMerge = filter.append('feMerge');
+    feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+    feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+    // 添加城市之间的连接线
+    connections.forEach((connection) => {
+      // 创建曲线路径
+      const curveGenerator = d3
+        .line<[number, number]>()
+        .x((d) => d[0])
+        .y((d) => d[1])
+        .curve(d3.curveBasis);
+
+      // 把城市经纬度坐标转换为屏幕坐标
+      const [fromCity] = CITIES_DATA.filter(
+        (city) => city.name === connection.fromName,
+      );
+      const [toCity] = CITIES_DATA.filter(
+        (city) => city.name === connection.toName,
+      );
+
+      if (fromCity && toCity) {
+        const source = projection([fromCity.lng, fromCity.lat]) || [0, 0];
+        const target = projection([toCity.lng, toCity.lat]) || [0, 0];
+
+        // 创建曲线控制点 (让线条有弧度)
+        const dx = target[0] - source[0];
+        const dy = target[1] - source[1];
+        const dr = Math.sqrt(dx * dx + dy * dy);
+
+        // 控制点偏移，让线条有弧度
+        const mid1: [number, number] = [
+          source[0] + dx / 3 + (Math.random() - 0.5) * dx * 0.2,
+          source[1] + dy / 3 + (Math.random() - 0.5) * dy * 0.2,
+        ];
+        const mid2: [number, number] = [
+          source[0] + (dx * 2) / 3 + (Math.random() - 0.5) * dx * 0.2,
+          source[1] + (dy * 2) / 3 + (Math.random() - 0.5) * dy * 0.2,
+        ];
+
+        const curvePoints: [number, number][] = [
+          source as [number, number],
+          mid1,
+          mid2,
+          target as [number, number],
+        ];
+
+        // 绘制连接线
+        const path = connectionGroup
+          .append('path')
+          .attr('d', curveGenerator(curvePoints))
+          .attr('fill', 'none')
+          .attr('stroke', 'rgba(49, 130, 206, 0.3)')
+          .attr('stroke-width', 1.5)
+          .attr('opacity', 0.6)
+          .attr('class', 'connection-line');
+
+        const pathLength = path.node()?.getTotalLength() || 0;
+
+        // 给连接线添加动画效果
+        connectionGroup
+          .append('circle')
+          .attr('r', 3)
+          .attr('fill', '#5df1ff')
+          .attr('opacity', 0.8)
+          .attr('filter', 'url(#glow)')
+          .attr('class', 'animate-pulse')
+          .append('animateMotion')
+          .attr('dur', `${5 + Math.random() * 5}s`) // 随机动画时间
+          .attr('repeatCount', 'indefinite')
+          .attr('path', path.attr('d'));
+      }
+    });
+  }, [chinaGeoJson, connections, dimensions]);
 
   return (
     <div className="relative h-full w-full rounded-lg bg-[#171B23]">
       {loading ? (
         <div className="flex h-full w-full items-center justify-center">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-t-4 border-blue-500 border-t-transparent"></div>
-          <p className="ml-3 text-sm text-gray-400">
-            Loading China map data...
-          </p>
+          <p className="ml-3 text-sm text-gray-400">加载地图中...</p>
         </div>
       ) : (
         <div className="relative h-full w-full">
@@ -331,37 +423,105 @@ export function ChinaMap({ paused }: ChinaMapProps) {
             height={dimensions.height}
           ></svg>
 
-          {/* City data summary */}
-          <div className="absolute left-4 top-4 rounded-md bg-slate-800/80 p-3 text-xs backdrop-blur-sm">
-            <div className="mb-2 font-semibold text-white">客户分布统计</div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <span className="text-gray-400">总客户数:</span>
-                <span className="ml-1 text-blue-300">
-                  {CITIES_DATA.reduce((sum, city) => sum + city.value, 0)}
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-400">覆盖城市:</span>
-                <span className="ml-1 text-blue-300">{CITIES_DATA.length}</span>
-              </div>
-            </div>
+          {/* Controls - Simple zoom buttons */}
+          <div className="absolute left-4 top-4 flex flex-col gap-2">
+            <button
+              className="rounded bg-slate-800/70 p-2 text-white backdrop-blur-sm hover:bg-slate-700/70"
+              onClick={() => {
+                if (svgRef.current) {
+                  const svg = d3.select(svgRef.current);
+                  const zoom = d3
+                    .zoom<SVGSVGElement, unknown>()
+                    .scaleExtent([0.5, 8]);
+                  svg.transition().call(zoom.scaleBy as any, 1.3);
+                }
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 4V20M4 12H20"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+            <button
+              className="rounded bg-slate-800/70 p-2 text-white backdrop-blur-sm hover:bg-slate-700/70"
+              onClick={() => {
+                if (svgRef.current) {
+                  const svg = d3.select(svgRef.current);
+                  const zoom = d3
+                    .zoom<SVGSVGElement, unknown>()
+                    .scaleExtent([0.5, 8]);
+                  svg.transition().call(zoom.scaleBy as any, 0.7);
+                }
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 12H20"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+            <button
+              className="rounded bg-slate-800/70 p-2 text-white backdrop-blur-sm hover:bg-slate-700/70"
+              onClick={() => {
+                if (svgRef.current) {
+                  const svg = d3.select(svgRef.current);
+                  const zoom = d3
+                    .zoom<SVGSVGElement, unknown>()
+                    .scaleExtent([0.5, 8]);
+                  svg.transition().call(zoom.transform as any, d3.zoomIdentity);
+                }
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15 9l-6 6M9 9l6 6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
           </div>
 
           {/* Legend */}
-          <div className="absolute bottom-4 right-4 rounded-md bg-slate-800/80 p-3 text-xs backdrop-blur-sm">
+          <div className="absolute bottom-4 right-4 rounded-md bg-slate-800/70 p-3 text-xs backdrop-blur-sm">
             <div className="mb-2 font-semibold text-white">图例</div>
             <div className="space-y-2">
               <div className="flex items-center">
-                <div className="mr-2 h-3 w-6 bg-gradient-to-r from-blue-200 to-blue-600"></div>
-                <span className="text-gray-300">客户数量</span>
-              </div>
-              <div className="flex items-center">
                 <div className="mr-2 h-3 w-3 rounded-full bg-blue-500"></div>
-                <span className="text-gray-300">城市分布</span>
+                <span className="text-gray-300">客户分布</span>
               </div>
               <div className="flex items-center">
-                <div className="mr-2 h-0.5 w-6 border-t border-dashed border-blue-300"></div>
+                <div className="mr-2 h-3 w-3 animate-pulse rounded-full bg-cyan-400"></div>
+                <span className="text-gray-300">实时活动</span>
+              </div>
+              <div className="flex items-center">
+                <div className="mr-2 h-1 w-6 bg-blue-400/60"></div>
                 <span className="text-gray-300">数据连接</span>
               </div>
             </div>

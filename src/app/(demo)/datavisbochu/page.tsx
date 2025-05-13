@@ -180,13 +180,14 @@ export default function BochuDataVisPage() {
               </div>
 
               {/* 可视化主体区域 */}
+
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 {/* 左侧 - 地图区域 */}
                 <div className="col-span-2 space-y-4">
                   <Card className="border border-white/10 bg-[#23272E] shadow-xl backdrop-blur-sm">
                     <div className="p-4">
                       <div className="aspect-video h-full rounded-md">
-                        <ChinaMap paused={refreshPaused} />
+                        {/* <ChinaMap paused={refreshPaused} /> */}
                       </div>
                       {/* <p className="mt-2 text-sm text-gray-400">
                         通过热力图展示全国客户分布，并标注头部客户
