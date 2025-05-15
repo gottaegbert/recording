@@ -13,22 +13,23 @@ interface PieChartData {
 
 interface D3PieChartProps {
   paused: boolean;
-  title?: string;
   customerCount?: number;
   productionCapacity?: number;
 }
 
 export function D3PieChart({
   paused,
-  title = '行业分布',
   customerCount = 37846,
   productionCapacity = 1870,
 }: D3PieChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<PieChartData[]>([
-    { name: '钢结构', value: 42, color: '#3182CE' },
-    { name: '机械制造', value: 35, color: '#38A169' },
-    { name: '汽车', value: 23, color: '#805AD5' },
+    { name: '机械制造', value: 28, color: '#60A5FA' },
+    { name: '钢结构', value: 22, color: '#34D399' },
+    { name: '模具制造', value: 18, color: '#F59E0B' },
+    { name: '装配设备', value: 15, color: '#EC4899' },
+    { name: '金属加工', value: 12, color: '#A78BFA' },
+    { name: '自动化', value: 5, color: '#10B981' },
   ]);
 
   // 随机更新数据
@@ -81,7 +82,7 @@ export function D3PieChart({
     // 创建弧生成器
     const arc = d3
       .arc<d3.PieArcDatum<PieChartData>>()
-      .innerRadius(radius * 0.5) // 内半径，创建环形图效果
+      .innerRadius(radius * 0.4) // 内半径，创建环形图效果
       .outerRadius(radius * 0.9);
 
     // 创建标签弧生成器
@@ -130,7 +131,7 @@ export function D3PieChart({
       .attr('d', arc)
       .attr('fill', (d) => d.data.color)
       .attr('stroke', '#1e293b')
-      .attr('stroke-width', 1)
+      .attr('stroke-width', 2)
       .attr('opacity', 0.8)
       .on('mouseover', function () {
         d3.select(this)
@@ -154,7 +155,7 @@ export function D3PieChart({
       .attr('dy', '.35em')
       .attr('text-anchor', 'middle')
       .attr('fill', '#ffffff')
-      .attr('font-size', '12px')
+      .attr('font-size', '24px')
       .attr('font-weight', 'bold')
       .text((d) => `${d.data.value}%`);
 
@@ -162,7 +163,7 @@ export function D3PieChart({
     g.append('circle')
       .attr('cx', 0)
       .attr('cy', 0)
-      .attr('r', radius * 0.45)
+      .attr('r', radius * 0.3)
       .attr('fill', '#1e293b')
       .attr('stroke', '#2a4d79')
       .attr('stroke-width', 2)
@@ -178,77 +179,48 @@ export function D3PieChart({
       .attr('font-size', '14px')
       .attr('font-weight', 'bold')
       .text('行业分布');
-
-    // 图例
-    const legend = svg
-      .append('g')
-      .attr(
-        'transform',
-        `translate(${width - radius * 0.8}, ${height - radius * 0.5})`,
-      )
-      .attr('font-size', '12px');
-
-    data.forEach((d, i) => {
-      const legendRow = legend
-        .append('g')
-        .attr('transform', `translate(0, ${i * 20})`);
-
-      legendRow
-        .append('rect')
-        .attr('width', 12)
-        .attr('height', 12)
-        .attr('fill', d.color);
-
-      legendRow
-        .append('text')
-        .attr('x', 18)
-        .attr('y', 10)
-        .attr('text-anchor', 'start')
-        .attr('fill', '#CBD5E0')
-        .text(d.name);
-    });
   }, [data]);
 
   return (
     <div className="flex h-full flex-col">
       {/* 统计数据 */}
-      <div className="mb-2 rounded-md bg-[#1A202C]/60 px-2 py-1 backdrop-blur-sm">
-        <div className="grid grid-cols-2 gap-2">
-          <Card className="rounded-lg border-none bg-gradient-to-br from-[#1e293b] to-[#162131] p-2 shadow-md">
-            <div className="flex flex-col">
-              <h3 className="text-xs font-medium text-blue-300/80">客户总数</h3>
-              <div className="mt-1 text-xl font-bold text-white">
-                <AnimatedCounter from={0} to={customerCount} />
-              </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <Card className="rounded-sm border-none bg-gradient-to-br from-[#1e293b] to-[#162131] p-2 shadow-md">
+          <div className="flex flex-col">
+            <h3 className="text-lg font-medium text-blue-300/80">客户总数</h3>
+            <div className="mt-1 text-2xl">
+              <AnimatedCounter from={0} to={customerCount} />
             </div>
-          </Card>
-          <Card className="rounded-lg border-none bg-gradient-to-br from-[#1e293b] to-[#162131] p-2 shadow-md">
-            <div className="flex flex-col">
-              <h3 className="text-xs font-medium text-blue-300/80">制造产能</h3>
-              <div className="mt-1 flex items-baseline text-xl font-bold text-white">
-                <AnimatedCounter from={0} to={productionCapacity} />
-                <span className="ml-1 text-xs text-gray-400">吨</span>
-              </div>
+          </div>
+        </Card>
+        <Card className="rounded-sm border-none bg-gradient-to-br from-[#1e293b] to-[#162131] p-2 shadow-md">
+          <div className="flex flex-col">
+            <h3 className="text-lg font-medium text-blue-300/80">制造产能</h3>
+            <div className="mt-1 flex items-baseline text-2xl text-white">
+              <AnimatedCounter from={0} to={productionCapacity} />
+              <span className="ml-1 text-lg text-gray-400">吨</span>
             </div>
-          </Card>
-        </div>
+          </div>
+        </Card>
       </div>
 
-      <h3 className="mb-1 text-center text-sm font-medium text-blue-300">
-        {title}
-      </h3>
-      <div className="relative flex-1">
+      <div className="relative flex-1 justify-center">
         <svg
           ref={svgRef}
           className="h-full w-full"
-          style={{ minHeight: '220px' }}
+          style={{ minHeight: '200px' }}
         ></svg>
       </div>
+
       <div className="mt-2 grid grid-cols-3 gap-1">
         {data.map((item) => (
-          <div key={item.name} className="rounded-md bg-[#171B23] p-1">
-            <p className="text-xs text-gray-400">{item.name}</p>
-            <p className="text-sm font-bold" style={{ color: item.color }}>
+          <div
+            key={item.name}
+            className="rounded-md border-2 border-[#2a4d79] bg-[#1e293b80] p-1"
+          >
+            <p className="text-lg text-gray-400">{item.name}</p>
+            <p className="text-2xl font-bold" style={{ color: item.color }}>
               {item.value}%
             </p>
           </div>
