@@ -185,24 +185,24 @@ export function D3PieChart({
     <div className="flex h-full flex-col">
       {/* 统计数据 */}
 
-      <div className="grid grid-cols-2 gap-2">
-        <Card className="rounded-sm border-none bg-gradient-to-br from-[#1e293b] to-[#162131] p-2 shadow-md">
+      <div className="grid grid-cols-2">
+        <div className="border-2 border-[#2a4e7930] p-2">
           <div className="flex flex-col">
-            <h3 className="text-lg font-medium text-blue-300/80">客户总数</h3>
+            <h3 className="text-xl font-medium text-blue-300/80">客户总数</h3>
             <div className="mt-1 text-2xl">
               <AnimatedCounter from={0} to={customerCount} />
             </div>
           </div>
-        </Card>
-        <Card className="rounded-sm border-none bg-gradient-to-br from-[#1e293b] to-[#162131] p-2 shadow-md">
+        </div>
+        <div className="border-2 border-[#2a4e7930] p-2">
           <div className="flex flex-col">
-            <h3 className="text-lg font-medium text-blue-300/80">制造产能</h3>
+            <h3 className="text-xl font-medium text-blue-300/80">制造产能</h3>
             <div className="mt-1 flex items-baseline text-2xl text-white">
               <AnimatedCounter from={0} to={productionCapacity} />
               <span className="ml-1 text-lg text-gray-400">吨</span>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
 
       <div className="relative flex-1 justify-center">
@@ -213,12 +213,9 @@ export function D3PieChart({
         ></svg>
       </div>
 
-      <div className="mt-2 grid grid-cols-3 gap-1">
+      <div className="mt-2 grid grid-cols-3">
         {data.map((item) => (
-          <div
-            key={item.name}
-            className="rounded-md border-2 border-[#2a4d79] bg-[#1e293b80] p-1"
-          >
+          <div key={item.name} className="border-2 border-[#2a4e7930] p-2">
             <p className="text-lg text-gray-400">{item.name}</p>
             <p className="text-2xl font-bold" style={{ color: item.color }}>
               {item.value}%

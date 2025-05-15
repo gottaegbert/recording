@@ -135,7 +135,7 @@ export default function BochuDataVisPage() {
   const dataCard = Object.entries(cardData).map(([key, value]) => (
     <Card
       key={key}
-      className="rounded-none border-x-blue-800 bg-gradient-to-br p-3"
+      className="rounded-none bg-gradient-to-br from-[#23272e30] to-[#1A202C30] p-8"
     >
       <div className="flex flex-row justify-between">
         <div className="flex flex-col">
@@ -173,7 +173,7 @@ export default function BochuDataVisPage() {
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/20 via-slate-900/20 to-purple-950/20" />
 
       {/* Content */}
-      <div className="container relative z-10 mx-auto gap-px p-4">
+      <div className="container relative z-10 mx-auto p-8">
         <div className="aspect-video max-h-screen w-full overflow-hidden">
           <Card
             id="dashboard-container"
@@ -189,10 +189,10 @@ export default function BochuDataVisPage() {
               />
             </div>
             <div className="border-500 absolute left-0 top-0 h-full w-full border-l-8 border-t-8 border-blue-800"></div>
-            <div className="absolute left-3 top-3 h-6 w-6 border-l border-t border-white"></div>
-            <div className="absolute right-3 top-3 h-6 w-6 border-r border-t border-white"></div>
+            {/* <div className="absolute left-3 top-8 h-6 w-6 border-l border-t border-white"></div>
+            <div className="absolute right-3 top-8 h-6 w-6 border-r border-t border-white"></div>
             <div className="absolute bottom-3 left-3 h-6 w-6 border-b border-l border-white"></div>
-            <div className="absolute bottom-3 right-3 h-6 w-6 border-b border-r border-white"></div>
+            <div className="absolute bottom-3 right-3 h-6 w-6 border-b border-r border-white"></div> */}
             <div className="absolute bottom-0 right-0 h-full w-full border-b-8 border-r-8 border-blue-800"></div>
             <div className="absolute left-1/2 top-0 flex h-8 items-center justify-center">
               <div className="clip-path-trapezoid absolute h-5 w-[400px] bg-blue-800"></div>
@@ -206,9 +206,9 @@ export default function BochuDataVisPage() {
             <div className="absolute right-2 top-1/2 flex items-center justify-center">
               <div className="clip-path-trapezoid absolute h-4 w-[300px] rotate-90 bg-blue-800"></div>
             </div>
-            <div className="dashboard-content h-full overflow-auto p-4">
+            <div className="dashboard-content h-full overflow-auto">
               {/* 标题栏 */}
-              <div className="mb-4 flex items-center justify-between">
+              <div className="mb-4 flex items-center justify-between p-8">
                 <div className="relative ml-2 flex items-center">
                   <div className="absolute -inset-1 animate-pulse rounded-none bg-blue-500/20 blur-md"></div>
                   <div className="relative">
@@ -259,10 +259,10 @@ export default function BochuDataVisPage() {
 
               <div className="mb-3 p-8">
                 {/* 可视化主体区域 */}
-                <div className="grid grid-cols-1 border-2 border-blue-800 lg:grid-cols-4">
+                <div className="grid grid-cols-1 lg:grid-cols-4">
                   {/* 左侧 - 地图区域 */}
                   <div className="col-span-3">
-                    <Card className="rounded-none border-2 border-blue-800 bg-gradient-to-br from-[#23272e30] to-[#1A202C30] shadow-xl backdrop-blur-sm">
+                    <Card className="rounded-none bg-gradient-to-br from-[#23272e30] to-[#1A202C30] shadow-xl backdrop-blur-sm">
                       <div className="p-0">
                         <div className="aspect-[3/1.5] h-full">
                           <div className="absolute left-0 right-0 top-0">
@@ -294,8 +294,8 @@ export default function BochuDataVisPage() {
 
                   {/* 右侧 - 行业应用区 */}
                   <div className="lg:flex lg:flex-col">
-                    <Card className="h-full rounded-none border-2 border-blue-800 bg-gradient-to-br from-[#23272E30] to-[#1A202C30] shadow-xl backdrop-blur-sm">
-                      <div className="h-full p-3">
+                    <Card className="h-full rounded-none bg-gradient-to-br from-[#23272E30] to-[#1A202C30] shadow-xl backdrop-blur-sm">
+                      <div className="h-full">
                         <D3PieChart
                           paused={refreshPaused}
                           customerCount={37846}
@@ -307,7 +307,7 @@ export default function BochuDataVisPage() {
                 </div>
 
                 {/* 下方数据卡片区域 */}
-                <div className="grid grid-cols-5 border-b border-l border-r border-blue-800">
+                <div className="grid grid-cols-5">
                   <div className="col-span-1">{dataCard[0]}</div>
                   <div className="col-span-1">{dataCard[1]}</div>
                   <div className="col-span-1">{dataCard[2]}</div>
