@@ -27,9 +27,6 @@ export function D3PieChart({
     { name: '机械制造', value: 28, color: '#60A5FA' },
     { name: '钢结构', value: 22, color: '#34D399' },
     { name: '模具制造', value: 18, color: '#F59E0B' },
-    { name: '装配设备', value: 15, color: '#EC4899' },
-    { name: '金属加工', value: 12, color: '#A78BFA' },
-    { name: '自动化', value: 5, color: '#10B981' },
   ]);
 
   // 随机更新数据
@@ -188,17 +185,26 @@ export function D3PieChart({
       <div className="grid grid-cols-2">
         <div className="border-2 border-[#2a4e7930] p-2">
           <div className="flex flex-col">
-            <h3 className="text-xl font-medium text-blue-300/80">客户总数</h3>
+            <h3 className="text-lg font-medium text-gray-400">客户总数</h3>
             <div className="mt-1 text-2xl">
-              <AnimatedCounter from={0} to={customerCount} />
+              <AnimatedCounter
+                from={0}
+                to={customerCount}
+                className="text-4xl font-bold"
+              />
             </div>
           </div>
         </div>
         <div className="border-2 border-[#2a4e7930] p-2">
           <div className="flex flex-col">
-            <h3 className="text-xl font-medium text-blue-300/80">制造产能</h3>
-            <div className="mt-1 flex items-baseline text-2xl text-white">
-              <AnimatedCounter from={0} to={productionCapacity} />
+            <h3 className="text-lg font-medium text-gray-400">制造产能</h3>
+            <div className="mt-1 flex items-end text-2xl text-white">
+              <AnimatedCounter
+                from={0}
+                to={productionCapacity}
+                color="#34D399"
+                className="text-4xl font-bold"
+              />
               <span className="ml-1 text-lg text-gray-400">吨</span>
             </div>
           </div>

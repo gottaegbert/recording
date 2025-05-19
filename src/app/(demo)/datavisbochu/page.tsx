@@ -12,61 +12,9 @@ import {
   HorizontalScrollingText,
 } from './components/scrolling-text';
 import { FlowingTitle } from './components/animated-title';
+import { AnimatedCounter } from './components/animated-counter';
 import Image from 'next/image';
 import Aurora from '@/components/shader/AuroraShader';
-
-// 简化的动画计数器组件
-function AnimatedCounter({
-  value,
-  duration = 1000,
-}: {
-  value: number;
-  duration?: number;
-}) {
-  const [displayValue, setDisplayValue] = useState(value);
-
-  useEffect(() => {
-    // 动画开始值
-    let startValue = displayValue;
-    const endValue = value;
-    const startTime = performance.now();
-
-    // 动画帧
-    const animateValue = (timestamp: number) => {
-      const runtime = timestamp - startTime;
-      const progress = Math.min(runtime / duration, 1);
-
-      // 使用缓动函数使动画更平滑
-      const easedProgress =
-        progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-      const currentValue = Math.floor(
-        startValue + (endValue - startValue) * easedProgress,
-      );
-
-      setDisplayValue(currentValue);
-
-      if (runtime < duration) {
-        requestAnimationFrame(animateValue);
-      }
-    };
-
-    // 如果值相同则不执行动画
-    if (startValue !== endValue) {
-      requestAnimationFrame(animateValue);
-    }
-  }, [value, duration]);
-
-  // 将数字转换为格式化的字符串并添加千位分隔符
-  const formattedValue = displayValue
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-  return (
-    <div className="text-3xl text-blue-300 transition-all">
-      {formattedValue}
-    </div>
-  );
-}
 
 export default function BochuDataVisPage() {
   const [refreshPaused, setRefreshPaused] = useState(false);
@@ -132,7 +80,7 @@ export default function BochuDataVisPage() {
       scale: '去年',
     },
   };
-  const dataCard = Object.entries(cardData).map(([key, value]) => (
+  const yearDataCard = Object.entries(cardData).map(([key, value]) => (
     <Card
       key={key}
       className="rounded-none bg-gradient-to-br from-[#23272e30] to-[#1A202C30] p-8"
@@ -159,8 +107,31 @@ export default function BochuDataVisPage() {
           </div>
         </div>
         <div className="mt-1 flex items-center text-center">
-          <div className="text-8xl">
-            <AnimatedCounter value={value.value} />
+          <div className="text-4xl">
+            <div className="text-blue-400">{value.value}</div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  ));
+
+  const updateDataCard = Object.entries(cardData).map(([key, value]) => (
+    <Card
+      key={key}
+      className="rounded-none bg-gradient-to-br from-[#4bd8e530] to-[#1A202C30] p-8"
+    >
+      <div className="flex flex-col justify-between">
+        <div className="flex flex-col">
+          <h3 className="text-2xl text-blue-300/80">{value.title}</h3>
+        </div>
+        <div className="mt-1 flex items-center text-center">
+          <div className="text-4xl">
+            <AnimatedCounter
+              value={value.value}
+              color="#36d7f0"
+              duration={500}
+              formatter={(val) => val.toLocaleString()}
+            />
           </div>
         </div>
       </div>
@@ -259,8 +230,18 @@ export default function BochuDataVisPage() {
 
               <div className="mb-3 p-8">
                 {/* 可视化主体区域 */}
-                <div className="grid grid-cols-1 lg:grid-cols-4">
-                  {/* 左侧 - 地图区域 */}
+                <div className="grid grid-cols-5 lg:grid-cols-5">
+                  {/* 左侧 - 实时数据区 */}
+                  <div className="col-span-1">
+                    <Card className="h-full rounded-none bg-gradient-to-br from-[#23272E30] to-[#1A202C30] shadow-xl backdrop-blur-sm">
+                      <div className="grid grid-rows-2">
+                        <div className="row-span-1">{updateDataCard[0]}</div>
+                        <div className="row-span-1">{updateDataCard[1]}</div>
+                      </div>
+                    </Card>
+                  </div>
+
+                  {/* 中间侧 - 地图区域 */}
                   <div className="col-span-3">
                     <Card className="rounded-none bg-gradient-to-br from-[#23272e30] to-[#1A202C30] shadow-xl backdrop-blur-sm">
                       <div className="p-0">
@@ -293,7 +274,7 @@ export default function BochuDataVisPage() {
                   </div>
 
                   {/* 右侧 - 行业应用区 */}
-                  <div className="lg:flex lg:flex-col">
+                  <div className="col-span-1">
                     <Card className="h-full rounded-none bg-gradient-to-br from-[#23272E30] to-[#1A202C30] shadow-xl backdrop-blur-sm">
                       <div className="h-full">
                         <D3PieChart
@@ -307,12 +288,10 @@ export default function BochuDataVisPage() {
                 </div>
 
                 {/* 下方数据卡片区域 */}
-                <div className="grid grid-cols-5">
-                  <div className="col-span-1">{dataCard[0]}</div>
-                  <div className="col-span-1">{dataCard[1]}</div>
-                  <div className="col-span-1">{dataCard[2]}</div>
-                  <div className="col-span-1">{dataCard[3]}</div>
-                  <div className="col-span-1">{dataCard[4]}</div>
+                <div className="grid grid-cols-3">
+                  <div className="col-span-1">{yearDataCard[2]}</div>
+                  <div className="col-span-1">{yearDataCard[3]}</div>
+                  <div className="col-span-1">{yearDataCard[4]}</div>
                 </div>
               </div>
 

@@ -225,7 +225,7 @@ export default function DataVisPage() {
         <div className="aspect-ratio-container w-full">
           <Card
             id="dashboard-container"
-            className="aspect-16/9 h-full w-full overflow-hidden transition-all duration-300"
+            className="aspect-video h-full w-full overflow-hidden transition-all duration-300"
           >
             <div className="dashboard-content h-full overflow-auto p-6">
               {dashboardContent}
@@ -236,7 +236,7 @@ export default function DataVisPage() {
 
       {/* Add CSS for aspect ratio */}
       <style jsx global>{`
-        .aspect-16\/9 {
+        .aspect-video {
           aspect-ratio: 16/9;
         }
 
