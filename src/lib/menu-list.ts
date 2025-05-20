@@ -59,6 +59,11 @@ export function getMenuList(pathname: string): Group[] {
           icon: CubeIcon,
           submenus: [
             {
+              href: '/3dpages/2dcad',
+              label: '2dCAD',
+              icon: CubeIcon,
+            },
+            {
               href: '/3dpages/metalness',
               label: 'Metalness',
               icon: CubeIcon,
@@ -93,12 +98,18 @@ export function getMenuList(pathname: string): Group[] {
             },
             {
               href: '/antioch',
+
               label: 'Antioch',
               icon: NotionLogoIcon,
             },
             {
               href: '/datavis',
               label: 'Dashboard DataVis Demo',
+              icon: BarChartIcon,
+            },
+            {
+              href: '/datavisbochu',
+              label: 'Bochu Dashboard',
               icon: BarChartIcon,
             },
           ],

@@ -52,6 +52,33 @@
     --ring: 240 10% 3.9%;
 
     --radius: 0.5rem;
+
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+    
+    /* Bochu Data Visualization Theme */
+    --bochu-primary: #36d7f0;
+    --bochu-primary-light: #7ae4f5;
+    --bochu-primary-dark: #1da8be;
+    --bochu-glow: rgba(54, 215, 240, 0.6);
+    --bochu-accent: #3d85c6;
+    --bochu-background: #0c192c;
+    --bochu-background-dark: #060d19;
+    --bochu-background-card: rgba(35, 39, 46, 0.3);
+    --bochu-border: #48a7b1;
+    --bochu-text: #eafcff;
+    --bochu-text-muted: rgba(234, 246, 255, 0.7);
+    --bochu-success: #34D399;
+    --bochu-warning: #F59E0B;
+    --bochu-danger: #EF4444;
+    --bochu-card-clip-path: polygon(
+      0 0,
+      100% 0px,
+      100% calc(100% - 30px),
+      calc(100% - 30px) 100%,
+      0 100%,
+    );
   }
 
   .dark {
@@ -90,6 +117,14 @@
   }
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -113,5 +148,11 @@
 
 .custom-scrollbar {
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: var(--tsecondary) transparent; /* Firefox */
+  scrollbar-color: #171b2346 transparent; /* Firefox */
+}
+
+
+.clip-path-trapezoid {
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+
 }
