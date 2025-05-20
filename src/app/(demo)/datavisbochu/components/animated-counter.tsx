@@ -23,7 +23,7 @@ export function AnimatedCounter({
   delay = 0,
   formatter = (val: number) => val.toLocaleString(),
   className = '',
-  color = '#60A5FA',
+  color = 'var(--bochu-primary)',
   animated = true, // Default to animated digits
 }: AnimatedCounterProps) {
   // Handle both API styles (from/to or direct value)
@@ -178,12 +178,12 @@ export function StatsCard({
   unit = '',
   icon,
   delay = 0,
-  color = '#60A5FA',
+  color = 'var(--bochu-primary)',
   increase,
   scale,
 }: StatsCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-lg bg-[#1e293b] p-4 shadow-lg">
+    <div className="relative overflow-hidden rounded-lg border border-[var(--bochu-border)] bg-[var(--bochu-background-card)] p-4 shadow-lg">
       {/* Moving background texture */}
       <motion.div
         className="absolute inset-0 opacity-5"
@@ -203,12 +203,14 @@ export function StatsCard({
       />
 
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-gray-400">{title}</h3>
-        {icon && <div className="text-blue-400">{icon}</div>}
+        <h3 className="text-sm font-medium text-[var(--bochu-text-muted)]">
+          {title}
+        </h3>
+        {icon && <div className="text-[var(--bochu-primary)]">{icon}</div>}
       </div>
 
       <div className="mt-2 flex items-baseline">
-        <div className="text-2xl font-bold text-white">
+        <div className="text-2xl font-bold text-[var(--bochu-text)]">
           <AnimatedCounter
             from={0}
             to={value}
@@ -217,20 +219,28 @@ export function StatsCard({
             duration={1500}
           />
         </div>
-        {unit && <span className="ml-1 text-sm text-gray-400">{unit}</span>}
+        {unit && (
+          <span className="ml-1 text-sm text-[var(--bochu-text-muted)]">
+            {unit}
+          </span>
+        )}
       </div>
 
       {increase !== undefined && (
         <div className="mt-1 flex items-center">
           {increase > 0 ? (
-            <span className="text-sm text-green-400">↑ {increase}%</span>
+            <span className="text-sm text-[var(--bochu-success)]">
+              ↑ {increase}%
+            </span>
           ) : (
-            <span className="text-sm text-red-400">
+            <span className="text-sm text-[var(--bochu-danger)]">
               ↓ {Math.abs(increase)}%
             </span>
           )}
           {scale && (
-            <span className="ml-1 text-sm text-gray-400">vs {scale}</span>
+            <span className="ml-1 text-sm text-[var(--bochu-text-muted)]">
+              vs {scale}
+            </span>
           )}
         </div>
       )}
@@ -250,41 +260,17 @@ export function StatsCard({
   );
 }
 
-export function StatsGrid() {
-  return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-      <StatsCard
-        title="客户总数"
-        value={37846}
-        delay={0.2}
-        color="#60A5FA"
-        increase={12.5}
-        scale="去年"
-      />
-      <StatsCard
-        title="制造产能"
-        value={215876}
-        unit="吨"
-        delay={0.4}
-        color="#34D399"
-        increase={-8.2}
-        scale="去年"
-      />
-    </div>
-  );
-}
-
 // Counter with auto-incrementing functionality
 export default function CounterVisualization({
   title,
   startValue,
   incrementBy,
-  color,
+  color = 'var(--bochu-primary)',
 }: {
   title: string;
   startValue: number;
   incrementBy: number;
-  color: string;
+  color?: string;
 }) {
   const [count, setCount] = useState(startValue);
 
@@ -297,7 +283,7 @@ export default function CounterVisualization({
   }, [incrementBy]);
 
   return (
-    <div className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-lg p-4">
+    <div className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-lg border border-[var(--bochu-border)] bg-[var(--bochu-background-card)] p-4">
       {/* Moving background texture */}
       <motion.div
         className="absolute inset-0 opacity-5"
@@ -310,13 +296,15 @@ export default function CounterVisualization({
           backgroundPosition: ['0px 0px', '60px 60px'],
         }}
         transition={{
-          duration: 10,
+          duration: 100,
           ease: 'linear',
           repeat: Number.POSITIVE_INFINITY,
         }}
       />
 
-      <h3 className="z-10 mb-6 text-sm text-gray-400">{title}</h3>
+      <h3 className="z-10 mb-6 text-sm text-[var(--bochu-text-muted)]">
+        {title}
+      </h3>
 
       {/* Minimal progress indicator */}
       <motion.div

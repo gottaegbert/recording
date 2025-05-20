@@ -85,7 +85,7 @@ export function ChinaMap({ paused }: ChinaMapProps) {
     null,
   );
   const [loading, setLoading] = useState(true);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 });
 
   // Fetch GeoJSON data
   useEffect(() => {
@@ -142,8 +142,8 @@ export function ChinaMap({ paused }: ChinaMapProps) {
     // 改进的投影设置，更好地展示完整的中国地图
     const projection = d3
       .geoMercator()
-      .center([100, 35]) // 调整中心位置
-      .scale(width * 0.75) // 调整缩放以显示完整的中国地图
+      .center([105, 30]) // 调整中心位置
+      .scale(width * 0.5) // 调整缩放以显示完整的中国地图
       .translate([width / 2, height / 2]); // 调整位置
 
     // Create path generator
@@ -182,8 +182,8 @@ export function ChinaMap({ paused }: ChinaMapProps) {
       .enter()
       .append('path')
       .attr('d', pathGenerator)
-      .attr('stroke', '#276ecf')
-      .attr('fill', '#1e293b')
+      .attr('stroke', 'var(--bochu-primary-dark)')
+      .attr('fill', 'var(--bochu-background-card)')
       .attr('stroke-width', 1) // Thinner borders for cleaner look
       .attr('opacity', 1)
       .attr('cursor', 'pointer')
@@ -192,7 +192,7 @@ export function ChinaMap({ paused }: ChinaMapProps) {
         d3.select(this)
           .transition()
           .duration(300)
-          .attr('fill', '#2a4d79')
+          .attr('fill', 'var(--bochu-background-card)')
           .attr('opacity', 0.9);
 
         // 显示省份名称提示
@@ -275,8 +275,8 @@ export function ChinaMap({ paused }: ChinaMapProps) {
         .attr('cx', x)
         .attr('cy', y)
         .attr('r', size)
-        .attr('fill', '#3182CE')
-        .attr('stroke', '#90CDF4')
+        .attr('fill', 'var(--bochu-primary)')
+        .attr('stroke', 'var(--bochu-primary-light)')
         .attr('stroke-width', 1)
         .attr('cursor', 'pointer')
         .on('mouseover', function () {
@@ -295,11 +295,17 @@ export function ChinaMap({ paused }: ChinaMapProps) {
             .style('left', x + 15 + 'px')
             .style('top', y - 15 + 'px');
 
-          d3.select(this).transition().duration(300).attr('fill', '#5df1ff');
+          d3.select(this)
+            .transition()
+            .duration(300)
+            .attr('fill', 'var(--bochu-success)');
         })
         .on('mouseout', function () {
           tooltip.style('display', 'none');
-          d3.select(this).transition().duration(300).attr('fill', '#3182CE');
+          d3.select(this)
+            .transition()
+            .duration(300)
+            .attr('fill', 'var(--bochu-primary)');
         });
 
       // Add pulsing animation to major cities
@@ -408,10 +414,10 @@ export function ChinaMap({ paused }: ChinaMapProps) {
   }, [chinaGeoJson, connections, dimensions]);
 
   return (
-    <div className="relative h-full w-full rounded-lg">
+    <div className="absolute z-0 rounded-lg">
       {loading ? (
         <div className="flex h-full w-full items-center justify-center">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-t-4 border-blue-500 border-t-transparent"></div>
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-t-4 border-[var(--bochu-primary)] border-t-transparent"></div>
           <p className="ml-3 text-sm text-gray-400">加载地图中...</p>
         </div>
       ) : (
@@ -509,16 +515,16 @@ export function ChinaMap({ paused }: ChinaMapProps) {
           </div>
 
           {/* Legend */}
-          <div className="absolute bottom-4 right-4 rounded-md bg-slate-800/70 p-3 text-xs backdrop-blur-sm">
+          <div className="absolute bottom-96 right-1/4 rounded-md bg-slate-800/70 p-3 text-xs backdrop-blur-sm">
             <div className="mb-2 font-semibold text-white">图例</div>
             <div className="space-y-2">
               <div className="flex items-center">
-                <div className="mr-2 h-3 w-3 rounded-full bg-blue-500"></div>
-                <span className="text-gray-300">客户分布</span>
+                <div className="mr-2 h-3 w-3 animate-pulse rounded-full bg-[var(--bochu-primary)]"></div>
+                <span className="text-[var(--bochu-text-muted)]">客户分布</span>
               </div>
               <div className="flex items-center">
-                <div className="mr-2 h-3 w-3 animate-pulse rounded-full bg-cyan-400"></div>
-                <span className="text-gray-300">实时活动</span>
+                <div className="mr-2 h-3 w-3 animate-pulse rounded-full bg-[var(--bochu-success)]"></div>
+                <span className="text-[var(--bochu-text-muted)]">实时活动</span>
               </div>
             </div>
           </div>
