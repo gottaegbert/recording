@@ -5,7 +5,15 @@ import MotionWrapper from '@/components/transition/motion-wrapper';
 import { useState, useEffect } from 'react';
 import { ChinaMap } from './components/china-map';
 import { FullscreenButton } from '@/components/demo/Shader/FullscreenButton';
-import { PauseCircle, PlayCircle } from 'lucide-react';
+import {
+  PauseCircle,
+  PlayCircle,
+  Settings,
+  Layers3,
+  BarChart3,
+  Leaf,
+  TreePine,
+} from 'lucide-react';
 import { D3PieChart } from './components/d3-pie-chart';
 import {
   TypewriterText,
@@ -71,90 +79,121 @@ export default function BochuDataVisPage() {
       value: partsCount,
       increase: 12.5,
       scale: '昨日',
+      icon: Settings,
+      glowColor: 'rgba(59, 130, 246, 0.4)',
     },
     sheetsCount: {
       title: '今日板材张数',
       value: sheetsCount,
       increase: -8.2,
       scale: '昨日',
+      icon: Layers3,
+      glowColor: 'rgba(16, 185, 129, 0.4)',
     },
     utilizationRate: {
       title: '平均材料利用率',
       value: utilizationRate,
       increase: 3.1,
       scale: '昨日',
+      icon: BarChart3,
+      glowColor: 'rgba(245, 158, 11, 0.4)',
     },
     materialSavings: {
       title: '2024年节省材料',
       value: materialSavings,
       increase: 83,
       scale: '去年',
+      icon: Leaf,
+      glowColor: 'rgba(34, 197, 94, 0.4)',
     },
     carbonSavings: {
       title: '2024年节省碳排放',
       value: carbonSavings,
       increase: 78,
       scale: '去年',
+      icon: TreePine,
+      glowColor: 'rgba(22, 163, 74, 0.4)',
     },
   };
 
-  const yearDataCard = Object.entries(cardData).map(([key, value]) => (
-    <GameCard
-      key={key}
-      className="bg-[var(--bochu-background-card)] p-8 shadow-lg"
-    >
-      <div className="flex flex-row justify-between">
-        <div className="flex flex-col">
-          <h3 className="text-2xl text-[var(--bochu-primary)]">
-            {value.title}
-          </h3>
+  const yearDataCard = Object.entries(cardData).map(([key, value]) => {
+    const IconComponent = value.icon;
+    return (
+      <GameCard
+        key={key}
+        className="relative overflow-hidden p-8 shadow-lg"
+        glowColor={value.glowColor}
+      >
+        <div className="relative z-10 flex flex-row justify-between">
+          <div className="flex flex-col">
+            <div className="mb-2 flex items-center space-x-2">
+              <IconComponent className="h-6 w-6 text-[var(--bochu-primary)] opacity-70" />
+              <h3 className="text-2xl text-[var(--bochu-primary)] opacity-70">
+                {value.title}
+              </h3>
+            </div>
 
-          <div className="mt-1">
-            <div className="mt-1 flex items-center">
-              {value.increase > 0 ? (
-                <span className="text-xl text-[var(--bochu-danger)]">
-                  {value.increase > 0 ? '↑' : '↓'} {value.increase}%
+            <div className="mt-1">
+              <div className="mt-1 flex items-center">
+                {value.increase > 0 ? (
+                  <span className="text-xl text-[var(--bochu-danger)] opacity-70">
+                    {value.increase > 0 ? '↑' : '↓'} {value.increase}%
+                  </span>
+                ) : (
+                  <span className="text-xl text-[var(--bochu-success)] opacity-70">
+                    {value.increase > 0 ? '↑' : '↓'} {value.increase}%
+                  </span>
+                )}
+                <span className="ml-1 text-xl text-[var(--bochu-text-muted)] opacity-70">
+                  vs {value.scale}
                 </span>
-              ) : (
-                <span className="text-xl text-[var(--bochu-success)]">
-                  {value.increase > 0 ? '↑' : '↓'} {value.increase}%
-                </span>
-              )}
-              <span className="ml-1 text-xl text-[var(--bochu-text-muted)]">
-                vs {value.scale}
-              </span>
+              </div>
+            </div>
+          </div>
+          <div className="mt-1 flex items-center text-center">
+            <div className="text-4xl">
+              <div className="text-[var(--bochu-primary)] opacity-70">
+                {value.value}
+              </div>
             </div>
           </div>
         </div>
-        <div className="mt-1 flex items-center text-center">
-          <div className="text-4xl">
-            <div className="text-[var(--bochu-primary)]">{value.value}</div>
+      </GameCard>
+    );
+  });
+
+  const updateDataCard = Object.entries(cardData).map(([key, value]) => {
+    const IconComponent = value.icon;
+    return (
+      <GameCard
+        key={key}
+        className="relative overflow-hidden"
+        glowColor={value.glowColor}
+      >
+        <div className="relative z-10 flex flex-col justify-between">
+          <div className="flex flex-col">
+            <div className="mb-2 flex items-center space-x-2">
+              <IconComponent className="h-5 w-5 text-[var(--bochu-primary)] opacity-70" />
+              <h3 className="text-2xl text-[var(--bochu-text)] opacity-70">
+                {value.title}
+              </h3>
+            </div>
+          </div>
+
+          <div className="mt-1 flex items-center text-center">
+            <div className="text-4xl opacity-70">
+              <AnimatedCounter
+                value={value.value}
+                color="var(--bochu-primary)"
+                duration={500}
+                formatter={(val) => val.toLocaleString()}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </GameCard>
-  ));
-
-  const updateDataCard = Object.entries(cardData).map(([key, value]) => (
-    <GameCard key={key}>
-      <div className="flex flex-col justify-between">
-        <div className="flex flex-col">
-          <h3 className="text-2xl text-[var(--bochu-text)]">{value.title}</h3>
-        </div>
-
-        <div className="mt-1 flex items-center text-center">
-          <div className="text-4xl">
-            <AnimatedCounter
-              value={value.value}
-              color="var(--bochu-primary)"
-              duration={500}
-              formatter={(val) => val.toLocaleString()}
-            />
-          </div>
-        </div>
-      </div>
-    </GameCard>
-  ));
+      </GameCard>
+    );
+  });
 
   return (
     <MotionWrapper>
