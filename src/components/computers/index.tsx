@@ -203,7 +203,7 @@ export default function ComputersPage() {
                     <p
                       className={`max-w-2xl text-center text-xl ${GeistSans.className}`}
                     >
-                      WHO3 labs is{' '}
+                      WHO3 is{' '}
                       <span
                         className="cursor-pointer underline"
                         onClick={() => {

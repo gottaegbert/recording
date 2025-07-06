@@ -170,7 +170,7 @@ export function CardLoadingAnimation({
                 x: '101%',
               }}
             >
-              Labs
+              Lab
             </motion.div>
           </motion.div>
 

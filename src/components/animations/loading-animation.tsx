@@ -167,7 +167,7 @@ export function LoadingAnimation({
                 x: '101%',
               }}
             >
-              Labs
+              Lab
             </motion.div>
           </motion.div>
         </motion.div>
