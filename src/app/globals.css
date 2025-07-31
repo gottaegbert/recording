@@ -23,6 +23,17 @@
     --main: #c9fd74;
     --backmain: #3353f45a;
 
+    /* Grid System Variables */
+    --grid--app-margin: 1.5rem;
+    --grid--app-columns: repeat(12, 1fr);
+    --grid--app-gutter: 1.5rem;
+    --color--foreground--15: rgba(255, 255, 255, 0.15);
+    
+    /* Responsive Grid Margins */
+    --grid--mobile-margin: 1rem;
+    --grid--tablet-margin: 1.5rem;
+    --grid--desktop-margin: 2rem;
+
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
@@ -60,6 +71,9 @@
     --treverse: #2a2a2a;
     --ball: #67e0d2;
     --main: #3354f4;
+
+    /* Grid System Variables - Dark Mode */
+    --color--foreground--15: rgba(255, 255, 255, 0.15);
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
@@ -99,6 +113,57 @@
   }
   html {
     font-family: 'Optician Sans', sans-serif;
+  }
+}
+
+/* Grid Overlay System */
+.app-grid-overlay {
+  z-index: 101;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 0 var(--grid--app-margin);
+  display: grid;
+  grid-template-columns: var(--grid--app-columns);
+  gap: var(--grid--app-gutter);
+  pointer-events: none;
+}
+
+.app-grid-overlay .column {
+  display: flex;
+  justify-content: space-between;
+}
+
+.app-grid-overlay .line {
+  width: 1px;
+  height: 0;
+  background-color: var(--color--foreground--15);
+  transition: height 1s ease;
+}
+
+.app-grid-overlay.is--visible .line {
+  height: 100%;
+}
+
+/* Responsive Grid Adjustments */
+@media (max-width: 768px) {
+  .app-grid-overlay {
+    padding: 0 var(--grid--mobile-margin);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .app-grid-overlay {
+    padding: 0 var(--grid--tablet-margin);
+  }
+}
+
+@media (min-width: 1025px) {
+  .app-grid-overlay {
+    padding: 0 var(--grid--desktop-margin);
   }
 }
 

@@ -16,6 +16,7 @@ import {
   Play,
   Pause,
   RotateCcw,
+  PanelsTopLeft,
 } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -24,6 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Scene } from './scene';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import WordSwitcher from '@/components/WordSwitcher';
+// import GridToggle from '@/components/GridToggle';
 
 // Dynamic import for 3D particle background
 // const DynamicEquivalenceDemo = dynamic(
@@ -168,7 +170,7 @@ export default function WhoThreeMainPage() {
         </div>
 
         {/* Navigation */}
-        <nav className="absolute left-6 right-6 top-6 z-20 flex items-center justify-between">
+        <nav className="absolute left-8 right-8 top-8 z-20 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -185,10 +187,11 @@ export default function WhoThreeMainPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7 }}
-            className="flex items-center gap-3"
+            className="flex space-x-2"
           >
             <ThemeToggle />
-            <Button
+
+            {/* <Button
               variant="ghost"
               size="sm"
               className="text-white/70 hover:bg-white/10 hover:text-white"
@@ -197,7 +200,8 @@ export default function WhoThreeMainPage() {
               }
             >
               <Github className="h-4 w-4" />
-            </Button>
+            </Button> */}
+            {/* <GridToggle /> */}
           </motion.div>
         </nav>
 
@@ -240,7 +244,7 @@ export default function WhoThreeMainPage() {
 
             <motion.div
               variants={itemVariants}
-              className="mb-8 flex flex-wrap justify-center gap-4"
+              className="mb-8 flex flex-wrap justify-center gap-36"
             >
               <Button
                 asChild
@@ -248,10 +252,11 @@ export default function WhoThreeMainPage() {
                 className="bg-white text-black hover:bg-white/90"
               >
                 <Link href="/workingon">
-                  Check
+                  Check My Lab
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
+
               <Button
                 variant="outline"
                 size="lg"
@@ -404,14 +409,14 @@ export default function WhoThreeMainPage() {
         </motion.div>
       </section>
        */}
-      {/* Capabilities Section - Bento-style grid */}
-      <section className="bg-black px-6 py-24">
+      {/* Capabilities Section - Grid-based layout */}
+      <section className="bg-black py-24">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-20%' }}
-          className="mx-auto max-w-6xl"
+          className="mx-auto max-w-7xl px-6"
         >
           <motion.div variants={itemVariants} className="mb-16 text-center">
             <h2 className="mb-6 text-4xl font-bold md:text-6xl">What I Do</h2>
@@ -423,10 +428,14 @@ export default function WhoThreeMainPage() {
 
           <motion.div
             variants={containerVariants}
-            className="grid grid-cols-1 gap-6 md:grid-cols-2"
+            className="grid grid-cols-12 gap-6"
           >
             {capabilities.map((capability, index) => (
-              <motion.div key={index} variants={itemVariants}>
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="col-span-12 md:col-span-6"
+              >
                 <Card className="group h-full border-white/10 bg-white/5 p-8 transition-all duration-500 hover:bg-white/10">
                   <CardHeader className="mb-4 p-0">
                     <CardTitle className="text-2xl text-white">
@@ -444,13 +453,13 @@ export default function WhoThreeMainPage() {
       </section>
 
       {/* Enhanced WordSwitcher Section */}
-      <section className="bg-black px-6 py-24">
+      <section className="bg-black py-24">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-20%' }}
-          className="mx-auto max-w-7xl"
+          className="mx-auto max-w-7xl px-6"
         >
           <motion.div variants={itemVariants} className="mb-12 text-center">
             <h2 className="mb-6 text-4xl font-bold text-white md:text-6xl">
@@ -464,19 +473,19 @@ export default function WhoThreeMainPage() {
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <WordSwitcher showGrid={false} className="text-white" />
+            <WordSwitcher className="text-white" />
           </motion.div>
         </motion.div>
       </section>
 
       {/* Design Engineering Practice Section */}
-      <section className="border-t border-white/10 bg-black px-6 py-24">
+      <section className="border-t border-white/10 bg-black py-24">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-20%' }}
-          className="mx-auto max-w-6xl"
+          className="mx-auto max-w-7xl px-6"
         >
           <motion.div variants={itemVariants} className="mb-16 text-center">
             <h2 className="mb-6 text-4xl font-bold md:text-6xl">
@@ -492,9 +501,12 @@ export default function WhoThreeMainPage() {
 
           <motion.div
             variants={containerVariants}
-            className="grid grid-cols-1 gap-8 md:grid-cols-3"
+            className="grid grid-cols-12 gap-8"
           >
-            <motion.div variants={itemVariants}>
+            <motion.div
+              variants={itemVariants}
+              className="col-span-12 md:col-span-4"
+            >
               <Card className="flex h-full flex-col border-white/10 bg-white/5 p-8">
                 <CardHeader className="p-0">
                   <CardTitle className="mb-4 text-xl text-white">
@@ -510,7 +522,10 @@ export default function WhoThreeMainPage() {
                 </CardContent>
               </Card>
             </motion.div>
-            <motion.div variants={itemVariants}>
+            <motion.div
+              variants={itemVariants}
+              className="col-span-12 md:col-span-4"
+            >
               <Card className="flex h-full flex-col border-white/10 bg-white/5 p-8">
                 <CardHeader className="p-0">
                   <CardTitle className="mb-4 text-xl text-white">
@@ -526,7 +541,10 @@ export default function WhoThreeMainPage() {
                 </CardContent>
               </Card>
             </motion.div>
-            <motion.div variants={itemVariants}>
+            <motion.div
+              variants={itemVariants}
+              className="col-span-12 md:col-span-4"
+            >
               <Card className="flex h-full flex-col border-white/10 bg-white/5 p-8">
                 <CardHeader className="p-0">
                   <CardTitle className="mb-4 text-xl text-white">
