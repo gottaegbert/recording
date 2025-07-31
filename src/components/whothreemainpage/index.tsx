@@ -1,8 +1,9 @@
 'use client';
 
 import { LoadingAnimation } from '../animations/loading-animation';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { gsap } from 'gsap';
 import {
   ArrowRight,
   ExternalLink,
@@ -21,6 +22,8 @@ import dynamic from 'next/dynamic';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Scene } from './scene';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import WordSwitcher from '@/components/WordSwitcher';
 
 // Dynamic import for 3D particle background
 // const DynamicEquivalenceDemo = dynamic(
@@ -184,6 +187,7 @@ export default function WhoThreeMainPage() {
             transition={{ delay: 0.7 }}
             className="flex items-center gap-3"
           >
+            <ThemeToggle />
             <Button
               variant="ghost"
               size="sm"
@@ -438,6 +442,33 @@ export default function WhoThreeMainPage() {
           </motion.div>
         </motion.div>
       </section>
+
+      {/* Enhanced WordSwitcher Section */}
+      <section className="bg-black px-6 py-24">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-20%' }}
+          className="mx-auto max-w-7xl"
+        >
+          <motion.div variants={itemVariants} className="mb-12 text-center">
+            <h2 className="mb-6 text-4xl font-bold text-white md:text-6xl">
+              Who I Work With
+            </h2>
+            <p className="mx-auto max-w-3xl text-xl text-white/70">
+              I tailor my approach to meet the specific needs of different teams
+              and roles, creating value across the entire product development
+              lifecycle.
+            </p>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <WordSwitcher showGrid={false} className="text-white" />
+          </motion.div>
+        </motion.div>
+      </section>
+
       {/* Design Engineering Practice Section */}
       <section className="border-t border-white/10 bg-black px-6 py-24">
         <motion.div
