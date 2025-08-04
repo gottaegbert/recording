@@ -580,10 +580,8 @@ class Gradient {
             this.minigl.render();
         }
         if (0 !== this.last && this.isStatic)
-          return (
-            this.minigl.render(), void this.disconnect()
-            /*this.isIntersecting && */
-          );
+          return this.minigl.render(), void this.disconnect();
+        /*this.isIntersecting && */
         (this.conf.playing || this.isMouseDown) &&
           requestAnimationFrame(this.animate);
       }),

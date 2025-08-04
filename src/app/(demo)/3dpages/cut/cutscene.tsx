@@ -17,20 +17,21 @@ function createShapeFromSvgPath(svgPath: string): THREE.Shape {
   const svgData = loader.parse(svgPath);
   const paths = svgData.paths;
 
-  if (paths.length === 0) {
-    // Fallback to a basic shape if SVG parsing fails
-    const shape = new THREE.Shape();
-    shape.moveTo(-1, -1);
-    shape.lineTo(1, -1);
-    shape.lineTo(1, 1);
-    shape.lineTo(-1, 1);
-    return shape;
+  if (paths.length > 0) {
+    const shapes = paths[0].toShapes(true);
+    if (shapes.length > 0) {
+      // Re-create the shape to avoid type conflicts
+      return new THREE.Shape(shapes[0].getPoints());
+    }
   }
 
-  // Use the first path from the SVG
-  const path = paths[0];
-  const shapes = path.toShapes(true);
-  return shapes[0];
+  // Fallback to a basic shape if SVG parsing fails or yields no shapes
+  const shape = new THREE.Shape();
+  shape.moveTo(-1, -1);
+  shape.lineTo(1, -1);
+  shape.lineTo(1, 1);
+  shape.lineTo(-1, 1);
+  return shape;
 }
 
 const tShapeSvg = `<svg width="300" height="360" viewBox="0 0 300 360" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -249,7 +250,6 @@ export default function LoadingScene({
         shadows
         camera={{
           position: [-30, 20, -10],
-
           near: 0.1,
           far: 100,
           zoom: 40,
