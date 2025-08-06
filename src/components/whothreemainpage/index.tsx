@@ -23,7 +23,7 @@ import dynamic from 'next/dynamic';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Scene } from './scene';
-import { ThemeToggle } from '@/components/ThemeToggle';
+// import { ThemeToggle } from '@/components/ThemeToggle';
 import WordSwitcher from '@/components/WordSwitcher';
 // import GridToggle from '@/components/GridToggle';
 
@@ -189,7 +189,7 @@ export default function WhoThreeMainPage() {
             transition={{ delay: 0.7 }}
             className="flex space-x-2"
           >
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
 
             {/* <Button
               variant="ghost"
@@ -252,7 +252,7 @@ export default function WhoThreeMainPage() {
                 className="bg-white text-black hover:bg-white/90"
               >
                 <Link href="/workingon">
-                  Check My Lab
+                  Check My Crafts
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
