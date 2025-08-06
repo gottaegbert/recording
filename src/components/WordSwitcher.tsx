@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
 const sections = {
   anyone: {
     title: 'For Everyone',
-    text: 'I turn pixels into products. Design that works, code that ships.',
+    text: 'I turn pixels into products. Design that works, code that ships. Not a designer or developer, but a builder',
     color: 'from-red-900 to-gray-800',
   },
   recruiters: {
@@ -19,12 +19,12 @@ const sections = {
     color: 'from-yellow-900 to-gray-800',
   },
   'product-designers': {
-    title: 'For Product Designers',
+    title: 'For Designers',
     text: "I make your Figma files actually buildable. Let's create magic together.",
     color: 'from-green-900 to-gray-800',
   },
   'product-managers': {
-    title: 'For Product Managers',
+    title: 'For PMs',
     text: 'I translate between teams and turn roadmaps into reality. Zero friction.',
     color: 'from-blue-900 to-gray-800',
   },
@@ -41,8 +41,10 @@ interface WordSwitcherProps {
 export default function WordSwitcher({ className = '' }: WordSwitcherProps) {
   const [activeSection, setActiveSection] = useState<string>('anyone');
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
+  const [isUserInteracting, setIsUserInteracting] = useState<boolean>(false);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const autoplayIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get visible sections based on screen size
   const getVisibleSections = () => {
@@ -72,6 +74,62 @@ export default function WordSwitcher({ className = '' }: WordSwitcherProps) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [activeSection]);
+
+  // Autoplay functionality
+  useEffect(() => {
+    const startAutoplay = () => {
+      if (autoplayIntervalRef.current) {
+        clearInterval(autoplayIntervalRef.current);
+      }
+
+      autoplayIntervalRef.current = setInterval(() => {
+        if (!isUserInteracting && !hoveredSection) {
+          setActiveSection((currentSection) => {
+            const currentIndex = visibleSections.indexOf(currentSection);
+            const nextIndex = (currentIndex + 1) % visibleSections.length;
+            return visibleSections[nextIndex];
+          });
+        }
+      }, 5000);
+    };
+
+    const stopAutoplay = () => {
+      if (autoplayIntervalRef.current) {
+        clearInterval(autoplayIntervalRef.current);
+        autoplayIntervalRef.current = null;
+      }
+    };
+
+    // Start autoplay when component mounts
+    startAutoplay();
+
+    // Cleanup on unmount
+    return () => stopAutoplay();
+  }, [visibleSections, isUserInteracting, hoveredSection]);
+
+  // Handle user interaction states
+  const handleMouseEnter = (key: string) => {
+    setIsUserInteracting(true);
+    setActiveSection(key);
+    setHoveredSection(key);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredSection(null);
+    // Delay resetting user interaction to prevent immediate autoplay
+    setTimeout(() => {
+      setIsUserInteracting(false);
+    }, 1000);
+  };
+
+  const handleClick = (key: string) => {
+    setIsUserInteracting(true);
+    setActiveSection(key);
+    // Reset user interaction after a longer delay for clicks
+    setTimeout(() => {
+      setIsUserInteracting(false);
+    }, 3000);
+  };
 
   // Smooth indicator movement
   useEffect(() => {
@@ -127,12 +185,9 @@ export default function WordSwitcher({ className = '' }: WordSwitcherProps) {
                       ? 'border border-white/30 bg-white/10 backdrop-blur-md'
                       : 'border border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/20 hover:bg-white/10'
                   }`}
-                  onClick={() => setActiveSection(key)}
-                  onMouseEnter={() => {
-                    setActiveSection(key);
-                    setHoveredSection(key);
-                  }}
-                  onMouseLeave={() => setHoveredSection(null)}
+                  onClick={() => handleClick(key)}
+                  onMouseEnter={() => handleMouseEnter(key)}
+                  onMouseLeave={handleMouseLeave}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
