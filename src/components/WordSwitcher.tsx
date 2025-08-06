@@ -70,7 +70,7 @@ export default function WordSwitcher({ className = '' }: WordSwitcherProps) {
           {/* Sliding Indicator */}
           <div
             ref={indicatorRef}
-            className={`pointer-events-none absolute left-0 top-0 h-full rounded-xl ${currentSection.color} bg-gradient-to-br opacity-30 transition-all duration-300 ease-out`}
+            className={`pointer-events-none absolute left-0 top-0 h-full rounded-sm ${currentSection.color} bg-gradient-to-br opacity-30 transition-all duration-300 ease-out`}
             style={{ zIndex: 1 }}
           />
 
@@ -82,7 +82,7 @@ export default function WordSwitcher({ className = '' }: WordSwitcherProps) {
               <motion.button
                 key={key}
                 data-section={key}
-                className={`group relative col-span-6 rounded-xl p-4 text-left transition-all duration-300 sm:col-span-4 lg:col-span-2 ${
+                className={`group relative col-span-6 rounded-sm p-4 text-left transition-all duration-300 sm:col-span-4 lg:col-span-2 ${
                   activeSection === key
                     ? 'border border-white/30 bg-white/10 backdrop-blur-md'
                     : 'border border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/20 hover:bg-white/10'
@@ -121,7 +121,7 @@ export default function WordSwitcher({ className = '' }: WordSwitcherProps) {
         {/* Text Content */}
         <div className="relative overflow-hidden">
           <div
-            className={`flex h-64 items-center justify-center rounded-2xl bg-gradient-to-br p-8 ${currentSection.color} border border-white/20 bg-opacity-10 backdrop-blur-sm transition-all duration-300`}
+            className={`flex h-64 items-center justify-center rounded-sm bg-gradient-to-br p-8 ${currentSection.color} border border-white/20 bg-opacity-10 backdrop-blur-sm transition-all duration-300`}
           >
             <div className="relative w-full max-w-4xl">
               {Object.keys(sections).map((key) => (
@@ -153,7 +153,7 @@ export default function WordSwitcher({ className = '' }: WordSwitcherProps) {
           {Object.keys(sections).map((key) => (
             <motion.div
               key={key}
-              className={`h-1 rounded-full transition-all duration-300 ${
+              className={`h-1 rounded-sm transition-all duration-300 ${
                 activeSection === key ? 'w-8 bg-white' : 'w-2 bg-white/40'
               }`}
               onClick={() => setActiveSection(key)}
