@@ -410,7 +410,7 @@ export default function WhoThreeMainPage() {
       </section>
        */}
       {/* Capabilities Section - Grid-based layout */}
-      <section className="bg-black py-24">
+      {/* <section className="bg-black py-24">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -450,7 +450,7 @@ export default function WhoThreeMainPage() {
             ))}
           </motion.div>
         </motion.div>
-      </section>
+      </section> */}
 
       {/* Enhanced WordSwitcher Section */}
       <section className="bg-black py-24">
@@ -479,7 +479,7 @@ export default function WhoThreeMainPage() {
       </section>
 
       {/* Design Engineering Practice Section */}
-      <section className="border-t border-white/10 bg-black py-24">
+      {/* <section className="border-t border-white/10 bg-black py-24">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -562,7 +562,7 @@ export default function WhoThreeMainPage() {
             </motion.div>
           </motion.div>
         </motion.div>
-      </section>
+      </section> */}
       {/* Featured Work Section */}
       {/* <section
         id="work"
